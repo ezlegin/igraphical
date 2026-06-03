@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `course` MODIFY `status` ENUM('DRAFT', 'PUBLISHED', 'PRESALE') NOT NULL;

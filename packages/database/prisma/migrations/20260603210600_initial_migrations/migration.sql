@@ -72,7 +72,7 @@ CREATE TABLE `image` (
     `public_id` VARCHAR(191) NOT NULL,
     `url` VARCHAR(191) NOT NULL,
     `format` VARCHAR(191) NOT NULL,
-    `type` ENUM('POST', 'COURSE', 'ANNOUNCEMENT', 'USER', 'SLIDER', 'COURSE_ASSET', 'POST_ASSET', 'TICKET_ASSET', 'OTHER') NOT NULL,
+    `type` ENUM('POST', 'COURSE', 'ANNOUNCEMENT', 'USER', 'SLIDER', 'DOWNLOADABLE_ASSET', 'FLOATING_BANNER', 'COURSE_ASSET', 'POST_ASSET', 'TICKET_ASSET', 'OTHER') NOT NULL,
     `size` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `userId` INTEGER NULL,
@@ -82,6 +82,8 @@ CREATE TABLE `image` (
     `courseId` INTEGER NULL,
     `galleryId` INTEGER NULL,
     `sliderId` INTEGER NULL,
+    `floatingBannerId` INTEGER NULL,
+    `assetId` INTEGER NULL,
 
     UNIQUE INDEX `image_public_id_key`(`public_id`),
     UNIQUE INDEX `image_url_key`(`url`),
@@ -91,6 +93,8 @@ CREATE TABLE `image` (
     UNIQUE INDEX `image_postId_key`(`postId`),
     UNIQUE INDEX `image_courseId_key`(`courseId`),
     UNIQUE INDEX `image_sliderId_key`(`sliderId`),
+    UNIQUE INDEX `image_floatingBannerId_key`(`floatingBannerId`),
+    UNIQUE INDEX `image_assetId_key`(`assetId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -102,7 +106,7 @@ CREATE TABLE `file` (
     `format` VARCHAR(191) NOT NULL,
     `resource_type` ENUM('image', 'raw', 'auto', 'video') NOT NULL,
     `fileName` VARCHAR(191) NOT NULL,
-    `type` ENUM('TICKET_ASSET', 'QA_ASSET', 'CERTIFICATE', 'OTHER') NOT NULL,
+    `type` ENUM('TICKET_ASSET', 'QA_ASSET', 'CERTIFICATE', 'DOWNLOADABLE_ASSET', 'OTHER') NOT NULL,
     `size` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `ticketMessageId` INTEGER NULL,
@@ -122,10 +126,10 @@ CREATE TABLE `post` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(191) NOT NULL,
     `url` VARCHAR(512) NOT NULL,
-    `content` TEXT NOT NULL,
-    `status` ENUM('DRAFT', 'PUBLISHED') NOT NULL DEFAULT 'DRAFT',
+    `content` LONGTEXT NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `status` ENUM('DRAFT', 'PUBLISHED') NOT NULL DEFAULT 'DRAFT',
     `imageId` INTEGER NULL,
     `authorId` INTEGER NULL,
 
@@ -164,6 +168,23 @@ CREATE TABLE `comment` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `asset` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `fileUrl` VARCHAR(191) NOT NULL,
+    `format` VARCHAR(191) NOT NULL,
+    `fileSize` INTEGER NOT NULL,
+    `downloadCount` INTEGER NOT NULL DEFAULT 0,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `status` ENUM('PUBLISHED', 'DRAFT') NOT NULL,
+
+    UNIQUE INDEX `asset_url_key`(`url`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `course` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(191) NOT NULL,
@@ -179,9 +200,10 @@ CREATE TABLE `course` (
     `price` DOUBLE NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `releaseDate` DATETIME(3) NULL,
     `categoryId` INTEGER NULL,
     `tutorId` INTEGER NULL,
-    `status` ENUM('DRAFT', 'PUBLISHED') NOT NULL,
+    `status` ENUM('DRAFT', 'PUBLISHED', 'PRESALE') NOT NULL,
 
     UNIQUE INDEX `course_url_key`(`url`),
     PRIMARY KEY (`id`)
@@ -308,6 +330,19 @@ CREATE TABLE `notifbar` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `floatingbanner` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `active` BOOLEAN NOT NULL DEFAULT false,
+    `link` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `couponId` INTEGER NULL,
+    `imageId` INTEGER NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `enrollment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `enrolledAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -376,11 +411,23 @@ CREATE TABLE `payment` (
     `status` ENUM('PENDING', 'SUCCESS', 'FAILED', 'CANCELED') NOT NULL,
     `paidAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `paymentMethod` ENUM('ZARRIN_PAL', 'MELLI', 'ADMIN', 'NO_METHOD') NOT NULL,
+    `paymentMethod` ENUM('ZARRIN_PAL', 'DIGIPAY', 'ADMIN', 'NO_METHOD') NULL,
     `walletUsed` BOOLEAN NOT NULL DEFAULT false,
     `walletUsedAmount` DOUBLE NULL,
     `couponId` INTEGER NULL,
     `userId` INTEGER NOT NULL,
+    `campaignOnGoingId` INTEGER NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Expense` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `expense` DOUBLE NOT NULL,
+    `from` DATETIME(3) NOT NULL,
+    `to` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -427,6 +474,45 @@ CREATE TABLE `overalloff` (
     `type` ENUM('FIXED_ON_CART', 'FIXED_ON_COURSE', 'PERCENT') NOT NULL,
     `from` DATETIME(3) NULL,
     `to` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `campaign` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `url` VARCHAR(191) NOT NULL,
+    `message` VARCHAR(191) NOT NULL,
+    `startAt` DATETIME(3) NOT NULL,
+    `endAt` DATETIME(3) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `messageSent` INTEGER NOT NULL,
+    `messageDelivered` INTEGER NULL,
+    `sellGoal` INTEGER NULL,
+    `couponId` INTEGER NULL,
+
+    UNIQUE INDEX `campaign_url_key`(`url`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `campaignmessage` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `smsId` INTEGER NOT NULL,
+    `smsCost` INTEGER NOT NULL,
+    `campaignId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `campaignongoing` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `startAt` DATETIME(3) NOT NULL,
+    `endAt` DATETIME(3) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -545,6 +631,7 @@ CREATE TABLE `cart` (
 
     UNIQUE INDEX `cart_authority_key`(`authority`),
     UNIQUE INDEX `cart_userId_key`(`userId`),
+    UNIQUE INDEX `cart_paymentId_key`(`paymentId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -557,6 +644,16 @@ CREATE TABLE `cartitem` (
     `courseId` INTEGER NOT NULL,
 
     UNIQUE INDEX `cartitem_courseId_cartId_key`(`courseId`, `cartId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `smsLog` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `sentAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `type` ENUM('REMIND_PENDING_ENROLLMENT') NOT NULL,
+    `enrollmentId` INTEGER NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -603,6 +700,12 @@ ALTER TABLE `image` ADD CONSTRAINT `image_galleryId_fkey` FOREIGN KEY (`galleryI
 ALTER TABLE `image` ADD CONSTRAINT `image_sliderId_fkey` FOREIGN KEY (`sliderId`) REFERENCES `slider`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `image` ADD CONSTRAINT `image_floatingBannerId_fkey` FOREIGN KEY (`floatingBannerId`) REFERENCES `floatingbanner`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `image` ADD CONSTRAINT `image_assetId_fkey` FOREIGN KEY (`assetId`) REFERENCES `asset`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `file` ADD CONSTRAINT `file_ticketMessageId_fkey` FOREIGN KEY (`ticketMessageId`) REFERENCES `ticketmessage`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -615,10 +718,10 @@ ALTER TABLE `file` ADD CONSTRAINT `file_certificateId_fkey` FOREIGN KEY (`certif
 ALTER TABLE `post` ADD CONSTRAINT `post_authorId_fkey` FOREIGN KEY (`authorId`) REFERENCES `admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `posttopostcategory` ADD CONSTRAINT `posttopostcategory_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `posttopostcategory` ADD CONSTRAINT `posttopostcategory_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `posttopostcategory` ADD CONSTRAINT `posttopostcategory_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `postcategory`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `posttopostcategory` ADD CONSTRAINT `posttopostcategory_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `postcategory`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `comment` ADD CONSTRAINT `comment_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `post`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -666,6 +769,9 @@ ALTER TABLE `review` ADD CONSTRAINT `review_userId_fkey` FOREIGN KEY (`userId`) 
 ALTER TABLE `review` ADD CONSTRAINT `review_courseId_fkey` FOREIGN KEY (`courseId`) REFERENCES `course`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `floatingbanner` ADD CONSTRAINT `floatingbanner_couponId_fkey` FOREIGN KEY (`couponId`) REFERENCES `coupon`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `enrollment` ADD CONSTRAINT `enrollment_paymentId_fkey` FOREIGN KEY (`paymentId`) REFERENCES `payment`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -693,7 +799,16 @@ ALTER TABLE `payment` ADD CONSTRAINT `payment_couponId_fkey` FOREIGN KEY (`coupo
 ALTER TABLE `payment` ADD CONSTRAINT `payment_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `payment` ADD CONSTRAINT `payment_campaignOnGoingId_fkey` FOREIGN KEY (`campaignOnGoingId`) REFERENCES `campaignongoing`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `settlement` ADD CONSTRAINT `settlement_tutorId_fkey` FOREIGN KEY (`tutorId`) REFERENCES `tutor`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `campaign` ADD CONSTRAINT `campaign_couponId_fkey` FOREIGN KEY (`couponId`) REFERENCES `coupon`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `campaignmessage` ADD CONSTRAINT `campaignmessage_campaignId_fkey` FOREIGN KEY (`campaignId`) REFERENCES `campaign`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ticket` ADD CONSTRAINT `ticket_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -751,6 +866,9 @@ ALTER TABLE `cartitem` ADD CONSTRAINT `cartitem_cartId_fkey` FOREIGN KEY (`cartI
 
 -- AddForeignKey
 ALTER TABLE `cartitem` ADD CONSTRAINT `cartitem_courseId_fkey` FOREIGN KEY (`courseId`) REFERENCES `course`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `smsLog` ADD CONSTRAINT `smsLog_enrollmentId_fkey` FOREIGN KEY (`enrollmentId`) REFERENCES `enrollment`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_includescoupons` ADD CONSTRAINT `_includescoupons_A_fkey` FOREIGN KEY (`A`) REFERENCES `coupon`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

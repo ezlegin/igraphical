@@ -1,1 +1,0 @@
-SELECT id FROM user limit 1;
