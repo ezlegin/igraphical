@@ -2,7 +2,6 @@
 
 import { getOtpByIdentifier } from "@/data/otp";
 import { database } from "@igraph/database";
-import bcrypt from "bcrypt";
 
 export const verifyOtp = async (
   otp: string,
@@ -21,7 +20,7 @@ export const verifyOtp = async (
       return { error: `Code has been expired` };
     }
 
-    const isValidOtp = await bcrypt.compare(otp, existingOtp.otpCode);
+    const isValidOtp = otp === existingOtp.otpCode;
     if (!isValidOtp) return { error: "Invalid Code" };
 
     await database.otp.delete({
