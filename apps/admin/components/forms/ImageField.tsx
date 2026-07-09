@@ -107,7 +107,7 @@ const ImageField = ({
               <FormLabel htmlFor="file-upload">
                 <Image
                   alt=""
-                  src={imagePreview || placeHolder} //todo
+                  src={imagePreview || placeHolder}
                   width={400}
                   height={400}
                   className="aspect-video w-full rounded-sm object-cover border-[1px] border-slate-400 hover:drop-shadow-md border-dashed  cursor-pointer relative "

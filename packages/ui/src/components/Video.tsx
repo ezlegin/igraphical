@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Plyr, { PlyrOptions, PlyrSource } from "plyr-react";
 import "plyr-react/plyr.css";
-import { Skeleton } from "@igraph/ui/components/ui/skeleton";
+import React from "react";
 
 interface VideoProps {
   src: string;
@@ -11,13 +10,6 @@ interface VideoProps {
 }
 
 const Video: React.FC<VideoProps> = ({ src, poster }) => {
-  const [isMounted, setIsMounted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const plyrProps: {
     source: PlyrSource;
     options: PlyrOptions;
@@ -34,7 +26,6 @@ const Video: React.FC<VideoProps> = ({ src, poster }) => {
     },
     options: {
       blankVideo: undefined,
-      iconUrl: "/avatar.svg",
       speed: {
         selected: 1,
         options: [0.75, 1, 1.25, 1.5, 1.75, 2],
@@ -57,38 +48,12 @@ const Video: React.FC<VideoProps> = ({ src, poster }) => {
   return (
     <div className="mx-auto rounded-md overflow-hidden">
       <div className="relative aspect-video bg-black">
-        {isLoading && (
-          <div className="absolute inset-0 z-10">
-            <Skeleton />
-          </div>
-        )}
-        {isMounted && (
-          <div
-            className="absolute inset-0"
-            onLoadedData={() => setIsLoading(false)}
-          >
-            <Plyr {...plyrProps} />
-          </div>
-        )}
+        <div className="absolute inset-0">
+          <Plyr {...plyrProps} />
+        </div>
       </div>
     </div>
   );
 };
 
 export default Video;
-
-// "use client";
-
-// import "plyr-react/plyr.css";
-
-// const Video = ({ src }: { src: string }) => {
-//   return (
-//     <div className="max-w-4xl mx-auto rounded-md overflow-hidden">
-//       <div className="relative aspect-video bg-black">
-//         <video src={src} controls className="aspect-video w-full" />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Video;

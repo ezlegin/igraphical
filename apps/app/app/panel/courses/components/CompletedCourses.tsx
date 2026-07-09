@@ -1,31 +1,32 @@
 import CourseRatingForm from "@/components/forms/CourseRatingForm";
-import Table from "@igraph/ui/components/Table";
-import { Button } from "@igraph/ui/components/ui/button";
-import { TableCell, TableRow } from "@igraph/ui/components/ui/table";
+import { getReviewByUserIdAndCourseId } from "@/data/review";
 import { getSessionUser } from "@/data/user";
-import { database } from "@igraph/database";
+import { loginPageRoute } from "@/middleware";
 import { placeHolder } from "@/public";
 import {
   Certificate,
   ClassRoom,
   Course,
+  database,
   Enrollment,
   Image as ImageType,
   Tutor,
 } from "@igraph/database";
-import { Download, Star } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import CardBox from "../../components/CardBox";
+import Table from "@igraph/ui/components/Table";
+import { Button } from "@igraph/ui/components/ui/button";
+import { TableCell, TableRow } from "@igraph/ui/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@igraph/ui/components/ui/tooltip";
-import { getReviewByUserIdAndCourseId } from "@/data/review";
+import { Download, Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { loginPageRoute } from "@/middleware";
+import CardBox from "../../components/CardBox";
+import SubmitNewCertificate from "../../components/SubmitNewCertificate";
 
 const CompletedCourses = async () => {
   const user = await getSessionUser();
@@ -55,7 +56,7 @@ const CompletedCourses = async () => {
   const renderRows = async (enrollment: EnrollmentType) => {
     const existingReview = await getReviewByUserIdAndCourseId(
       enrollment.userId,
-      enrollment.courseId
+      enrollment.courseId,
     );
 
     const isCertificateAllowedToDownload = !!existingReview;
@@ -83,35 +84,45 @@ const CompletedCourses = async () => {
           </Link>
         </TableCell>
         <TableCell>
-          <a
-            rel="noopener noreferrer"
-            target="_blank"
-            href={
-              isCertificateAllowedToDownload
-                ? enrollment.certificate?.url
-                : undefined
-            }
-          >
-            <Button
-              variant="link"
-              size="icon"
-              disabled={!isCertificateAllowedToDownload}
-              style={
+          {enrollment.certificate ? (
+            <a
+              rel="noopener noreferrer"
+              target="_blank"
+              href={
                 isCertificateAllowedToDownload
-                  ? undefined
-                  : { pointerEvents: "none" }
+                  ? enrollment.certificate?.url
+                  : undefined
               }
             >
-              <div className="flex flex-col items-center gap-1">
-                <Download className="scale-110" />
-                {!isCertificateAllowedToDownload && (
-                  <span className="text-xs text-destructive opacity-100">
-                    ثبت امتیاز برای دانلود مدرک الزامی است.
-                  </span>
-                )}
-              </div>
-            </Button>
-          </a>
+              <Button
+                variant="link"
+                size="icon"
+                disabled={!isCertificateAllowedToDownload}
+                style={
+                  isCertificateAllowedToDownload
+                    ? undefined
+                    : { pointerEvents: "none" }
+                }
+              >
+                <div className="flex flex-col items-center gap-1">
+                  <Download className="scale-110" />
+                  {!isCertificateAllowedToDownload && (
+                    <span className="text-xs text-destructive opacity-100">
+                      ثبت امتیاز برای دانلود مدرک الزامی است.
+                    </span>
+                  )}
+                </div>
+              </Button>
+            </a>
+          ) : (
+            <SubmitNewCertificate
+              completedAt={enrollment.completedAt}
+              duration={enrollment.course.duration}
+              enrollmentId={enrollment.id}
+              title={enrollment.course.title}
+              user={user}
+            />
+          )}
         </TableCell>
         <TableCell>
           <div className="flex justify-end">
@@ -128,7 +139,7 @@ const CompletedCourses = async () => {
                             fill="#facc15"
                             className="text-yellow-400"
                           />
-                        )
+                        ),
                       )}
                     </span>
                   </TooltipTrigger>

@@ -1,19 +1,13 @@
 "use server";
 
-import { database } from "@igraph/database";
-import {
-  generateCertificate,
-  generateUniqueSerial,
-  sendFinishCourseEmail,
-  sendFinishCourseSms,
-} from "@igraph/utils";
-import { UploadApiResponse } from "cloudinary";
-import { uploadCloudFile } from "@igraph/utils";
 import { getSessionUser } from "@/data/user";
+import { database } from "@igraph/database";
+import { sendFinishCourseEmail, sendFinishCourseSms } from "@igraph/utils";
+import { generateCertificateForUser } from "./certificate";
 
 export const createLessonProgress = async (
   lessonId: number,
-  classroomId: string
+  classroomId: string,
 ) => {
   try {
     const result = await database.$transaction(async (tx) => {
@@ -56,7 +50,7 @@ export const createLessonProgress = async (
       const totalLessons =
         existingClassroom.enrollment.course.curriculum.reduce(
           (acc, curr) => acc + curr.lessons.length,
-          0
+          0,
         );
 
       const totalCompletedLessons = await tx.lessonProgress.count({
@@ -109,8 +103,6 @@ export const createLessonProgress = async (
 
     // Certificate
     if (result.enrollment && result.isLastLesson) {
-      const serialNumber = await generateUniqueSerial();
-
       const user = await getSessionUser();
       if (!user) throw new Error("کاربر یافت نشد. لطفا مجددا وارد شوید.");
 
@@ -139,40 +131,14 @@ export const createLessonProgress = async (
       });
 
       if (!existingCertificate) {
-        const buffer = await generateCertificate(
+        await generateCertificateForUser({
+          course: {
+            completedAt: result.enrollment.completedAt || new Date(),
+            duration: result.enrollment.course.duration,
+            title: result.enrollment.course.title,
+          },
+          enrollmentId: result.enrollment.id,
           user,
-          updatedClassroom?.enrollment.course.title,
-          updatedClassroom.enrollment.course.duration,
-          updatedClassroom.enrollment.completedAt || new Date(),
-          serialNumber
-        );
-
-        const { secure_url, bytes, public_id, resource_type } =
-          (await uploadCloudFile(buffer, {
-            format: "pdf",
-            resource_type: "raw",
-            folder: "certificate",
-          })) as UploadApiResponse;
-
-        const newCertificate = await database.certificate.create({
-          data: {
-            serial: serialNumber,
-            url: secure_url,
-            enrollmentId: result.enrollment.id,
-          },
-        });
-
-        await database.file.create({
-          data: {
-            format: "pdf",
-            public_id,
-            size: bytes,
-            type: "CERTIFICATE",
-            url: secure_url,
-            resource_type,
-            fileName: serialNumber + ".pdf",
-            certificateId: newCertificate.id,
-          },
         });
 
         await sendFinishCourseSms(user.firstName, user.phone);
@@ -180,7 +146,7 @@ export const createLessonProgress = async (
         await sendFinishCourseEmail(
           user.email,
           result.enrollment.course.title,
-          user.fullName
+          user.fullName,
         );
       }
     }
