@@ -4,6 +4,7 @@ import UserBar from "@igraph/ui/components/UserBar";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { NavbarProps } from "./NavBar";
+import { Badge } from "@igraph/ui/components/ui/badge";
 
 const WideNavBar = ({ user, isThereItemsInCart }: NavbarProps) => {
   return (
@@ -11,12 +12,18 @@ const WideNavBar = ({ user, isThereItemsInCart }: NavbarProps) => {
       <Link href={"/"}>
         <IgraphLogo width={142} />
       </Link>
-      <ul className="flex gap-14 text-gray-700">
+      <ul className="flex items-center gap-14 text-gray-700">
         {menuItems.map((item, index) => (
           <li key={index}>
             <Link href={item.href}>{item.label}</Link>
           </li>
         ))}
+        <li className="relative">
+          <Link href={"/teach"}>تدریس در آی‌گرافیکال</Link>
+          <Badge className="text-[7pt] p-[1px] px-1 absolute -left-3 -top-3.5">
+            جدید
+          </Badge>{" "}
+        </li>
       </ul>
 
       <div className="flex gap-2">
@@ -45,7 +52,7 @@ export default WideNavBar;
 
 const menuItems: { label: string; href: string }[] = [
   { label: "دوره‌ها", href: "/courses" },
-  { label: "وبلاگ", href: "/blog" },
+  // { label: "وبلاگ", href: "/blog" },
   { label: "مدرسین", href: "/tutors" },
   { label: "استعلام مدرک", href: "/verify-cert" },
 ];
