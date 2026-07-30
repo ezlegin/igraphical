@@ -106,7 +106,7 @@ const CourseRatingForm = ({ userId, courseId }: Props) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    {rating && (
+                    {rating > 0 && (
                       <Textarea
                         {...field}
                         className="block w-full min-h-[100px] border rounded-md p-3 focus:border-blue-500 focus:ring-0.5 focus:ring-blue-500 focus:outline-none"
