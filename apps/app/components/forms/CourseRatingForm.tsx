@@ -73,7 +73,7 @@ const CourseRatingForm = ({ userId, courseId }: Props) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <div className="bg-secondary flex gap-2 items-center text-xs p-2 px-3 rounded-sm text-nowrap">
           <Star size={15} />
           ثبت امتیاز
@@ -116,7 +116,7 @@ const CourseRatingForm = ({ userId, courseId }: Props) => {
                           // Replace multiple consecutive spaces with a single space
                           const valueWithSingleSpaces = e.target.value.replace(
                             /\s{2,}/g,
-                            " "
+                            " ",
                           );
                           field.onChange(valueWithSingleSpaces);
                         }}
