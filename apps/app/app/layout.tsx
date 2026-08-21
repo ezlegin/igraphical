@@ -3,6 +3,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./fonts.css";
+import "./stars.scss";
 
 export default function RootLayout({
   children,
@@ -14,10 +15,11 @@ export default function RootLayout({
       style={{ fontFamily: "KalamehWebFaNum" }}
       lang="fa"
       dir="rtl"
-      className="antialiased custom-scrollbar"
+      className="antialiased custom-scrollbar dark"
     >
       <GoogleAnalytics gaId={process.env.GA_MEASUREMENT_ID!} />
       <body>
+        <div id="stars-group-1" />
         {children}
         <Toaster
           theme="system"

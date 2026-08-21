@@ -1,0 +1,52 @@
+@function generate-random-stars($screen-width, $color, $density) {
+  $h-shadow: random($screen-width);
+  $v-shadow: random($screen-width);
+  $size: random(3) - 1;
+
+  $stars: "#{$h-shadow}px #{$v-shadow}px #{$size}px #{$color}";
+
+  @for $i from 2 through $density {
+    $h-shadow: random($screen-width);
+    $v-shadow: random($screen-width);
+    $size: random(3) - 1;
+
+    $stars: "#{$stars}, #{$h-shadow}px #{$v-shadow}px #{$size}px #{$color}";
+  }
+
+  @return unquote($stars);
+}
+
+@mixin stars-content($screen-width, $color, $density, $speed, $delay) {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: generate-random-stars($screen-width, $color, $density);
+  animation-name: glowing-stars;
+  animation-duration: $speed + s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: linear;
+  animation-delay: $delay + s;
+}
+
+@keyframes glowing-stars {
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+#stars-group-1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+
+  @include stars-content(1800, rgba(255, 255, 255, 0.5), 75, 5, 0);
+}

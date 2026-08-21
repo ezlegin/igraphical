@@ -1,10 +1,8 @@
+@config "../tailwind.config.ts"
 @import "./lexical.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@config "../tailwind.config.ts"
-
-
 
 @layer base {
   * {
@@ -71,14 +69,14 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 270 22% 8%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 258 88% 67%;
+    --primary-foreground: 210 40% 98%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -123,9 +121,6 @@
   }
   p {
     line-height: 1.8 !important;
-  }
-  a {
-    @apply hover:text-blue-700;
   }
 
   .bg-gold {
