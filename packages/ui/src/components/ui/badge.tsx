@@ -3,13 +3,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@igraph/ui/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-md border px-3 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-full justify-center border px-3 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground  hover:bg-primary/80",
-        green: "border-[1px] border-green-600 bg-green-100 text-green-800",
+          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        green:
+          "border-[1px] border-green-600 bg-green-100 text-green-800 dark:text-green-300 dark:bg-green-500/15",
         red: "border-[1px] border-red-600 bg-red-100 text-red-800",
         blue: "border-[1px] border-blue-400 bg-blue-50 text-blue-800 hover:bg-blue-200",
         gray: "border-[1px] border-slate-400 bg-slate-50 text-gray-800 hover:bg-gray-200",
@@ -28,7 +29,7 @@ const badgeVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 export interface BadgeProps

@@ -69,7 +69,7 @@
   }
 
   .dark {
-    --background: 270 22% 8%;
+    --background: 270 22% 7%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
@@ -80,7 +80,7 @@
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted-foreground: 270 5% 65.1%;
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
@@ -164,7 +164,7 @@
 
   /*! CARD */
   .card {
-    @apply bg-white border border-slate-300 rounded-lg p-4;
+    @apply bg-input/30 border border-input rounded-lg p-4;
   }
   .photo-frame {
     @apply bg-slate-50 border border-dashed p-1 hover:shadow-lg hover:shadow-slate-200 transition-shadow;

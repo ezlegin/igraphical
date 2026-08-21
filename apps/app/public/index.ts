@@ -30,6 +30,7 @@ export const cart = "/cart.svg";
 export const installmentPayment = "/installment-payment.svg";
 export const digipayLogo = "/digipay-logo.png";
 export const zarrinpalLogo = "/zarrinpal-logo.png";
+export const stars = "/stars.svg";
 
 // VIDEOS
 export const video = "/video.mp4";

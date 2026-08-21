@@ -12,8 +12,9 @@ export default async function HomeLayout({
 }) {
   return (
     <div
-      className={`antialiased max-w-screen-xl mx-auto p-4 grid grid-rows-[auto_1fr_auto] min-h-screen`}
+      className={`antialiased max-w-screen-xl mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen`}
     >
+      <div className="bg-primary h-28 w-[500px] opacity-10 rounded-full blur-3xl mx-auto -translate-y-12" />
       <div>
         <NotifBar />
         <NavBar />

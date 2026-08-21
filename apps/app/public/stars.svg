@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 171.4 30.9">
+  <!-- Generator: Adobe Illustrator 29.5.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 141)  -->
+  <defs>
+    <style>
+      .st0, .st1 {
+        fill: #fff;
+      }
+
+      .st2 {
+        fill: #ffb617;
+      }
+
+      .st1 {
+        isolation: isolate;
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="st2" width="30.9" height="30.9" rx="8.6" ry="8.6"/>
+    <polygon class="st0" points="15.5 5.2 17.7 12.3 25.2 12.3 19.2 16.7 21.5 23.7 15.5 19.4 9.5 23.7 11.7 16.7 5.7 12.3 13.2 12.3 15.5 5.2"/>
+  </g>
+  <g>
+    <rect class="st2" x="35.1" width="30.9" height="30.9" rx="8.6" ry="8.6"/>
+    <polygon class="st0" points="50.6 5.2 52.9 12.3 60.3 12.3 54.3 16.7 56.6 23.7 50.6 19.4 44.6 23.7 46.9 16.7 40.9 12.3 48.3 12.3 50.6 5.2"/>
+  </g>
+  <g>
+    <rect class="st2" x="70.2" width="30.9" height="30.9" rx="8.6" ry="8.6"/>
+    <polygon class="st0" points="85.7 5.2 88 12.3 95.4 12.3 89.4 16.7 91.7 23.7 85.7 19.4 79.7 23.7 82 16.7 76 12.3 83.4 12.3 85.7 5.2"/>
+  </g>
+  <g>
+    <rect class="st2" x="105.4" width="30.9" height="30.9" rx="8.6" ry="8.6"/>
+    <polygon class="st0" points="120.8 5.2 123.1 12.3 130.5 12.3 124.5 16.7 126.8 23.7 120.8 19.4 114.8 23.7 117.1 16.7 111.1 12.3 118.5 12.3 120.8 5.2"/>
+  </g>
+  <g>
+    <rect class="st1" x="140.5" width="30.9" height="30.9" rx="8.6" ry="8.6"/>
+    <path class="st2" d="M164.2.1C163.7,0,163.3,0,162.8,0h-13.7C144.4,0,140.5,3.9,140.5,8.6v13.7c0,4.7,3.9,8.6,8.6,8.6h13.7c.5,0,.9,0,1.4-.1V.1Z"/>
+    <polygon class="st0" points="155.9 5.2 158.2 12.3 165.6 12.3 159.6 16.7 161.9 23.7 155.9 19.4 149.9 23.7 152.2 16.7 146.2 12.3 153.6 12.3 155.9 5.2"/>
+  </g>
+</svg>
