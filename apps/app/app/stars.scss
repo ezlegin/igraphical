@@ -32,13 +32,13 @@
 
 @keyframes glowing-stars {
   0% {
-    opacity: 0.4;
+    opacity: 0.2;
   }
   50% {
     opacity: 0.95;
   }
   100% {
-    opacity: 0.4;
+    opacity: 0.2;
   }
 }
 
@@ -48,5 +48,5 @@
   left: 0;
   z-index: 0;
 
-  @include stars-content(1800, rgba(255, 255, 255, 0.5), 75, 5, 0);
+  @include stars-content(1800, rgba(255, 255, 255, 0.5), 100, 5, 0);
 }

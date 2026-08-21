@@ -2,7 +2,6 @@ import FloatingBanner from "@/components/FloatingBanner";
 import Footer from "@/components/Footer";
 import MobileNavbar from "@/components/MobileNavbar";
 import NavBar from "@/components/NavBar";
-import DecorativeImage from "@igraph/ui/components/DecorativeImage";
 import NotifBar from "@igraph/ui/components/NotifBar";
 
 export default async function HomeLayout({
@@ -20,7 +19,6 @@ export default async function HomeLayout({
         <NavBar />
       </div>
       <main className="relative">
-        <DecorativeImage />
         {children}
         <FloatingBanner />
         <MobileNavbar />

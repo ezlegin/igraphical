@@ -71,7 +71,7 @@
   .dark {
     --background: 270 22% 7%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 266 15% 8.5%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
@@ -86,7 +86,7 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --input: 266.2 10% 16%;
     --ring: 224.3 76.3% 48%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -97,7 +97,7 @@
 
   /*! ------------- GENERAL ------------- */
   html {
-    @apply overflow-y-scroll scroll-smooth bg-[#f9f9f9];
+    @apply overflow-y-scroll scroll-smooth;
   }
 
   /*! TEXTS */

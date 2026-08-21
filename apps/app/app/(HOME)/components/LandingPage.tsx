@@ -4,6 +4,7 @@ import { database } from "@igraph/database";
 import SocialsIcon from "@igraph/ui/components/SocialsIcon";
 import { Badge } from "@igraph/ui/components/ui/badge";
 import { Button } from "@igraph/ui/components/ui/button";
+import { MousePointer2, Pipette, Type, Brush } from "lucide-react";
 import Image from "next/image";
 
 const LandingPage = async () => {
@@ -13,8 +14,21 @@ const LandingPage = async () => {
   });
 
   return (
-    <div className="space-y-10 px-4">
+    <div className="py-14 px-4 relative">
       <Slider type="MAIN" sliders={sliders} />
+
+      <div className="card p-2 flex justify-center items-center absolute left-10 top-10">
+        <MousePointer2 size={20} />
+      </div>
+      <div className="card p-2 flex justify-center items-center absolute right-20 top-16">
+        <Pipette size={20} />
+      </div>
+      <div className="card p-2 absolute right-28 bottom-28 mt-60">
+        <Type size={20} />
+      </div>
+      <div className="card p-2 absolute left-32 bottom-32 mt-60">
+        <Brush size={20} />
+      </div>
 
       <div className="flex h-full space-y-6 flex-col items-center">
         <div className="text-center flex flex-col gap-6 items-center z-10">
@@ -40,7 +54,7 @@ const LandingPage = async () => {
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span>میانگین امتیاز: 4.8/5</span>
+            <span>میانگین امتیاز: 4.9/5</span>
             <Image src={stars} width={120} height={120} alt="stars" />
           </div>
 
@@ -57,22 +71,3 @@ const LandingPage = async () => {
 };
 
 export default LandingPage;
-
-{
-  /* <div className="text-muted-foreground absolute w-full max-w-lg  hidden md:block">
-          <div>
-            <div className="card p-2 flex justify-center items-center absolute left-0 top-20">
-              <MousePointer2 size={20} />
-            </div>
-            <div className="card p-2 flex justify-center items-center absolute right-0 top-24">
-              <Pipette size={20} />
-            </div>
-          </div>
-          <div className="card p-2 absolute right-10 top-0 mt-60">
-            <Type size={20} />
-          </div>
-          <div className="card p-2 absolute left-10 top-0 mt-60">
-            <Brush size={20} />
-          </div>
-        </div> */
-}
