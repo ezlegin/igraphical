@@ -6,6 +6,7 @@ import LastCourses from "./components/LastCourses";
 import StudentReviews from "./components/StudentReviews";
 import WelcomeSection from "./components/WelcomeSection";
 import WhereToStartSeciton from "./components/WhereToStartSeciton";
+import SocialProof from "./components/SocialProof";
 
 interface Props {
   searchParams: Promise<{ p: string }>;
@@ -34,9 +35,12 @@ const page = async ({ searchParams }: Props) => {
 
   return (
     <div className="space-y-28 md:space-y-52 mb-20">
-      <LandingPage />
+      <div className="space-y-20">
+        <LandingPage />
+      </div>
 
       <WhereToStartSeciton />
+      <SocialProof />
 
       <LastCourses />
 

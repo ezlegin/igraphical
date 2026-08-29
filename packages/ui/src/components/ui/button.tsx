@@ -4,12 +4,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@igraph/ui/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex rounded-full select-none items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex rounded-full hover:-translate-y-px transition-all duration-300 select-none items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "bg-gradient-to-br border border-white/15 from-primary to-primary/70 text-primary-foreground shadow hover:bg-primary/90 active:translate-y-0 active:shadow-sm",
         dark: "bg-slate-800 text-primary-foreground shadow hover:bg-slate-900",
         gold: "bg-slate-800 text-primary-foreground shadow hover:bg-slate-900 bg-gold",
         destructive:
@@ -19,7 +19,7 @@ const buttonVariants = cva(
         lightGreen: "bg-green-200 text-green-800 shadow-sm hover:bg-green-300",
         lightBlue: "bg-primary/20 text-primary shadow-sm hover:bg-primary/30",
         outline:
-          "border bg-background shadow-xs hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "border bg-background shadow-xs dark:hover:shadow-lg dark:hover:shadow-primary-20 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary",
         ghost: "hover:bg-accent hover:text-accent-foreground",

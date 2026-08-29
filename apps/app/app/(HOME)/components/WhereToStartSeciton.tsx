@@ -3,13 +3,14 @@ import { igraphLogoLayDown, userTall } from "@/public";
 import { BadgeCheck, PartyPopper, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Card } from "@igraph/ui/components/ui/card";
 
 const WhereToStartSeciton = () => {
   return (
     <div className="relative">
       <div className="bg-primary size-[400px] scale-x-[250%] opacity-90 rounded-full blur-3xl mx-auto -translate-y-10 absolute top-0 right-1/2 translate-x-1/2" />
 
-      <div className="card bg-card p-0 w-full flex flex-wrap md:flex-nowrap justify-center md:gap-20 overflow-visible relative sm:px-10">
+      <Card className="p-0 w-full flex flex-wrap md:flex-nowrap justify-center md:gap-20 overflow-visible relative sm:px-10 bg-[radial-gradient(circle_at_50%_0%,rgba(120,90,180,0.08),transparent_48%),linear-gradient(180deg,#16141d_0%,#0c0b11_100%)]">
         <Image
           alt=""
           src={igraphLogoLayDown}
@@ -75,7 +76,7 @@ const WhereToStartSeciton = () => {
             </Link>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

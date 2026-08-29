@@ -35,7 +35,7 @@ const UserBar = ({ user }: Props) => {
         <Button variant={"outline"}>
           <Avatar src={user?.image?.url} size={26} />
           {user?.fullName}
-          <ChevronDown className="text-slate-500" />
+          <ChevronDown className="text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
 
@@ -45,7 +45,7 @@ const UserBar = ({ user }: Props) => {
             <div key={index}>
               <Link href={item.href}>
                 <DropdownMenuItem className="cursor-pointer py-2">
-                  <item.icon className="text-primary/80" />
+                  <item.icon className="text-muted-foreground" />
                   <span>{item.label}</span>
                 </DropdownMenuItem>
               </Link>
@@ -57,7 +57,7 @@ const UserBar = ({ user }: Props) => {
 
         <DropdownMenuItem
           onClick={() => signOut()}
-          className="text-slate-500 cursor-pointer"
+          className="text-muted-foreground cursor-pointer"
         >
           <LogOut className="text-destructive" />
           <span>خروج</span>

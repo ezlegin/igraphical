@@ -14,7 +14,7 @@ const LandingPage = async () => {
   });
 
   return (
-    <div className="py-14 px-4 relative">
+    <div className="py-16 px-4 relative">
       <Slider type="MAIN" sliders={sliders} />
 
       <div className="card p-2 flex justify-center items-center absolute left-10 top-10">
@@ -55,7 +55,7 @@ const LandingPage = async () => {
 
           <div className="flex items-center gap-2 text-xs">
             <span>میانگین امتیاز: 4.9/5</span>
-            <Image src={stars} width={120} height={120} alt="stars" />
+            <Image src={stars} width={110} height={110} alt="stars" />
           </div>
 
           <div className="flex flex-col items-center gap-4">
