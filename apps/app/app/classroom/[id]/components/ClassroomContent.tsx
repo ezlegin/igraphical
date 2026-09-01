@@ -65,7 +65,7 @@ interface Props {
 
 const ClassroomContent = ({ classroom }: Props) => {
   const lessons = classroom.enrollment.course.curriculum.flatMap((curr) =>
-    curr.lessons.map((less) => less)
+    curr.lessons.map((less) => less),
   );
 
   const [currentLesson, setCurrentLesson] = useState(() => {
@@ -87,7 +87,7 @@ const ClassroomContent = ({ classroom }: Props) => {
 
   const totalLessonsCount = classroom.enrollment.course.curriculum.reduce(
     (acc, curr) => acc + curr.lessons.length,
-    0
+    0,
   );
   const completedLessonsCount = classroom.enrollment.lessonProgress.length;
   const isLastLesson = totalLessonsCount - completedLessonsCount === 1;
@@ -96,8 +96,8 @@ const ClassroomContent = ({ classroom }: Props) => {
     <div className="grid grid-cols-12 gap-3 w-full">
       <div className="col-span-12 md:col-span-5 lg:col-span-6 xl:col-span-4 space-y-5">
         <Badge
-          className="w-full p-2 gap-3 text-right justify-start text-sm hover:bg-blue-50"
-          variant={"blue"}
+          className="w-full p-2 gap-3 text-right justify-start text-sm rounded-md hover:bg-primary/10"
+          variant={"primary"}
         >
           <Image
             alt="Pic"

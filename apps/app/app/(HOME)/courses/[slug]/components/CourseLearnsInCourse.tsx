@@ -13,7 +13,10 @@ const CourseLearnsInCourse = ({
       </h2>
       <ul className="md:columns-2  space-y-2 mr-3">
         {learnsInCourse.map((item, index) => (
-          <li key={index} className="flex items-center gap-2 text-slate-600">
+          <li
+            key={index}
+            className="flex items-center gap-2 text-muted-foreground"
+          >
             <Check size={18} className="text-green-500" />
             {item}
           </li>

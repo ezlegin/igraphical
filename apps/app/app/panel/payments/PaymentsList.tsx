@@ -92,7 +92,7 @@ const PaymentsList = ({ payments }: Props) => {
             <DialogTrigger>
               <Eye
                 size={33}
-                className="text-gray-500 group-hover:text-primary scale-90 bg-slate-100 p-2 rounded-full"
+                className="text-muted-foreground group-hover:text-primary scale-90 bg-secondary p-2 rounded-full"
               />
             </DialogTrigger>
             <DialogContent>
@@ -102,7 +102,7 @@ const PaymentsList = ({ payments }: Props) => {
               {courses.map((course, index) => (
                 <div
                   key={index}
-                  className="bg-slate-100 p-2 rounded-sm flex items-center gap-2 mb-3"
+                  className="bg-secondary p-2 rounded-sm flex items-center gap-2 mb-3"
                 >
                   <Image
                     alt=""

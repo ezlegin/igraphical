@@ -286,7 +286,7 @@ const ConfirmField = ({
       onClick={() => sendConfirmOtp(identifier)}
       size={"sm"}
       type="button"
-      variant={"lightBlue"}
+      variant={"lightPrimary"}
     >
       <Loader loading={sendOtpLoading} />
       احراز هویت

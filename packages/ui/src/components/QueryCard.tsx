@@ -36,11 +36,11 @@ const QueryCard: React.FC<QueryCardProps> = ({
       </CardHeader>
 
       <CardContent>
-        <ul className="space-y-3 text-sm text-slate-500 mr-5">
+        <ul className="space-y-3 text-sm text-muted-foreground mr-5">
           {options.map((option) => {
             const isActive = option.value === currentQuery;
             const params = new URLSearchParams(
-              Array.from(searchParams.entries())
+              Array.from(searchParams.entries()),
             );
 
             if (isActive) {
@@ -54,7 +54,9 @@ const QueryCard: React.FC<QueryCardProps> = ({
                 <Link
                   href={`?${params.toString()}`}
                   className={`${
-                    isActive ? "font-bold text-blue-500" : "text-gray-600"
+                    isActive
+                      ? "font-bold text-primary"
+                      : "text-muted-foreground"
                   }`}
                 >
                   {option.label}

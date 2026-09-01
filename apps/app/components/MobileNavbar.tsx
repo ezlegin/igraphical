@@ -18,13 +18,13 @@ export default function MobileNavbar() {
 
   return (
     !hideMobileNavbar && (
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-md md:hidden z-50">
+      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t shadow-md md:hidden z-50">
         <ul className="flex justify-around items-center h-14">
           {rootItems.map(({ href, label, icon: Icon }) => (
             <li key={href} className="w-1/5">
               <Link
                 href={href}
-                className="flex flex-col gap-0.5 items-center text-slate-500 hover:text-primary"
+                className="flex flex-col gap-0.5 items-center text-muted-foreground hover:text-primary"
               >
                 <Icon size={20} />
                 <span className="text-[11px]">{label}</span>

@@ -24,13 +24,13 @@ const CurriculumsList = ({
   currentLesson,
 }: Props) => {
   const [activeSection, setActiveSection] = useState(
-    curriculums[0]?.sectionTitle || ""
+    curriculums[0]?.sectionTitle || "",
   );
 
   useEffect(() => {
     if (currentLesson) {
       const currentCurriculum = curriculums.find((curriculum) =>
-        curriculum.lessons.some((lesson) => lesson.id === currentLesson.id)
+        curriculum.lessons.some((lesson) => lesson.id === currentLesson.id),
       );
       if (currentCurriculum) {
         setActiveSection(currentCurriculum.sectionTitle);
@@ -41,7 +41,7 @@ const CurriculumsList = ({
   function formatSectionDuration(lessons: Lesson[]): string {
     const duration = lessons.reduce(
       (acc, curr) => acc + (curr.duration || 0),
-      0
+      0,
     );
     return duration === 0 ? "" : `${duration}m`;
   }
@@ -65,33 +65,39 @@ const CurriculumsList = ({
               <AccordionTrigger className="font-semibold flex items-center justify-between text-xs">
                 {index + 1}. {curriculum.sectionTitle}
                 <div className="flex gap-2 mr-auto ml-4">
-                  <span className="text-xs font-medium space-x-3 text-slate-500 flex gap-1 items-center">
+                  <span className="text-xs font-medium space-x-3 text-muted-foreground flex gap-1 items-center">
                     {formatSectionDuration(curriculum.lessons)}
                   </span>
                 </div>
               </AccordionTrigger>
 
               <AccordionContent>
-                <ul className="text-slate-500 border-t pt-2">
+                <ul className="text-muted-foreground border-t pt-2">
                   {curriculum.lessons.map((lesson, idx) => (
                     <li
                       key={idx}
-                      className={`flex justify-between items-center text-[13px] cursor-pointer hover:bg-slate-50 py-2 px-1.5 rounded-sm ${
-                        currentLesson.id === lesson.id && "bg-primary/10"
+                      className={`flex justify-between items-center text-[13px] cursor-pointer hover:bg-secondary py-2 px-1.5 rounded-sm ${
+                        currentLesson.id === lesson.id && "bg-secondary"
                       }`}
                       onClick={() => onLessonSelect(lesson)}
                     >
                       <div className="flex items-center gap-2">
                         {lesson.type === "VIDEO" ? (
-                          <div className="bg-primary p-1.5 rounded-full border-2 border-blue-200">
-                            <Video size={14} className="text-white" />
+                          <div className="bg-primary p-1.5 rounded-full ">
+                            <Video
+                              size={14}
+                              className="text-primary-foreground"
+                            />
                           </div>
                         ) : lesson.type === "ASSET" ? (
-                          <div className="bg-orange-400 p-1.5 rounded-full border-2 border-orange-200">
-                            <Download size={14} className="text-white" />
+                          <div className="bg-orange-400 p-1.5 rounded-full">
+                            <Download
+                              size={14}
+                              className="text-primary-foreground"
+                            />
                           </div>
                         ) : (
-                          <div className="bg-slate-100 p-1.5 rounded-full border-2 border-slate-100">
+                          <div className="bg-secondary p-1.5 rounded-full">
                             <File size={14} />
                           </div>
                         )}

@@ -45,7 +45,7 @@ const Page = async ({ searchParams }: Props) => {
   //* QUERIES -------------------------------
 
   const cousreCategories = (await database.courseCategory.findMany()).map(
-    (item) => ({ label: item.name, value: item.url })
+    (item) => ({ label: item.name, value: item.url }),
   );
 
   const tutors = (await database.tutor.findMany()).map((item) => ({

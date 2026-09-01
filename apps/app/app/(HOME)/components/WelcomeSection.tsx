@@ -1,4 +1,4 @@
-import { student } from "@/public";
+import { igraphStudent } from "@/public";
 import SocialsIcon from "@igraph/ui/components/SocialsIcon";
 import { Button } from "@igraph/ui/components/ui/button";
 import { CircleCheckBig } from "lucide-react";
@@ -14,7 +14,7 @@ const WelcomeSection = () => {
             🎨 به مدرسه هنر <span className="text-primary">آی‌گرافیکال</span>{" "}
             خوش آمدید!
           </h2>
-          <pre>{text}</pre>
+          <p className="text-muted-foreground">{text}</p>
         </div>
 
         <div className="space-y-2">
@@ -37,7 +37,7 @@ const WelcomeSection = () => {
         </div>
       </div>
 
-      <Image alt="Student" src={student} width={380} height={380} />
+      <Image alt="Student" src={igraphStudent} width={425} height={425} />
     </div>
   );
 };

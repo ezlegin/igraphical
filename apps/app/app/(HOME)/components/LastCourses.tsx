@@ -40,16 +40,14 @@ const LastCourses = async () => {
         </div>
 
         <Link href={"/courses"}>
-          <Button className="border-primary/40 border" variant={"lightBlue"}>
-            همه دوره‌ها
-          </Button>
+          <Button variant={"lightPrimary"}>همه دوره‌ها</Button>
         </Link>
       </div>
 
       <Tabs defaultValue="all" className="space-y-6" dir="rtl">
         <TabsList className="gap-2 bg-transparent flex-wrap h-full">
           <TabsTrigger
-            className="rounded-full px-5 data-[state=active]:bg-primary data-[state=active]:text-white"
+            className="rounded-full px-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             value="all"
           >
             همه دوره‌ها
@@ -58,7 +56,7 @@ const LastCourses = async () => {
           {courseCategories.map((category) => (
             <TabsTrigger
               key={category.id}
-              className="rounded-full px-5"
+              className="rounded-full px-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               value={category.url}
             >
               {category.name}

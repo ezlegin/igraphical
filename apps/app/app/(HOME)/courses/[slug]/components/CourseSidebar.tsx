@@ -37,7 +37,7 @@ const CourseSidebar = async ({ course }: Props) => {
   const userId = (await getSessionUser())?.id;
   const enrollment = await getEnrollmentByUserIdAndCourseId(
     userId || 0,
-    course.id
+    course.id,
   );
 
   const isUserEnrolled = !!enrollment;
@@ -47,7 +47,7 @@ const CourseSidebar = async ({ course }: Props) => {
   const seasons = course.curriculum.length;
   const lessons = course.curriculum.reduce(
     (acc, curr) => acc + curr.lessons.filter((l) => l.type === "VIDEO").length,
-    0
+    0,
   );
 
   const courseIncludes = [
@@ -67,7 +67,7 @@ const CourseSidebar = async ({ course }: Props) => {
     : Boolean(
         await database.cartItem.findFirst({
           where: { courseId: course.id, cart: { userId } },
-        })
+        }),
       );
 
   const isFree = course.price === 0;

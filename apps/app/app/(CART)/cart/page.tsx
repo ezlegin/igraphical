@@ -38,7 +38,7 @@ const page = async () => {
         <Image alt="" src={cartPic} width={500} height={500} />
         <div className="text-center mb-5 space-y-2">
           <h1 className="text-4xl">فعلا که خالیه!</h1>
-          <p className="text-slate-500">
+          <p className="text-muted-foreground">
             برای مشاهده دوره ها می توانید به لیست دوره ها مراجعه کنید:
           </p>
         </div>

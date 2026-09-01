@@ -16,6 +16,7 @@ export const bgPattern = "/bg-pattern.png";
 
 // PHOTOS
 export const student = "/student.png";
+export const igraphStudent = "/igraph-student.png";
 export const studentProfile1 = "/students/student-profile-1.webp";
 export const studentProfile2 = "/students/student-profile-2.webp";
 export const studentProfile3 = "/students/student-profile-3.webp";

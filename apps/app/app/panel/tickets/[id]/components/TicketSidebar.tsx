@@ -97,14 +97,16 @@ const TicketSidebar = ({ ticket }: Props) => {
               </Button>
             </AlertDialogTrigger>
 
-            <AlertDialogContent dir="rtl">
+            <AlertDialogContent className="">
               <AlertDialogHeader>
-                <AlertDialogTitle>مطمئن هستید؟</AlertDialogTitle>
-                <AlertDialogDescription>
+                <AlertDialogTitle className="text-right">
+                  مطمئن هستید؟
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-right">
                   آیا مطمئن هستید که این تیکت را به عنوان حل‌شده می‌بندید؟
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <AlertDialogFooter className="gap-0 sm:gap-2">
+              <AlertDialogFooter className="gap-0 sm:gap-2 ">
                 <AlertDialogCancel>بازگشت</AlertDialogCancel>
                 <AlertDialogAction onClick={onCloseTicket}>
                   بله، بستن تیکت

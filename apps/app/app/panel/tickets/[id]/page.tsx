@@ -46,7 +46,7 @@ const page = async ({ params }: Props) => {
           <TicketChat messages={ticket?.messages} />
         </div>
 
-        <div className="col-span-8  lg:col-span-3 xl:col-span-2 text-gray-500 text-sm">
+        <div className="col-span-8  lg:col-span-3 xl:col-span-2 text-muted-foreground text-sm">
           <TicketSidebar ticket={ticket} />
         </div>
       </div>

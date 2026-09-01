@@ -16,6 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@igraph/ui/components/ui/sidebar";
+import { cn } from "@igraph/utils";
 import {
   CreditCard,
   Headset,
@@ -42,10 +43,7 @@ export function SideBar({ user }: Props) {
   const pathName = usePathname();
 
   return (
-    <Sidebar
-      side="right"
-      className="p-2 border-dashed border-gray-300 bg-background"
-    >
+    <Sidebar side="right" className="p-2 border-dashed border bg-background">
       <SidebarHeader className="p-4 space-y-8">
         <Link href={"/"}>
           <IgraphLogo />
@@ -55,13 +53,17 @@ export function SideBar({ user }: Props) {
           <div className="flex gap-2 items-center">
             <Avatar src={user.image?.url} />
             <div className="flex flex-col">
-              <span className="font-medium text-gray-600">{user.fullName}</span>
-              <span className="text-xs text-gray-400">{user.phone}</span>
+              <span className="font-medium text-primary-foreground">
+                {user.fullName}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {user.phone}
+              </span>
             </div>
           </div>
 
           <Link href={"/panel/profile"} className="p-1">
-            <Pencil size={14} className="text-gray-400" />
+            <Pencil size={14} className="text-muted-foreground" />
           </Link>
         </div>
       </SidebarHeader>
@@ -76,7 +78,12 @@ export function SideBar({ user }: Props) {
                   <SidebarMenuButton size={"lg"} asChild>
                     <Link
                       href={item.href}
-                      className={` ${pathName === item.href ? "bg-slate-100 text-primary" : "hover:bg-slate-100/70"}`}
+                      className={cn(
+                        pathName === item.href
+                          ? "bg-muted text-primary border"
+                          : "hover:border-border",
+                        "border border-transparent transition-colors",
+                      )}
                     >
                       <item.icon />
                       <span>{item.title}</span>

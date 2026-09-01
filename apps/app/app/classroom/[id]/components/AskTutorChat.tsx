@@ -30,7 +30,7 @@ const AskTutorChat = ({ messages, tutor, user }: Props) => {
         <div key={index} className="space-y-3 text-sm">
           <div
             className={`card group relative ${
-              message?.senderType === "USER" && "bg-slate-100"
+              message?.senderType === "USER" && "bg-card"
             }`}
           >
             <div className="w-full space-y-3">
@@ -47,7 +47,7 @@ const AskTutorChat = ({ messages, tutor, user }: Props) => {
                       ? tutor?.displayName
                       : user?.fullName}
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-muted-foreground">
                     {formatJalaliDate(message?.createdAt, {
                       useMonthName: false,
                       withTime: true,
@@ -60,17 +60,17 @@ const AskTutorChat = ({ messages, tutor, user }: Props) => {
 
             {message?.attachment && (
               <div className="space-y-2">
-                <hr className="border-dashed border-slate-300" />
+                <hr className="border-dashed border" />
                 <Link
                   target="_blank"
                   href={message.attachment.url}
-                  className="flex justify-end gap-2 items-center text-nowrap text-xs text-gray-500"
+                  className="flex justify-end gap-2 items-center text-nowrap text-xs text-muted-foreground"
                 >
                   <span title={message.attachment.fileName}>
                     {truncateFileName(message.attachment.fileName, 30)}
                   </span>
                   <Button
-                    variant={"lightBlue"}
+                    variant={"lightPrimary"}
                     size={"icon"}
                     className="h-8 w-8"
                     type="button"

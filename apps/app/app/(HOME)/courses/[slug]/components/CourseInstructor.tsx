@@ -26,14 +26,16 @@ const CourseTutor = ({ tutor }: Props) => {
             className="w-60 h-7w-60 object-cover"
           />
 
-          <div className="mt-14 text-slate-500 space-y-5 ">
+          <div className="mt-14 text-muted-foreground space-y-5 ">
             <div>
-              <h3 className="text-black mb-1 text-2xl">
+              <h3 className="text-primary-foreground mb-1 text-2xl">
                 <Link href={`/tutors/${tutor.slug}`}>{tutor.displayName}</Link>
               </h3>
               <div className="flex gap-2 items-stretch">
-                <div className="w-[2px] bg-slate-300" />
-                <pre className="text-gray-400 text-sm">{tutor.titles}</pre>
+                <div className="w-[2px] bg-muted-foreground" />
+                <pre className="text-muted-foreground text-sm">
+                  {tutor.titles}
+                </pre>
               </div>
             </div>
 

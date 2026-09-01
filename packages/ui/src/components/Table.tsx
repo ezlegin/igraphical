@@ -20,7 +20,7 @@ const Table = ({ columns, data, renderRows, noDataMessage }: Props) => {
     <>
       <MyTable>
         <TableHeader>
-          <TableRow className="text-gray-500 text-sm text-left bg-slate-50">
+          <TableRow className="text-muted-foreground text-sm text-left bg-card">
             {columns.map((column, index) => (
               <TableHead
                 key={index}
@@ -38,8 +38,12 @@ const Table = ({ columns, data, renderRows, noDataMessage }: Props) => {
       </MyTable>
 
       {data.length < 1 && (
-        <div className="py-20 text-gray-500 flex flex-col gap-3 justify-center items-center text-sm">
-          <Frown size={80} className="text-gray-400" strokeWidth={1.5} />
+        <div className="py-20 text-muted-foreground flex flex-col gap-3 justify-center items-center text-sm">
+          <Frown
+            size={80}
+            className="text-muted-foreground"
+            strokeWidth={1.5}
+          />
           {noDataMessage}
         </div>
       )}

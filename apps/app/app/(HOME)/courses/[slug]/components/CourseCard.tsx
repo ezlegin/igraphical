@@ -48,7 +48,7 @@ const CourseCard = ({ course }: Props) => {
         </CardHeader>
 
         <CardContent className="px-3 space-y-5">
-          <div className="bg-slate-100 py-1.5 px-2.5 rounded-sm flex justify-between items-center text-xs font-medium text-slate-500">
+          <div className="bg-secondary py-1.5 px-2.5 rounded-sm flex justify-between items-center text-xs font-medium text-muted-foreground">
             <p className="flex items-center gap-1 tracking-wider">
               <SquareMenu size={15} />
               {course.curriculum.length} فصل
@@ -56,14 +56,14 @@ const CourseCard = ({ course }: Props) => {
             <p className="flex items-center gap-1 tracking-wider">
               {course.curriculum.reduce(
                 (acc, curr) => acc + curr.lessons.length,
-                0
+                0,
               )}{" "}
               درس
               <TvMinimalPlay size={15} />
             </p>
           </div>
           <CardTitle className="text-base font-medium">
-            <span className="flex items-center gap-1 tracking-wider text-slate-500 text-xs">
+            <span className="flex items-center gap-1 tracking-wider text-muted-foreground text-xs">
               <Star size={14} className="text-orange-400" />
               {calculateCourseRate(course.review)}
             </span>
@@ -80,7 +80,7 @@ const CourseCard = ({ course }: Props) => {
             <Button
               variant={"secondary"}
               size={"icon"}
-              className="h-7 w-7 group-hover:bg-slate-800 group-hover:text-white"
+              className="h-7 w-7 group-hover:bg-slate-800 group-hover:text-primary-foreground"
             >
               <ChevronLeft size={20} />
             </Button>

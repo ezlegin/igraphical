@@ -34,7 +34,7 @@ const CheckoutInfo = ({
       </div>
 
       {discountAmount > 0 && (
-        <div className="flex text-nowrap items-center gap-2 text-sm text-slate-400">
+        <div className="flex text-nowrap items-center gap-2 text-sm text-muted-foreground">
           <span>تخفیف ثابت</span>
           <div className="w-full">
             <Separator />
@@ -47,7 +47,7 @@ const CheckoutInfo = ({
       )}
 
       {couponAmount > 0 && (
-        <div className="flex text-nowrap items-center gap-2 text-sm text-slate-400">
+        <div className="flex text-nowrap items-center gap-2 text-sm text-muted-foreground">
           <span>کسر کد تخفیف</span>
           <div className="w-full">
             <Separator />
@@ -60,7 +60,7 @@ const CheckoutInfo = ({
       )}
 
       {usedWalletAmount > 0 && (
-        <div className="flex text-nowrap items-center gap-2 text-sm text-slate-400">
+        <div className="flex text-nowrap items-center gap-2 text-sm text-muted-foreground">
           <span>کسر کیف پول</span>
           <div className="w-full">
             <Separator />
@@ -75,7 +75,7 @@ const CheckoutInfo = ({
       <div className="space-y-1 text-primary pt-3 font-semibold">
         <Badge
           variant={"blue"}
-          className="flex p-2 py-2.5 text-nowrap items-center gap-2 text-sm"
+          className="flex p-2 py-2.5 rounded-md text-nowrap items-center gap-2 text-sm"
         >
           <span>قابل پرداخت</span>
           <div className="w-full"></div>

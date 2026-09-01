@@ -27,7 +27,7 @@ const NavBar = async () => {
         <Link href={"/"}>
           <IgraphLogoSquare size={40} />
         </Link>
-        <ul className="items-center text-sm gap-14 text-muted-foreground hidden md:flex">
+        <ul className="items-center text-sm gap-14 text-muted-foreground hidden md:flex pr-10">
           {menuItems.map((item, index) => (
             <li key={index}>
               <Link href={item.href}>{item.label}</Link>

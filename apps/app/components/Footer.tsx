@@ -17,7 +17,7 @@ const Footer = () => {
             {menuItems.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="hover:text-black text-sm">
-                  <Button className="text-slate-500" variant={"ghost"}>
+                  <Button className="text-muted-foreground" variant={"ghost"}>
                     {item.label}
                   </Button>
                 </Link>
@@ -29,7 +29,7 @@ const Footer = () => {
         </div>
 
         <a
-          className="w-[90px] h-[120px] rounded-sm overflow-hidden bg-slate-50"
+          className="w-[90px] h-[120px] rounded-sm overflow-hidden bg-card"
           referrerPolicy="origin"
           target="_blank"
           href="https://trustseal.enamad.ir/?id=214895&Code=1Wgxc21JlxfhD1Coppnv"
@@ -44,7 +44,7 @@ const Footer = () => {
         </a>
       </div>
 
-      <div className="text-xs md:text-sm md:flex-row flex-col items-center gap-1 text-gray-500 pt-3  flex justify-between">
+      <div className="text-xs md:text-sm md:flex-row flex-col items-center gap-1 text-muted-foreground pt-3  flex justify-between">
         <p>
           مطالعه{" "}
           <Link

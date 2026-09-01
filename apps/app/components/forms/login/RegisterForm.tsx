@@ -9,6 +9,7 @@ import {
 } from "@/lib/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Loader from "@igraph/ui/components/Loader";
+import { Badge } from "@igraph/ui/components/ui/badge";
 import { Button } from "@igraph/ui/components/ui/button";
 import {
   CardContent,
@@ -215,7 +216,7 @@ const RegisterForm = ({
               )}
             />
 
-            <p className="alert alert-secondary text-xs drop-shadow-none  flex gap-1 items-center justify-center text-slate-500">
+            <Badge variant={"gray"} className="w-full py-3 rounded-sm">
               <Handshake size={20} />
               با ثبت نام در آی‌گرافیکال با{" "}
               <Link
@@ -225,7 +226,7 @@ const RegisterForm = ({
                 قوانین
               </Link>{" "}
               آن موافق هستید!
-            </p>
+            </Badge>
 
             <Button
               disabled={!form.formState.isValid || loading}

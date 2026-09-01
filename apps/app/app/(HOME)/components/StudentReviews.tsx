@@ -76,7 +76,7 @@ const StudentReviewCard = ({
             height={130}
             className="aspect-square object-cover rounded-lg"
           />
-          <div className="absolute -top-3 -left-3 flex justify-center items-center bg-primary p-2.5 rounded-full text-white border-white border-4">
+          <div className="absolute -top-3 -left-3 flex justify-center items-center bg-primary p-2.5 rounded-full text-primary-foreground border-card border-4">
             <Quote size={15} />
           </div>
         </div>
@@ -92,12 +92,12 @@ const StudentReviewCard = ({
               />
             ))}
           </div>
-          <div className="text-gray-500 text-sm">{review}</div>
+          <div className="text-muted-foreground text-sm">{review}</div>
         </div>
       </div>
       <div>
         <p className="font-medium">{student.name}</p>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted-foreground">
           دانش آموز <span className="text-primary">{course.title}</span>
         </p>
       </div>

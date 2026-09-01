@@ -18,7 +18,7 @@ const ReviewCard = ({ review }: Props) => {
         <div>
           <span className="text-sm font-medium">{review.user.fullName}</span>
 
-          <div className="flex gap-4 text-gray-400 text-[10px] font-medium">
+          <div className="flex gap-4 text-muted-foreground text-[10px] font-medium">
             <span className="flex gap-1 items-center ">
               <Star size={13} className="text-orange-400" />
               {review.rate}

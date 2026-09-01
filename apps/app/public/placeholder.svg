@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1334 750">
-  <g id="Layer_1-2" data-name="Layer 1">
-    <rect width="1334" height="750" fill="#ededed"/>
-    <rect x="504.4" y="248.69" width="325.21" height="252.62" rx="24.29" ry="24.29" fill="none" stroke="#b5b5b5" stroke-miterlimit="10" stroke-width="15.95"/>
-    <path d="M829.6,451.09l-94.31-107.1c-5.11-5.8-14.16-5.75-19.2.11l-75.78,88.03-35.35-33.36c-5-4.72-12.86-4.61-17.73.25l-82.46,82.28" fill="none" stroke="#b5b5b5" stroke-linecap="round" stroke-linejoin="round" stroke-width="15.95"/>
-    <circle cx="580.81" cy="323.92" r="26.36" fill="none" stroke="#b5b5b5" stroke-linecap="round" stroke-linejoin="round" stroke-width="15.95"/>
+<svg id="Layer_2" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1334 750">
+  <!-- Generator: Adobe Illustrator 29.5.1, SVG Export Plug-In . SVG Version: 2.1.0 Build 141)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #1d1b23;
+      }
+
+      .st1 {
+        fill: #fff;
+      }
+
+      .st2 {
+        opacity: .2;
+      }
+    </style>
+  </defs>
+  <rect class="st0" y="0" width="1334" height="750"/>
+  <g class="st2">
+    <path class="st1" d="M805.3,240.7h-276.6c-17.8,0-32.3,14.5-32.3,32.3v204c0,1.8.2,3.6.4,5.3,0,.2,0,.5.1.7,2.8,14.9,16,26.2,31.7,26.2h276.6c17.8,0,32.3-14.5,32.3-32.3v-204c0-17.8-14.5-32.3-32.3-32.3h.1ZM821.6,477c0,9-7.3,16.3-16.3,16.3h-276.6c-6.7,0-12.4-4-14.9-9.7l79.1-78.9c1.8-1.8,4.7-1.9,6.6,0l35.4,33.4c1.6,1.5,3.7,2.3,5.9,2.2,2.2-.1,4.2-1.1,5.6-2.8l75.8-88c1.2-1.4,2.8-1.6,3.6-1.7.8,0,2.4.2,3.6,1.6l92.3,104.9v22.9-.2ZM821.6,430l-80.4-91.3c-3.9-4.5-9.6-7-15.5-7s0,0,0,0c-6,0-11.7,2.7-15.6,7.2l-70.3,81.7-29.3-27.6c-8.2-7.7-20.9-7.6-28.8.4l-69.2,69.1v-189.5c0-9,7.3-16.3,16.3-16.3h276.6c9,0,16.3,7.3,16.3,16.3v157h0Z"/>
+    <path class="st1" d="M580.8,289.6c-18.9,0-34.3,15.4-34.3,34.3s15.4,34.3,34.3,34.3,34.3-15.4,34.3-34.3-15.4-34.3-34.3-34.3ZM580.8,342.3c-10.1,0-18.4-8.2-18.4-18.4s8.2-18.4,18.4-18.4,18.4,8.2,18.4,18.4-8.2,18.4-18.4,18.4Z"/>
   </g>
 </svg>

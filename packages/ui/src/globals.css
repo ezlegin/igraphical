@@ -79,15 +79,15 @@
     --primary-foreground: 210 40% 98%;
     --secondary: 266.2 5% 16%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 270 5% 65.1%;
+    --muted: 266.2 5% 10%;
+    --muted-foreground: 270 5% 57.5%;
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 80% 60.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 266.2 5% 16%;
     --input: 266.2 10% 16%;
-    --ring: 224.3 76.3% 48%;
+    --ring: 258 88% 67%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -177,7 +177,7 @@ pre {
   font-family: "KalamehWebFaNum";
   line-height: 1.7 !important;
   background-color: transparent !important;
-  color: #000 !important;
+  color: #ffffff !important;
   font-size: 1rem;
   white-space: pre-wrap;
   word-break: break-word;

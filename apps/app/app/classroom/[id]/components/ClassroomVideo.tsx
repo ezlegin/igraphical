@@ -96,15 +96,15 @@ const ClassroomVideo = ({
               className="aspect-video bg-slate-400 flex flex-col gap-3 justify-center items-center rounded-sm group"
               target="_blank"
             >
-              <File className="text-gray-500" size={60} />
-              <span className="text-sm text-gray-500">
+              <File className="text-muted-foreground" size={60} />
+              <span className="text-sm text-muted-foreground">
                 {currentLesson.title}
               </span>
             </Link>
           </div>
         )}
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-gray-500">
+          <p className="text-sm font-medium text-muted-foreground">
             جلسه: {currentLesson.title}
           </p>
           <div className="flex gap-2">
@@ -116,7 +116,7 @@ const ClassroomVideo = ({
 
             <Button
               disabled={loading || completed}
-              variant={completed ? "lightGreen" : "lightBlue"}
+              variant={completed ? "lightGreen" : "lightPrimary"}
               onClick={handleNextLesson}
             >
               <Loader loading={loading} />

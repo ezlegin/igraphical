@@ -113,7 +113,7 @@ const CourseRegisterButton = ({
           ) : (
             <div>
               <Link href={`/classroom/${classroomId}`}>
-                <Button variant={"lightBlue"} className="w-full">
+                <Button variant={"lightPrimary"} className="w-full">
                   <TvMinimalPlay size={22} />
                   ورود به کلاس درس
                 </Button>
@@ -136,7 +136,11 @@ const CourseRegisterButton = ({
               </Badge>
 
               <Link href="/cart">
-                <Button variant={"lightBlue"} type="button" className="gap-1">
+                <Button
+                  variant={"lightPrimary"}
+                  type="button"
+                  className="gap-1"
+                >
                   ادامه
                   <ArrowLeft />
                 </Button>
@@ -166,7 +170,7 @@ const CourseRegisterButton = ({
       ) : (
         <div>
           <Link href={`/classroom/${classroomId}`}>
-            <Button variant={"lightBlue"} className="w-full">
+            <Button variant={"lightPrimary"} className="w-full">
               <TvMinimalPlay size={22} />
               ورود به کلاس درس
             </Button>

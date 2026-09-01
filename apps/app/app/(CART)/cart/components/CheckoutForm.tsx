@@ -67,7 +67,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
 
   // HOOKS ---------------------------
   const [paymentMethod, setPaymentMethod] = useState(
-    form.watch("paymentMethod")
+    form.watch("paymentMethod"),
   );
   const [initialCartTotal] = useState(total);
   const [cartTotal, setCartTotal] = useState(total);
@@ -101,7 +101,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
         form.setValue("paymentMethod", "ZARRIN_PAL");
         setPaymentMethod("ZARRIN_PAL");
         toast.warning(
-          `حداقل مبلغ سبد خرید برای استفاده از خرید اقساطی ${formatPriceBy3Digits(minimumValidLoanAmount)} تومان می باشد.`
+          `حداقل مبلغ سبد خرید برای استفاده از خرید اقساطی ${formatPriceBy3Digits(minimumValidLoanAmount)} تومان می باشد.`,
         );
         return;
       }
@@ -130,7 +130,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
         // Coupon Exists
         const usedWalletAmount = Math.min(
           walletBalance,
-          initialCartTotal - couponAmount
+          initialCartTotal - couponAmount,
         );
         setUsedWalletAmount(usedWalletAmount);
         setCartTotal(initialCartTotal - couponAmount - usedWalletAmount);
@@ -167,7 +167,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
 
     if (campaign) {
       toast.warning(
-        ` به علت جاری بودن کمپین ${campaign.title} امکان استفاده از کد تخفیف در این بازه وجود ندارد.`
+        ` به علت جاری بودن کمپین ${campaign.title} امکان استفاده از کد تخفیف در این بازه وجود ندارد.`,
       );
       return;
     }
@@ -178,7 +178,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
         prev.map((item, index) => ({
           ...item,
           price: courses[index]!.price,
-        }))
+        })),
       );
 
       setCoupon(undefined);
@@ -221,7 +221,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
           ) {
             if (existingCoupon.courseExclude.length > 0) {
               const excludedCoursesIds = new Set(
-                existingCoupon.courseExclude.map((c) => c.id)
+                existingCoupon.courseExclude.map((c) => c.id),
               );
               const coursesToBeReduced = courses
                 .map((c) => c.id)
@@ -235,7 +235,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
                       ...item,
                       price: item.originalPrice * (1 - discountFactor),
                     }
-                  : item
+                  : item,
               );
 
               const discountValue =
@@ -257,7 +257,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
               prev.map((item) => ({
                 ...item,
                 price: item.price * (1 - discountFactor),
-              }))
+              })),
             );
           }
 
@@ -283,7 +283,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
             setCouponAmount(discountValue);
             const newTotal = updatedPrices.reduce(
               (acc, item) => acc + item.price,
-              0
+              0,
             );
             setCartTotal(newTotal);
             setPrices(updatedPrices);
@@ -299,7 +299,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
             prev.map((item) => ({
               ...item,
               price: Math.max(0, item.price - discountFactor),
-            }))
+            })),
           );
 
           break;
@@ -454,7 +454,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
       {walletBalance > 0 && (
         <Badge
           variant={useWallet ? "blue" : "gray"}
-          className={`flex justify-between items-center text-sm font-medium py-3 hover:bg-slate-50 
+          className={`flex justify-between items-center text-sm rounded-md font-medium py-3 hover:bg-secondary 
             ${
               isFree &&
               coupon &&

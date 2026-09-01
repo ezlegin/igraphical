@@ -32,7 +32,7 @@ const CashBackCard = ({
             <span>{cashBackAmount.toLocaleString("en-US")} تومان</span>
           </Badge>
         </TooltipTrigger>
-        <TooltipContent className="bg-muted-foreground text-background">
+        <TooltipContent className="text-background">
           {dontApplyCashback ? (
             <p>در روش پرداخت اقساطی، برگشت به کیف پول مقدور نمی باشد.</p>
           ) : (

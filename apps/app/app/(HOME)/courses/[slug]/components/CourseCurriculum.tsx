@@ -42,20 +42,20 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
             <AccordionTrigger className="font-semibold flex items-center justify-between">
               <span className="text-sm">{curriculum.sectionTitle}</span>
               <div className="flex gap-4 mr-auto ml-4">
-                <span className="text-xs font-normal text-slate-500">
+                <span className="text-xs font-normal text-muted-foreground">
                   {curriculum.lessons.length} درس
                 </span>
-                <span className="text-xs font-normal space-x-3 text-slate-500">
+                <span className="text-xs font-normal space-x-3 text-muted-foreground">
                   {curriculum.lessons.reduce(
                     (acc, curr) => acc + (curr.duration || 0),
-                    0
+                    0,
                   )}{" "}
                   دقیقه
                 </span>
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <ul className="space-y-5 text-slate-500">
+              <ul className="space-y-5 text-muted-foreground">
                 {curriculum.lessons.map((lesson, index) => (
                   <li key={index} className="flex justify-between items-center">
                     <span className="flex gap-2 items-center">
@@ -81,7 +81,7 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
                         </DialogContent>
                       </Dialog>
                     ) : (
-                      <Lock className="text-slate-400" size={16} />
+                      <Lock className="text-muted-foreground" size={16} />
                     )}
                   </li>
                 ))}

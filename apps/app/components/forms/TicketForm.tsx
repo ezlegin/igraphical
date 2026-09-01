@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@igraph/ui/components/ui/select";
 import { allowedFomatsForUplaod } from "@/data/utils";
+import { Textarea } from "@igraph/ui/components/ui/textarea";
 
 const TicketForm = () => {
   // HOOKS
@@ -49,7 +50,7 @@ const TicketForm = () => {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps<TicketFormType, "file">
+    field: ControllerRenderProps<TicketFormType, "file">,
   ) => {
     const file = e.target.files?.[0];
 
@@ -153,9 +154,9 @@ const TicketForm = () => {
               <FormItem>
                 <FormLabel>پیغام</FormLabel>
                 <FormControl>
-                  <textarea
+                  <Textarea
                     {...field}
-                    className="block w-full min-h-[160px] border rounded-md p-3 focus:border-blue-500 focus:ring-0.5 focus:ring-blue-500 focus:outline-none"
+                    className="min-h-[160px]"
                     placeholder="لطفا پیام خود را در این قسمت بنویسید"
                   />
                 </FormControl>
@@ -192,13 +193,13 @@ const TicketForm = () => {
                     <div className="flex gap-1 items-center">
                       <Link
                         size={24}
-                        className="text-gray-400 hover:text-blue-500 transition pt-1"
+                        className="text-muted-foreground hover:text-blue-500 transition pt-1"
                       />
                       <p className="flex flex-col">
-                        <span className="text-xs text-gray-400 font-normal">
+                        <span className="text-xs text-muted-foreground font-normal">
                           حداکثر 5 مگابایت
                         </span>
-                        <span className="text-xs text-gray-400 font-normal">
+                        <span className="text-xs text-muted-foreground font-normal">
                           عکس یا .zip
                         </span>
                       </p>

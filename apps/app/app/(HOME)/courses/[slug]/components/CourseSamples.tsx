@@ -51,7 +51,7 @@ const CourseExercise = ({ exercises, courseTitle }: Props) => {
                     draggable={false}
                     className="rounded-lg bg-muted-foreground"
                   />
-                  <DialogTitle className="text-gray-400 text-sm font-medium">
+                  <DialogTitle className="text-muted-foreground text-sm font-medium">
                     نمونه ای از تمرینات یا بخشی از این دوره
                   </DialogTitle>
                 </DialogContent>

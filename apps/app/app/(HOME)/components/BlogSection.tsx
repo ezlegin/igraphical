@@ -15,12 +15,12 @@ const BlogSection = async () => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="bg-slate-100 rounded-lg h-96 w-full absolute -z-10 hidden md:block" />
+      <div className="bg-card rounded-lg h-96 w-full absolute -z-10 hidden md:block" />
 
       <div className="rounded-lg p-5 space-y-3 flex gap-6 flex-wrap md:flex-nowrap justify-center items-center md:mx-3">
         <div className="space-y-3 text-center md:text-right">
           <h2>از گوشه و اطراف دنیای گرافیک</h2>
-          <p>
+          <p className="text-muted-foreground">
             با مراجعه به صفحه مقالات، جدیدترین آموزش‌ها، ترفندها و نکات تخصصی
             <br />
             دنیای گرافیک را در وب‌سایت آی‌گرافیکال دنبال کنید و همیشه یک قدم
