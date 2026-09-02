@@ -29,7 +29,7 @@ const NavBar = async () => {
         </Link>
         <ul className="items-center text-sm gap-14 text-muted-foreground hidden md:flex pr-10">
           {menuItems.map((item, index) => (
-            <li key={index}>
+            <li key={index} className="hover:text-foreground">
               <Link href={item.href}>{item.label}</Link>
             </li>
           ))}
