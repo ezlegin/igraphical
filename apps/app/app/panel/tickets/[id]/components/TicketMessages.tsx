@@ -55,7 +55,7 @@ const TicketMessages = ({ messages }: TicketMessagesProps) => {
                     {truncateFileName(message.attachment.fileName, 30)}
                   </span>
                   <Button
-                    variant={"lightBlue"}
+                    variant={"lightPrimary"}
                     size={"icon"}
                     className="h-8 w-8"
                     type="button"

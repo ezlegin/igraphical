@@ -92,7 +92,7 @@ const TicketSidebar = ({ ticket }: Props) => {
         {ticket.status !== "CLOSED" && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant={"lightBlue"} className="w-full">
+              <Button variant={"lightPrimary"} className="w-full">
                 ممنون، مشکلم حل شد.
               </Button>
             </AlertDialogTrigger>
