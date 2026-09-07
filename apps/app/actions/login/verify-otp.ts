@@ -11,25 +11,21 @@ export const verifyOtp = async (
   try {
     if (recaptchaToken) await isHumanOrNot(recaptchaToken, "FA");
 
-    // OTP LOOK UP
     const existingOtp = await database.otp.findFirst({
       where: {
         identifier,
       },
     });
 
-    // CHECK EXISTANCE
     if (!existingOtp) return { error: "کد وارد شده معتبر نمی باشد !" };
 
-    // CHECK EXPIRATION
     const hasExpired = existingOtp.expires < new Date();
     if (hasExpired) {
       return { error: `کد تایید منقضی شده است` };
     }
 
-    // CHECK OTP
-    // const isValidOtp = await bcrypt.compare(otp, existingOtp.otpCode);
-    // if (!isValidOtp) return { error: "کد وارد شده معتبر نمی باشد" };
+    const isValidOtp = otp === existingOtp.otpCode;
+    if (!isValidOtp) return { error: "کد وارد شده معتبر نمی باشد" };
 
     // DELETE OTP
     const deletedOtp = await database.otp.delete({

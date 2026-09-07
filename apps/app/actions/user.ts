@@ -15,7 +15,7 @@ import { getUserById } from "@/data/user";
 
 export async function registerUser(
   data: RegisterUserFormType,
-  indentifer: string
+  indentifer: string,
 ) {
   const { email, firstName, lastName, nationalId, phone } = data;
 
@@ -103,7 +103,7 @@ export const updateUserProfile = async (data: ProfileFormType, id: number) => {
             folder: "user",
             resource_type: "image",
             width: 300,
-          }
+          },
         )) as UploadApiResponse;
 
         if (updatedUser.image)
@@ -137,28 +137,6 @@ export const updateUserProfile = async (data: ProfileFormType, id: number) => {
     });
 
     return { success: "با موفقیت ذخیره شد" };
-  } catch (error) {
-    return { error: String(error) };
-  }
-};
-
-export const confirmCredential = async (
-  userId: number,
-  phone?: string,
-  email?: string
-) => {
-  try {
-    const existingUser = await database.user.findFirst({
-      where: { id: userId },
-    });
-    if (!existingUser) throw new Error("کاربر یافت نشد.");
-
-    await database.user.update({
-      where: { id: userId },
-      data: { phone, phoneVerified: true },
-    });
-
-    return { success: "شماره تماس با موفقیت تایید شد." };
   } catch (error) {
     return { error: String(error) };
   }
