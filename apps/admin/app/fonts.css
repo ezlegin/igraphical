@@ -36,8 +36,8 @@
   font-style: normal;
   font-weight: 600;
   src:
-    url("/fonts/woff2/KalamehWeb-Semibold.woff2") format("woff2"),
-    url("/fonts/woff/KalamehWeb-Semibold.woff") format("woff");
+    url("/fonts/woff2/KalamehWeb-SemiBold.woff2") format("woff2"),
+    url("/fonts/woff/KalamehWeb-SemiBold.woff") format("woff");
 }
 
 @font-face {

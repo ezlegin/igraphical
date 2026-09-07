@@ -12,7 +12,7 @@ const zarinpal = new ZarinPal({
 export async function InitiateZarrinPalPurchase(
   user: User,
   amount: number,
-  paymentId: number
+  paymentId: number,
 ) {
   try {
     const response = (await zarinpal.payments.create({
@@ -37,7 +37,7 @@ export async function InitiateZarrinPalPurchase(
 
     if (response.data && response.data.authority) {
       const paymentUrl = zarinpal.payments.getRedirectUrl(
-        response.data.authority
+        response.data.authority,
       );
 
       return {
@@ -64,7 +64,7 @@ interface VerifyResponse {
 export async function verifyZarrinPalPurchase(
   authority: string,
   amount: number,
-  status: "OK" | "NOK"
+  status: "OK" | "NOK",
 ) {
   if (!authority || !amount) return { error: "Amount and Authory is needed" };
 

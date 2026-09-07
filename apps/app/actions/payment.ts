@@ -14,6 +14,7 @@ import {
   InitiateDigipayPurchase,
   verifyDigipayPurchase,
 } from "./payments/digipay";
+import { InitiateSADADPurchase, verifySADADPurchase } from "./sadad";
 
 //* CREATE PAYMENT -------------------------------------------------------
 
@@ -122,12 +123,14 @@ export const createPayment = async (data: PaymentDataType) => {
       const res =
         paymentMethod === "ZARRIN_PAL"
           ? await InitiateZarrinPalPurchase(user, amount, newPayment.id)
-          : await InitiateDigipayPurchase(
-              user,
-              amount,
-              newPayment.id,
-              existingCourses
-            );
+          : paymentMethod === "SADAD"
+            ? await InitiateSADADPurchase(user, amount, newPayment.id)
+            : await InitiateDigipayPurchase(
+                user,
+                amount,
+                newPayment.id,
+                existingCourses,
+              );
 
       if (res?.success && res.data.authority && res.data.paymentUrl) {
         const updatedCart = await database.cart.update({
@@ -199,20 +202,20 @@ export const createPayment = async (data: PaymentDataType) => {
       await sendSuccessPaymentEmail(
         newPayment.user.email,
         newPayment.user.fullName,
-        newPayment
+        newPayment,
       );
 
       //* Send Email To Admin
       await sendSuccessPaymentEmailToAdmin(
         adminData.email,
         newPayment.user.fullName,
-        newPayment
+        newPayment,
       );
 
       //* Send Sms
       await sendSuccessPaymentSms(
         newPayment.user.firstName,
-        newPayment.user.phone
+        newPayment.user.phone,
       );
 
       return {
@@ -232,12 +235,13 @@ export const verifyPayment = async (
   status: "OK" | "NOK",
   paymentMethod: PaymentMethod,
   trackingCode: string,
-  providerId: string
+  providerId: string,
+  signData: string,
 ) => {
   try {
     const existingCart = await database.cart.findFirst({
       where:
-        paymentMethod === "ZARRIN_PAL"
+        paymentMethod === "ZARRIN_PAL" || paymentMethod === "SADAD"
           ? { authority }
           : { paymentId: +providerId },
     });
@@ -247,7 +251,9 @@ export const verifyPayment = async (
     const res =
       paymentMethod === "ZARRIN_PAL"
         ? await verifyZarrinPalPurchase(authority, existingCart.amount!, status)
-        : await verifyDigipayPurchase(trackingCode, providerId, status);
+        : paymentMethod === "SADAD"
+          ? await verifySADADPurchase(authority, signData, status)
+          : await verifyDigipayPurchase(trackingCode, providerId, status);
 
     if (res?.success && res?.data) {
       const deletedCart = await database.cart.delete({
@@ -289,7 +295,7 @@ export const verifyPayment = async (
       //* CASHBACK
       const cashbackAmount = cashBackCalculator(
         updatedPayment.total,
-        updatedPayment.paymentMethod === "DIGIPAY"
+        updatedPayment.paymentMethod === "DIGIPAY",
       );
       if (cashbackAmount > 0) {
         await database.wallet.upsert({
@@ -351,20 +357,20 @@ export const verifyPayment = async (
       await sendSuccessPaymentEmail(
         updatedPayment.user.email,
         updatedPayment.user.fullName,
-        updatedPayment
+        updatedPayment,
       );
 
       //* Send Email To Admin
       await sendSuccessPaymentEmailToAdmin(
         adminData.email,
         updatedPayment.user.fullName,
-        updatedPayment
+        updatedPayment,
       );
 
       //* Send Sms
       await sendSuccessPaymentSms(
         updatedPayment.user.firstName,
-        updatedPayment.user.phone
+        updatedPayment.user.phone,
       );
 
       return {

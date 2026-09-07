@@ -8,12 +8,19 @@ interface Props {
     paymentMethod: PaymentMethod;
     trackingCode: string;
     providerId: string;
+    SignData: string;
   }>;
 }
 
 const page = async ({ searchParams }: Props) => {
-  const { Authority, Status, paymentMethod, providerId, trackingCode } =
-    await searchParams;
+  const {
+    Authority,
+    Status,
+    paymentMethod,
+    providerId,
+    trackingCode,
+    SignData,
+  } = await searchParams;
 
   return (
     <CheckoutResult
@@ -22,6 +29,7 @@ const page = async ({ searchParams }: Props) => {
       paymentMethod={paymentMethod}
       providerId={providerId}
       trackingCode={trackingCode}
+      signData={SignData}
     />
   );
 };

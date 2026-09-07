@@ -18,6 +18,7 @@ interface Props {
   paymentMethod: PaymentMethod;
   trackingCode: string;
   providerId: string;
+  signData: string;
 }
 
 const CheckoutResult = ({
@@ -26,6 +27,7 @@ const CheckoutResult = ({
   paymentMethod,
   providerId,
   trackingCode,
+  signData,
 }: Props) => {
   const [result, setResult] = useState<Status>("PENDING");
   const [refId, setRefId] = useState<number>();
@@ -43,7 +45,8 @@ const CheckoutResult = ({
         status,
         paymentMethod,
         trackingCode,
-        providerId
+        providerId,
+        signData,
       );
 
       if (res.error) {

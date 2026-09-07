@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Textarea } from "@igraph/ui/components/ui/textarea";
 
 const ContactForm = () => {
   // HOOKS
@@ -128,9 +129,9 @@ const ContactForm = () => {
             <FormItem>
               <FormLabel>پیام</FormLabel>
               <FormControl>
-                <textarea
+                <Textarea
                   {...field}
-                  className="block w-full min-h-[160px] border rounded-md p-3 focus:border-blue-500 focus:ring-0.5 focus:ring-blue-500 focus:outline-none"
+                  className="min-h-[160px]"
                   placeholder="لطفا پیام خود را در این قسمت بنویسید"
                 />
               </FormControl>

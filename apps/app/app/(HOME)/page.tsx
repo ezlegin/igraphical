@@ -34,7 +34,7 @@ const page = async ({ searchParams }: Props) => {
   }
 
   return (
-    <div className="space-y-28 md:space-y-52 mb-20">
+    <div className="space-y-28 md:space-y-52 pt-28 lg:pt-32 mb-20">
       <LandingPage />
 
       <WhereToStartSeciton />

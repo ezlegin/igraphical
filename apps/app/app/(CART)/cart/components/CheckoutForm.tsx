@@ -4,7 +4,7 @@ import { createPayment, PaymentDataType } from "@/actions/payment";
 import { getCouponByCode } from "@/data/coupon";
 import { getSessionUser } from "@/data/user";
 import { paymentFormSchema, PaymentFormType } from "@/lib/validationSchema";
-import { digipayLogo, zarrinpalLogo } from "@/public";
+import { digipayLogo, sadadLogo, zarrinpalLogo } from "@/public";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Coupon,
@@ -92,10 +92,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
     }
   }, [prices]);
 
-  console.log(paymentMethod);
-
   useEffect(() => {
-    console.log("first");
     if (paymentMethod === "DIGIPAY") {
       if (cartTotal <= minimumValidLoanAmount) {
         form.setValue("paymentMethod", "ZARRIN_PAL");
@@ -114,7 +111,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
       // );
     }
 
-    if (paymentMethod === "ZARRIN_PAL") {
+    if (paymentMethod === "ZARRIN_PAL" || paymentMethod === "SADAD") {
       setCartTotal((pre) => pre - installmentProfitAmount);
       setInstallmentProfit(0);
     }
@@ -157,6 +154,11 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
     if (value === "DIGIPAY") {
       setPaymentMethod("DIGIPAY");
       form.setValue("paymentMethod", "DIGIPAY");
+    }
+
+    if (value === "SADAD") {
+      setPaymentMethod("SADAD");
+      form.setValue("paymentMethod", "SADAD");
     }
   };
 
@@ -534,15 +536,27 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
         dir="rtl"
         type="single"
         variant={"outline"}
+        className="flex-col"
       >
-        <ToggleGroupItem
-          className="w-full"
-          value="ZARRIN_PAL"
-          aria-label="Toggle bold"
-        >
-          <Image alt="logo" src={zarrinpalLogo} width={25} height={25} />
-          پرداخت نقدی
-        </ToggleGroupItem>
+        <div className="flex gap-2 w-full pb-2">
+          <ToggleGroupItem
+            disabled={cartTotal !== 20000}
+            className="w-full"
+            value="SADAD"
+            aria-label="Toggle bold"
+          >
+            <Image alt="logo" src={sadadLogo} width={25} height={25} />
+            درگاه بانک ملی
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            className="w-full"
+            value="ZARRIN_PAL"
+            aria-label="Toggle bold"
+          >
+            <Image alt="logo" src={zarrinpalLogo} width={25} height={25} />
+            زرین پال
+          </ToggleGroupItem>
+        </div>
         <ToggleGroupItem
           className="w-full"
           value="DIGIPAY"
@@ -568,7 +582,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
           "در حال انتقال"
         ) : isFree ? (
           "ثبت نام رایگان"
-        ) : paymentMethod === "ZARRIN_PAL" ? (
+        ) : paymentMethod === "ZARRIN_PAL" || paymentMethod === "SADAD" ? (
           <span className="flex">
             پرداخت {formatPriceBy3Digits(cartTotal)} تومان
           </span>

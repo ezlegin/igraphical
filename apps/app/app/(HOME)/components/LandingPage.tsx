@@ -14,19 +14,19 @@ const LandingPage = async () => {
   });
 
   return (
-    <div className="py-16 px-4 relative">
+    <div className="relative">
       <Slider type="MAIN" sliders={sliders} />
 
-      <div className="card p-2 flex justify-center items-center absolute left-10 top-10">
+      <div className="card p-2 hidden md:flex justify-center items-center absolute left-10 top-10">
         <MousePointer2 size={20} />
       </div>
-      <div className="card p-2 flex justify-center items-center absolute right-20 top-16">
+      <div className="card p-2 hidden md:flex justify-center items-center absolute right-20 top-16">
         <Pipette size={20} />
       </div>
-      <div className="card p-2 absolute right-28 bottom-28 mt-60">
+      <div className="card p-2 hidden md:flex absolute right-28 bottom-28 mt-60">
         <Type size={20} />
       </div>
-      <div className="card p-2 absolute left-32 bottom-32 mt-60">
+      <div className="card p-2 hidden md:flex absolute left-32 bottom-32 mt-60">
         <Brush size={20} />
       </div>
 

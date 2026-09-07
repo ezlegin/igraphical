@@ -586,6 +586,7 @@ model Expense {
 }
 
 enum PaymentMethod {
+  SADAD
   ZARRIN_PAL
   DIGIPAY
   ADMIN

@@ -9,7 +9,10 @@ export async function middleware(req: NextRequest) {
   )?.value;
   const isLoggedIn = !!token;
 
-  if (nextUrl.pathname.startsWith("/api/digipay")) {
+  if (
+    nextUrl.pathname.startsWith("/api/digipay") ||
+    nextUrl.pathname.startsWith("/api/sadad")
+  ) {
     return NextResponse.next();
   }
 

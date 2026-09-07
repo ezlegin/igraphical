@@ -9,7 +9,12 @@ export const ticketDepartment = [
   "SUGGEST",
 ] as const;
 
-export const paymentMethod = ["ZARRIN_PAL", "DIGIPAY", "NO_METHOD"] as const;
+export const paymentMethod = [
+  "ZARRIN_PAL",
+  "DIGIPAY",
+  "SADAD",
+  "NO_METHOD",
+] as const;
 
 //! User Forms
 export const loginFormSchema = z.object({
@@ -27,7 +32,7 @@ export const loginFormSchema = z.object({
       },
       {
         message: "شماره تماس یا ایمیل معتبر نیست",
-      }
+      },
     ),
 });
 export type LoginFormType = z.infer<typeof loginFormSchema>;

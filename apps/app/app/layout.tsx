@@ -19,7 +19,6 @@ export default function RootLayout({
     >
       <GoogleAnalytics gaId={process.env.GA_MEASUREMENT_ID!} />
       <body>
-        <div id="stars-group-1" />
         {children}
         <Toaster
           theme="system"
