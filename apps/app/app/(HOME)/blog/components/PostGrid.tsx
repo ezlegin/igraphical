@@ -1,6 +1,5 @@
-import React from "react";
-import PostCard from "./PostCard";
 import { Image, Post, PostCategory } from "@igraph/database";
+import PostCard from "./PostCard";
 
 export interface PostType extends Post {
   image: Image | null;
@@ -19,8 +18,8 @@ interface Props {
 
 const PostGrid = ({ posts }: Props) => {
   return (
-    <div className={"space-y-6"}>
-      {posts?.map((post, index) => <PostCard key={index} post={post} />)}
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {posts?.map((post) => <PostCard key={post.id} post={post} />)}
     </div>
   );
 };

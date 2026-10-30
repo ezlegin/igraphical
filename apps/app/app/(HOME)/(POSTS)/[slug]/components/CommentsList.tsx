@@ -1,22 +1,20 @@
 import Avatar from "@igraph/ui/components/Avatar";
-import { CommentType } from "./BlogPost";
 import { formatJalaliDate } from "@igraph/utils";
+import { CommentType } from "./BlogPost";
 
 const CommentsList = ({ comments }: { comments: CommentType[] }) => {
   return (
     <>
       {comments.map((item, index) => (
-        <div key={index} className="card bg-transparent">
-          <div className="flex gap-2 items-center mb-3">
+        <div key={index} className="rounded-2xl border border-foreground/10 bg-card/40 p-5">
+          <div className="mb-3 flex items-center gap-3">
             <Avatar src={item.author?.image?.url} />
             <div className="flex flex-col">
-              {item.author ? item.author.fullName : item.fullName}
-              <span className="text-gray-500 text-xs">
-                {formatJalaliDate(item.createdAt)}
-              </span>
+              <span className="text-sm font-semibold">{item.author ? item.author.fullName : item.fullName}</span>
+              <span className="text-[11px] text-muted-foreground">{formatJalaliDate(item.createdAt)}</span>
             </div>
           </div>
-          <pre className="text-sm">{item.content}</pre>
+          <p className="whitespace-pre-line text-sm leading-7 text-foreground/85">{item.content}</p>
         </div>
       ))}
     </>

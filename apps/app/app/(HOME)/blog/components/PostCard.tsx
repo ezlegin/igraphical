@@ -1,53 +1,42 @@
-import { Button } from "@igraph/ui/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@igraph/ui/components/ui/card";
 import { placeHolder } from "@/public";
-import { Menu } from "lucide-react";
+import { extractSummaryFromLexical, formatJalaliDate } from "@igraph/utils";
+import { ArrowUpLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { PostType } from "./PostGrid";
-import { extractSummaryFromLexical } from "@igraph/utils";
 
 const PostCard = ({ post }: { post: PostType }) => {
-  const categories = post.categories.map((item, index) => (
-    <div key={index} className="text-left ">
-      <Button variant={"secondary"} size={"sm"} className="h-6 text-gray-500">
-        <Menu className="scale-75" />
-        {item.name}
-      </Button>
-    </div>
-  ));
-
   return (
-    <div className="overflow-hidden group card hover:shadow-md p-0 pl-3">
-      <Link href={`/${post.url}`}>
-        <CardContent className="pl-3 flex flex-col items-center md:flex-row gap-3 text-center md:text-right p-3 md:p-0 w-full">
-          <Image
-            alt={post.title}
-            src={post.image?.url || placeHolder}
-            width={250}
-            height={250}
-            className="aspect-video object-cover"
-          />
+    <Link
+      href={`/${post.url}`}
+      className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-card/50 p-2.5 transition-all duration-500 hover:-translate-y-1 hover:border-primary/40"
+    >
+      <div className="relative overflow-hidden rounded-[1.35rem]">
+        <Image
+          alt={post.title}
+          src={post.image?.url || placeHolder}
+          width={600}
+          height={375}
+          className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+        {post.categories[0] && (
+          <span className="absolute right-3 top-3 rounded-full bg-black/50 px-3 py-1 text-[11px] text-white backdrop-blur-md">
+            {post.categories[0].name}
+          </span>
+        )}
+      </div>
 
-          <div className="py-3 space-y-3 w-full">
-            <div className="flex justify-between flex-wrap gap-3">
-              <CardTitle className="text-lg font-medium">
-                {post.title}
-              </CardTitle>
-              <div className="flex gap-2">{categories}</div>
-            </div>
-
-            <CardDescription className="flex justify-between items-center text-xs">
-              <p>{extractSummaryFromLexical(post.content)}...</p>
-            </CardDescription>
-          </div>
-        </CardContent>
-      </Link>
-    </div>
+      <div className="flex flex-1 flex-col gap-3 px-2 pb-2 pt-4">
+        <h3 className="line-clamp-2 font-bold leading-7">{post.title}</h3>
+        <p className="line-clamp-2 text-xs leading-6 text-muted-foreground">
+          {extractSummaryFromLexical(post.content)}
+        </p>
+        <div className="mt-auto flex items-center justify-between pt-2 text-[11px] text-muted-foreground">
+          <span>{formatJalaliDate(post.createdAt)}</span>
+          <ArrowUpLeft size={16} className="transition-all group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
+        </div>
+      </div>
+    </Link>
   );
 };
 
