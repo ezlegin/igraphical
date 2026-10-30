@@ -5,10 +5,11 @@ import useError from "@/hooks/useError";
 import useSuccess from "@/hooks/useSuccess";
 import { PaymentMethod } from "@igraph/database";
 import { Button } from "@igraph/ui/components/ui/button";
-import { Separator } from "@igraph/ui/components/ui/separator";
-import { CircleCheckBig, CircleX, Loader2 } from "lucide-react";
+import { Check, Loader2, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import CheckoutSteps from "../cart/components/CheckoutSteps";
 
 type Status = "SUCCESS" | "FAIL" | "PENDING";
 
@@ -66,51 +67,83 @@ const CheckoutResult = ({
     verifyCheckout();
   }, []);
 
-  return (
-    <div className="card max-w-[350px] mx-auto flex flex-col justify-center items-center space-y-3 w-full pt-5">
-      {pending ? (
-        <Loader2 className="animate-spin text-blue-400" size={65} />
-      ) : successStatus ? (
-        <CircleCheckBig className="text-green-500" size={65} />
-      ) : (
-        <CircleX className="text-red-500" size={65} />
-      )}
+  const tone = pending ? "hsl(var(--primary))" : successStatus ? "#d4ff3f" : "hsl(var(--destructive))";
 
-      <div className="text-center">
-        <div className="font-medium flex flex-col gap-1">
-          {error ? error : success ? success : "در حال بررسی"}
+  return (
+    <div className="mx-auto flex max-w-md flex-col items-center gap-8">
+      <CheckoutSteps current={successStatus ? 2 : 1} />
+
+      <div className="studio-card studio-noise relative w-full overflow-hidden px-6 py-10 text-center md:px-10">
+        <div className="absolute left-1/2 top-0 h-40 w-72 -translate-x-1/2 rounded-full opacity-30 blur-3xl" style={{ background: tone }} />
+
+        <div className="relative mx-auto mb-6 flex size-24 items-center justify-center">
+          {successStatus && (
+            <motion.span
+              className="absolute inset-0 rounded-full border-2 border-lime"
+              initial={{ scale: 0.8, opacity: 1 }}
+              animate={{ scale: 1.6, opacity: 0 }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: "easeOut" }}
+            />
+          )}
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={result}
+              initial={{ scale: 0.4, opacity: 0, rotate: -30 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              exit={{ scale: 0.4, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 18 }}
+              className={`flex size-24 items-center justify-center rounded-full ${
+                pending ? "bg-primary/15 text-primary" : successStatus ? "bg-lime text-black" : "bg-destructive/15 text-destructive"
+              }`}
+            >
+              {pending ? (
+                <Loader2 className="animate-spin" size={40} />
+              ) : successStatus ? (
+                <Check size={44} strokeWidth={3} />
+              ) : (
+                <X size={44} strokeWidth={3} />
+              )}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+
+        <div className="relative space-y-3">
+          <h1 className="text-2xl font-black">
+            {pending ? "در حال بررسی پرداخت" : successStatus ? "پرداخت موفق بود!" : "پرداخت ناموفق"}
+          </h1>
+          <p className="text-sm leading-7 text-muted-foreground">
+            {pending ? "لطفا از این صفحه خارج نشوید!" : error ? error : success}
+          </p>
           {error && (
-            <div className="text-gray-500 text-sm flex flex-col gap-2">
-              <span className="text-black">لطفا مجددا تلاش کنید</span>
-              <Separator />
-              در صورت کسر مبلغ از حساب شما، این مبلغ حداکثر تا 72 ساعت آینده به
-              حساب شما واریز خواهد شد.
-            </div>
+            <p className="rounded-2xl bg-foreground/5 p-4 text-xs leading-6 text-muted-foreground">
+              لطفا مجددا تلاش کنید. در صورت کسر مبلغ از حساب شما، این مبلغ حداکثر تا ۷۲ ساعت آینده به حساب شما
+              واریز خواهد شد.
+            </p>
+          )}
+          {successStatus && (
+            <p className="en-digits inline-block rounded-full bg-foreground/5 px-4 py-1.5 text-xs text-muted-foreground">
+              شناسه پرداخت: {refId}
+            </p>
           )}
         </div>
-        {pending && (
-          <p className="text-sm text-gray-500">لطفا از این صفحه خارج نشوید!</p>
-        )}
-      </div>
 
-      {successStatus && (
-        <div className="flex gap-8 text-xs text-gray-500">
-          <p>شناسه پرداخت: {refId}</p>
-        </div>
-      )}
-
-      <div className="w-full space-y-3">
-        {!fail && (
-          <Link href={"/panel/courses"}>
-            <Button disabled={pending} className="w-full">
-              دوره های من
-            </Button>
-          </Link>
-        )}
-
-        <div>
-          <Link href={"/panel/payments"}>
-            <Button variant={"secondary"} disabled={pending} className="w-full">
+        <div className="relative mt-8 space-y-3">
+          {!fail && (
+            <Link href={"/panel/courses"} className="block">
+              <Button disabled={pending} size="lg" className="h-12 w-full rounded-full">
+                شروع یادگیری در دوره‌های من
+              </Button>
+            </Link>
+          )}
+          {fail && (
+            <Link href={"/cart"} className="block">
+              <Button size="lg" className="h-12 w-full rounded-full">
+                بازگشت به سبد خرید
+              </Button>
+            </Link>
+          )}
+          <Link href={"/panel/payments"} className="block">
+            <Button variant="outline" size="lg" disabled={pending} className="h-12 w-full rounded-full border-foreground/15">
               لیست پرداخت‌ها
             </Button>
           </Link>

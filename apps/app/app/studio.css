@@ -1,4 +1,4 @@
-/* iGraphical "Studio" design language — home page only */
+/* iGraphical "Studio" design language, shared by every route group */
 
 .studio-grid {
   background-image:
@@ -43,14 +43,6 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-.text-lime {
-  color: #d4ff3f;
-}
-
-.bg-lime {
-  background-color: #d4ff3f;
 }
 
 @keyframes studio-marquee {

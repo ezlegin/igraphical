@@ -1,7 +1,4 @@
-import { Badge } from "@igraph/ui/components/ui/badge";
-import { Separator } from "@igraph/ui/components/ui/separator";
 import { formatPriceBy3Digits } from "@igraph/utils";
-import React from "react";
 
 interface Props {
   baseTotal: number;
@@ -11,6 +8,17 @@ interface Props {
   usedWalletAmount: number;
   cartTotal: number;
 }
+
+const Row = ({ label, value, negative }: { label: string; value: number; negative?: boolean }) => (
+  <div className={`flex items-center justify-between text-sm ${negative ? "text-muted-foreground" : "font-medium"}`}>
+    <span>{label}</span>
+    <span className={negative ? "text-lime" : ""}>
+      {negative && "− "}
+      {formatPriceBy3Digits(value)}
+      <span className="mr-1 text-xs text-muted-foreground">تومان</span>
+    </span>
+  </div>
+);
 
 const CheckoutInfo = ({
   baseTotal,
@@ -22,68 +30,17 @@ const CheckoutInfo = ({
 }: Props) => {
   return (
     <div className="space-y-3">
-      <div className="flex text-nowrap items-center gap-2 text-sm font-medium">
-        <span>مجموع</span>
-        <div className="w-full">
-          <Separator />
-        </div>
-        <div>
-          {formatPriceBy3Digits(baseTotal)}
-          <span className="text-gray-500 text-xs mr-1">تومان</span>
-        </div>
-      </div>
+      <Row label="مجموع" value={baseTotal} />
+      {discountAmount > 0 && <Row label="تخفیف ثابت" value={baseTotal - totalPrice} negative />}
+      {couponAmount > 0 && <Row label="کسر کد تخفیف" value={couponAmount} negative />}
+      {usedWalletAmount > 0 && <Row label="کسر کیف پول" value={usedWalletAmount} negative />}
 
-      {discountAmount > 0 && (
-        <div className="flex text-nowrap items-center gap-2 text-sm text-muted-foreground">
-          <span>تخفیف ثابت</span>
-          <div className="w-full">
-            <Separator />
-          </div>
-          <div>
-            {formatPriceBy3Digits(baseTotal - totalPrice)}-{" "}
-            <span className="text-xs">تومان</span>
-          </div>
-        </div>
-      )}
-
-      {couponAmount > 0 && (
-        <div className="flex text-nowrap items-center gap-2 text-sm text-muted-foreground">
-          <span>کسر کد تخفیف</span>
-          <div className="w-full">
-            <Separator />
-          </div>
-          <div>
-            {formatPriceBy3Digits(couponAmount)}-{" "}
-            <span className="text-xs">تومان</span>
-          </div>
-        </div>
-      )}
-
-      {usedWalletAmount > 0 && (
-        <div className="flex text-nowrap items-center gap-2 text-sm text-muted-foreground">
-          <span>کسر کیف پول</span>
-          <div className="w-full">
-            <Separator />
-          </div>
-          <div>
-            {formatPriceBy3Digits(usedWalletAmount)}-{" "}
-            <span className="text-xs">تومان</span>
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-1 text-primary pt-3 font-semibold">
-        <Badge
-          variant={"blue"}
-          className="flex p-2 py-2.5 rounded-md text-nowrap items-center gap-2 text-sm"
-        >
-          <span>قابل پرداخت</span>
-          <div className="w-full"></div>
-          <div>
-            {formatPriceBy3Digits(cartTotal)}
-            <span className="text-xs mr-1">تومان</span>
-          </div>
-        </Badge>
+      <div className="mt-4 flex items-center justify-between rounded-2xl bg-primary/15 px-4 py-3.5 ring-1 ring-primary/30">
+        <span className="text-sm font-semibold">قابل پرداخت</span>
+        <span className="text-xl font-black text-foreground">
+          {formatPriceBy3Digits(cartTotal)}
+          <span className="mr-1 text-xs font-normal text-muted-foreground">تومان</span>
+        </span>
       </div>
     </div>
   );
