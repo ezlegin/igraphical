@@ -1,0 +1,96 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ezlegin
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        app: [app, admin, tutor]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ghcr
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # PRs only build (that is the type-check + lint + next build test);
+      # main also pushes the image.
+      - name: Build${{ github.event_name != 'pull_request' && ' & push' || '' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/${{ matrix.app }}/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/igraphical-${{ matrix.app }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/igraphical-${{ matrix.app }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          # Placeholders: the real runtime secrets come from /root/envs/igraphical/*.env.local
+          # on the server. The build never connects to a database.
+          build-args: |
+            DATABASE_URL=mysql://root@database:3306/igraphical
+            RESEND_API_KEY=re_build_placeholder
+            NEXT_PUBLIC_RECAPTCHA_SITE_KEY=${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,scope=${{ matrix.app }},mode=max
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure ssh
+        run: |
+          install -m 700 -d ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host prod
+            HostName ${{ secrets.DEPLOY_HOST }}
+            User ${{ secrets.DEPLOY_USER }}
+            IdentityFile ~/.ssh/id_deploy
+            StrictHostKeyChecking yes
+          EOF
+
+      - name: Upload compose file
+        run: |
+          ssh prod 'mkdir -p /root/deploy/igraphical'
+          scp docker-compose.yml prod:/root/deploy/igraphical/docker-compose.yml
+
+      - name: Deploy
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ssh prod "IMAGE_TAG=${{ github.sha }} GHCR_USER=${{ github.actor }} GHCR_TOKEN=$GHCR_TOKEN sh -s" < scripts/deploy.sh

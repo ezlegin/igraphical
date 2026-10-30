@@ -21,17 +21,24 @@ export default async function Layout({
   await authenticateSession();
 
   return (
-    <div>
+    <div className="relative isolate">
+      <div className="studio-grid studio-fade pointer-events-none fixed inset-x-0 top-0 -z-10 h-[480px]" />
+      <div className="pointer-events-none fixed left-1/3 top-0 -z-10 h-48 w-[600px] rounded-full bg-primary/15 blur-[120px]" />
+
       <SidebarProvider>
         <SideBar user={user} />
-        <main className="sm:max-w-screen-xl w-full mx-auto p-4">
-          <div className="flex justify-between items-center mb-3 lg:hidden">
-            <SidebarTrigger variant={"outline"} size={"icon"} className="p-5" />
+        <main className="mx-auto w-full min-w-0 p-4 sm:max-w-screen-xl md:p-6">
+          <div className="mb-4 flex items-center justify-between lg:hidden">
+            <SidebarTrigger
+              variant={"outline"}
+              size={"icon"}
+              className="size-11 rounded-full border-foreground/15"
+            />
 
             <div className="flex gap-2">
-              <Link className="mr-auto" href={"/"}>
+              <Link href={"/"}>
                 <Button
-                  className=" text-slate-500"
+                  className="size-11 rounded-full border-foreground/15 text-muted-foreground"
                   size={"icon"}
                   variant={"outline"}
                 >
@@ -42,10 +49,12 @@ export default async function Layout({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 mb-5">
-            <NotifBar />
+          <div className="mb-6 flex items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <NotifBar />
+            </div>
 
-            <div className="hidden lg:block mr-auto">
+            <div className="mr-auto hidden lg:block">
               <UserBar user={user!} />
             </div>
           </div>

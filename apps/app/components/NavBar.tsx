@@ -4,6 +4,8 @@ import { Image, User } from "@igraph/database";
 import IgraphLogoSquare from "@igraph/ui/components/IgraphLogoSquare";
 import { Button } from "@igraph/ui/components/ui/button";
 import UserBar from "@igraph/ui/components/UserBar";
+import NavShell from "./motion/NavShell";
+import NavLinks from "./motion/NavLinks";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 
@@ -22,18 +24,11 @@ const NavBar = async () => {
   const isThereItemsInCart = cart?._count.cartItem ?? 0 > 0;
 
   return (
-    <div className="w-full fixed top-4 right-0 z-50 px-3">
-      <div className="flex justify-between bg-background/30 max-w-screen-lg mx-auto backdrop-blur-2xl items-center border p-1.5 rounded-full">
+    <NavShell>
         <Link href={"/"}>
           <IgraphLogoSquare size={40} />
         </Link>
-        <ul className="items-center text-sm gap-14 text-muted-foreground hidden md:flex pr-10">
-          {menuItems.map((item, index) => (
-            <li key={index} className="hover:text-foreground">
-              <Link href={item.href}>{item.label}</Link>
-            </li>
-          ))}
-        </ul>
+        <NavLinks items={menuItems} />
 
         <div className="flex gap-2">
           <Link href={"/cart"} className="relative">
@@ -53,8 +48,7 @@ const NavBar = async () => {
             <UserBar user={user} />
           )}
         </div>
-      </div>
-    </div>
+    </NavShell>
   );
 };
 

@@ -20,6 +20,8 @@ const buttonVariants = cva(
           "bg-green-200 border-t border-green-500/30 text-green-800 shadow-sm hover:bg-green-300",
         lightPrimary:
           "bg-primary/15 border-t border-primary/30 text-primary shadow-sm hover:bg-primary/30",
+        lightBlue:
+          "bg-primary/15 border-t border-primary/30 text-primary shadow-sm hover:bg-primary/30",
         outline:
           "border bg-background shadow-xs dark:hover:shadow-lg dark:hover:shadow-primary-20 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:

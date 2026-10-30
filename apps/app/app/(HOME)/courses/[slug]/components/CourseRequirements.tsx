@@ -1,23 +1,23 @@
-import React from "react";
+import { CircleDot } from "lucide-react";
+import DetailSection from "./DetailSection";
 
-const CoursePrerequisite = ({
-  requirements,
-}: {
-  requirements: string[] | undefined;
-}) => {
-  if (!requirements) return;
+const CoursePrerequisite = ({ requirements }: { requirements: string[] | undefined }) => {
+  if (!requirements?.length) return null;
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-3">پیش نیاز ها:</h2>
-      <ul className="space-y-2 list-disc mr-3">
+    <DetailSection title="پیش‌نیازها">
+      <ul className="flex flex-wrap gap-2">
         {requirements.map((item, index) => (
-          <li key={index} className="text-muted-foreground">
+          <li
+            key={index}
+            className="flex items-center gap-2 rounded-full border border-foreground/10 bg-card/50 px-4 py-2 text-sm text-muted-foreground"
+          >
+            <CircleDot size={14} className="text-primary" />
             {item}
           </li>
         ))}
       </ul>
-    </div>
+    </DetailSection>
   );
 };
 

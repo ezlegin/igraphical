@@ -3,6 +3,7 @@ import CompletedCourses from "./components/CompletedCourses";
 import { getSessionUser } from "@/data/user";
 import RunningCourses from "../components/RunningCourses";
 import { Metadata } from "next";
+import PanelHeader from "../components/PanelHeader";
 
 const page = async () => {
   const userId = (await getSessionUser())?.id;
@@ -43,7 +44,8 @@ const page = async () => {
   const runningCourses = runningEnrollment.map((e) => e.course);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
+      <PanelHeader title="دوره‌های من" description="از همون جایی که موندی ادامه بده." />
       <RunningCourses runningCourses={runningCourses} />
 
       <CompletedCourses />

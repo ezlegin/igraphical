@@ -21,6 +21,8 @@ const config = {
     },
     extend: {
       colors: {
+        // brand accent used by the app's "Studio" design; merges with Tailwind's lime scale
+        lime: { DEFAULT: "#d4ff3f" },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

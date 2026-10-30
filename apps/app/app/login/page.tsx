@@ -12,6 +12,9 @@ export interface LoginFormsProps {
   isNewUser?: boolean;
   redirectTo?: string;
   onSuccess?: () => void;
+  /** Set by the OTP step; proves verification happened and unlocks login. */
+  loginToken?: string;
+  setLoginToken?: Dispatch<React.SetStateAction<string>>;
 }
 
 const page = () => {

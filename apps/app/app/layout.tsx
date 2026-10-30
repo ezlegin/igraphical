@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./fonts.css";
 import "./stars.scss";
+import "./studio.css";
 
 export default function RootLayout({
   children,

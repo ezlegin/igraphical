@@ -6,6 +6,7 @@ import Masonry from "react-masonry-css";
 import { Button } from "@igraph/ui/components/ui/button";
 import { Image, Review, User } from "@igraph/database";
 import { useSearchParams, useRouter } from "next/navigation";
+import DetailSection from "./DetailSection";
 
 export interface ReviewType extends Review {
   user: User & { image: Image | null };
@@ -33,8 +34,7 @@ const CourseReviews = ({ reviews }: Props) => {
 
   return (
     reviews.length > 0 && (
-      <div>
-        <h2 className="text-lg font-semibold mb-3">نظرات دانش آموزان:</h2>
+      <DetailSection id="reviews" title="نظرات دانشجوها">
 
         <Masonry
           breakpointCols={{ default: 2, 1024: 1 }}
@@ -49,16 +49,16 @@ const CourseReviews = ({ reviews }: Props) => {
         {reviews.length > reviewInitialCount && (
           <div className="flex justify-center mt-10">
             <Button
-              size={"sm"}
               disabled={reviews.length < currentReviews}
-              variant="dark"
+              variant="outline"
+              className="rounded-full border-foreground/15 px-6"
               onClick={handleLoadMore}
             >
               مشاهده بیشتر
             </Button>
           </div>
         )}
-      </div>
+      </DetailSection>
     )
   );
 };

@@ -19,6 +19,7 @@ export const enrollmentStatus = [
   "COMPLETED",
 ] as const;
 export const paymentMethod = [
+  "SADAD",
   "ZARRIN_PAL",
   "DIGIPAY",
   "ADMIN",

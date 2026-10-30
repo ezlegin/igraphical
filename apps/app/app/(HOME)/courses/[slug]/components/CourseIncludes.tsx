@@ -12,11 +12,13 @@ interface Props {
 const CourseIncludes = ({ courseIncludes }: Props) => {
   return (
     <>
-      <h3 className="font-semibold text-base">این دوره شامل:</h3>
-      <ul className=" text-sm text-muted-foreground space-y-3">
+      <h3 className="text-base font-bold">این دوره شامل:</h3>
+      <ul className="space-y-3 text-sm text-muted-foreground">
         {courseIncludes.map((item, index) => (
           <li key={index} className="flex gap-3 items-center">
-            <item.icon size={16} />
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-foreground/5 text-primary">
+              <item.icon size={15} />
+            </span>
             {item.label}
           </li>
         ))}

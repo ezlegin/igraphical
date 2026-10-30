@@ -8,6 +8,7 @@ import {
   LessonProgress,
   Tutor,
 } from "@igraph/database";
+import Link from "next/link";
 import CardBox from "./CardBox";
 import RunningCourseCard from "./RunningCourseCard";
 
@@ -34,8 +35,11 @@ const RunningCourses = ({ runningCourses, showBtn }: Props) => {
       }
     >
       {runningCourses.length === 0 ? (
-        <div className="py-20 text-gray-500 flex justify-center text-sm">
-          شما دوره در جریانی ندارید.
+        <div className="flex flex-col items-center gap-3 py-14 text-center">
+          <p className="text-sm text-muted-foreground">شما دوره در جریانی ندارید.</p>
+          <Link href="/courses" className="rounded-full bg-primary/15 px-4 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground">
+            مشاهده دوره‌ها
+          </Link>
         </div>
       ) : (
         runningCourses.map((course, index) => {

@@ -32,11 +32,11 @@ const Cart = ({ cart, wallet }: Props) => {
 
   return (
     <>
-      <div className="w-full lg:w-10/12">
+      <div className="min-w-0">
         <CartList cartItems={cart?.cartItem} prices={prices} />
       </div>
 
-      <div className="w-full md: lg:w-4/12 card p-5  h-min space-y-3 overflow-visible">
+      <div className="studio-card top-6 h-min space-y-3 overflow-visible p-5 shadow-[0_30px_80px_-40px_hsl(var(--primary)/0.6)] md:p-6 lg:sticky">
         <CheckoutForm
           courses={courses}
           wallet={wallet}

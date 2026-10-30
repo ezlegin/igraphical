@@ -1,18 +1,6 @@
 "use client";
 
 import { deleteCartItem } from "@/actions/cart";
-import Avatar from "@igraph/ui/components/Avatar";
-import { Button } from "@igraph/ui/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@igraph/ui/components/ui/table";
-import { formatPriceBy3Digits } from "@igraph/utils";
 import { placeHolder } from "@/public";
 import {
   CartItem,
@@ -21,7 +9,10 @@ import {
   Image as ImageType,
   Tutor,
 } from "@igraph/database";
-import { X } from "lucide-react";
+import Avatar from "@igraph/ui/components/Avatar";
+import { formatPriceBy3Digits } from "@igraph/utils";
+import { Trash2 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -61,88 +52,81 @@ const CartList = ({ cartItems, prices }: Props) => {
   const total = prices.reduce((acc, curr) => acc + curr.price, 0);
 
   return (
-    <div className="text-right">
-      <Table className="text-right">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-right">دوره</TableHead>
-            <TableHead className="text-right hidden lg:table-cell">
-              مدرس
-            </TableHead>
-            <TableHead className="text-left">مبلغ (تومان)</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
+    <div className="space-y-3">
+      <AnimatePresence initial={false}>
+        {cartItems.map((item, index) => {
+          const struck =
+            item.course.price !== item.course.basePrice || item.course.price !== prices[index]?.price;
+          return (
+            <motion.div
+              key={item.id}
+              layout
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: 60 }}
+              transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+              className="group flex items-center gap-4 rounded-[1.5rem] border border-foreground/10 bg-card/50 p-3 transition-colors hover:border-foreground/20"
+            >
+              <Link href={`/courses/${item.course.url}`} className="shrink-0 overflow-hidden rounded-2xl">
+                <Image
+                  alt={item.course.title}
+                  src={item.course.image?.url || placeHolder}
+                  width={240}
+                  height={160}
+                  className="aspect-[3/2] w-28 object-cover transition-transform duration-500 group-hover:scale-105 md:w-36"
+                />
+              </Link>
 
-        <TableBody>
-          {cartItems.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell className="py-3">
-                <Link
-                  href={`/courses/${item.course.url}`}
-                  className="flex items-center gap-3"
-                >
-                  <Image
-                    alt=""
-                    src={item.course.image?.url || placeHolder}
-                    width={70}
-                    height={70}
-                    className="rounded-sm object-cover"
-                  />
-
-                  <p className="font-medium text-sm">{item.course.title}</p>
+              <div className="min-w-0 flex-1 space-y-2">
+                <Link href={`/courses/${item.course.url}`} className="line-clamp-2 text-sm font-semibold leading-6 hover:text-primary md:text-base">
+                  {item.course.title}
                 </Link>
-              </TableCell>
-              <TableCell className="hidden lg:table-cell">
-                <Link
-                  href={`/tutors/${item.course.tutor?.slug}`}
-                  className="flex gap-2 items-center"
-                >
-                  <Avatar src={item.course.tutor?.image?.url} size={30} />
-                  <span className="font-medium text-xs ">
-                    {item.course.tutor?.displayName}
-                  </span>
-                </Link>
-              </TableCell>
-              <TableCell>
-                <div className="flex justify-end gap-3 items-center">
-                  {(item.course.price !== item.course.basePrice ||
-                    item.course.price !== prices[index]?.price) && (
-                    <span className="text-slate-400 tracking-wider text-sm relative before:absolute before:content-[''] before:w-full before:h-[1px] before:bg-red-500 before:top-1/2 before:left-0 before:-rotate-6">
+                {item.course.tutor && (
+                  <Link href={`/tutors/${item.course.tutor.slug}`} className="flex w-fit items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+                    <Avatar src={item.course.tutor.image?.url} size={22} />
+                    {item.course.tutor.displayName}
+                  </Link>
+                )}
+                <div className="flex items-baseline gap-2 md:hidden">
+                  {struck && (
+                    <span className="text-xs text-muted-foreground line-through">
                       {formatPriceBy3Digits(item.course.basePrice)}
                     </span>
                   )}
+                  <span className="text-sm font-bold">{formatPriceBy3Digits(prices[index]?.price)}</span>
+                  <span className="text-[10px] text-muted-foreground">تومان</span>
+                </div>
+              </div>
 
-                  <span className="text-sm">
-                    {formatPriceBy3Digits(prices[index]?.price)}
+              <div className="hidden text-left md:block">
+                {struck && (
+                  <span className="block text-xs text-muted-foreground line-through">
+                    {formatPriceBy3Digits(item.course.basePrice)}
                   </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex justify-end">
-                  <Button
-                    onClick={() => onDeleteItem(item.id)}
-                    variant={"ghost"}
-                    size={"icon"}
-                    className="[&_svg]:size-3.5 w-7 h-7"
-                  >
-                    <X size={13} className="text-slate-500" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+                )}
+                <span className="text-lg font-bold">{formatPriceBy3Digits(prices[index]?.price)}</span>
+                <span className="mr-1 text-xs text-muted-foreground">تومان</span>
+              </div>
 
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={2}>جمع کل</TableCell>
-            <TableCell className="text-left">
-              {formatPriceBy3Digits(total)}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+              <button
+                onClick={() => onDeleteItem(item.id)}
+                aria-label="حذف از سبد خرید"
+                className="flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/15 hover:text-destructive"
+              >
+                <Trash2 size={16} />
+              </button>
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+
+      <div className="flex items-center justify-between rounded-[1.5rem] border border-dashed border-foreground/15 px-5 py-4">
+        <span className="text-sm text-muted-foreground">جمع کل</span>
+        <span>
+          <span className="text-lg font-bold">{formatPriceBy3Digits(total)}</span>
+          <span className="mr-1 text-xs text-muted-foreground">تومان</span>
+        </span>
+      </div>
     </div>
   );
 };

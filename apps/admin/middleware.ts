@@ -1,30 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
-  const { nextUrl, cookies } = req;
+  const { nextUrl } = req;
 
   if (nextUrl.pathname.startsWith("/api/cron")) {
     return NextResponse.next();
   }
 
-  const token = cookies.get(
-    process.env.NODE_ENV === "development"
-      ? "authjs.session-token"
-      : "__Secure-authjs.session-token",
-  )?.value;
-  const isLoggedIn = !!token;
-
-  const isPrivateRoute = ["/"].some((route) =>
-    nextUrl.pathname.startsWith(route),
-  );
-  const isAuthRoute = ["/login"].some((route) =>
-    nextUrl.pathname.startsWith(route),
-  );
-
-  if (!isLoggedIn && isPrivateRoute && !isAuthRoute) {
-    return NextResponse.redirect(new URL("/login", nextUrl));
-  }
-
+  // Auth is enforced server-side via auth(); the middleware only skips cron.
   return NextResponse.next();
 }
 

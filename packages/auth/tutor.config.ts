@@ -1,6 +1,7 @@
 import { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getTutorById, getTutorByIdentifier } from "./data/tutor";
+import { verifyLoginTicket } from "./login-ticket";
 
 export default {
   pages: {
@@ -28,13 +29,21 @@ export default {
       name: "Tutor Login",
       credentials: {
         identifier: {},
+        loginToken: {},
       },
       authorize: async (credentials) => {
-        const { identifier } = credentials as {
-          identifier: string;
+        const { identifier, loginToken } = credentials as {
+          identifier?: string;
+          loginToken?: string;
         };
 
         if (!identifier) {
+          throw new Error("Invalid Credentials");
+        }
+
+        // Password + OTP are checked in verifyLogin()/verifyOtp(); those are the
+        // only functions that can mint a loginToken.
+        if (!verifyLoginTicket(loginToken, identifier)) {
           throw new Error("Invalid Credentials");
         }
 

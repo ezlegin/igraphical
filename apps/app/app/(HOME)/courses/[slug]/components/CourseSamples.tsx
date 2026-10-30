@@ -6,6 +6,7 @@ import {
 } from "@igraph/ui/components/ui/dialog";
 import { ScrollArea } from "@igraph/ui/components/ui/scroll-area";
 import Image from "next/image";
+import DetailSection from "./DetailSection";
 
 interface Props {
   courseTitle: string;
@@ -20,10 +21,7 @@ interface Props {
 const CourseExercise = ({ exercises, courseTitle }: Props) => {
   return (
     exercises && (
-      <div>
-        <h2 className="text-lg font-semibold mb-3">
-          تمرینات و بخش هایی از این دوره:
-        </h2>
+      <DetailSection title="تمرین‌ها و نمونه‌کارهای دوره">
 
         <ScrollArea className="rounded-md h-96 lg:h-full">
           <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-2 px-4">
@@ -37,7 +35,7 @@ const CourseExercise = ({ exercises, courseTitle }: Props) => {
                     width={300}
                     height={300}
                     draggable={false}
-                    className="rounded-lg aspect-square object-cover cursor-pointer"
+                    className="aspect-square cursor-pointer rounded-2xl object-cover transition-transform duration-500 hover:scale-[1.03]"
                   />
                 </DialogTrigger>
 
@@ -59,7 +57,7 @@ const CourseExercise = ({ exercises, courseTitle }: Props) => {
             ))}
           </div>
         </ScrollArea>
-      </div>
+      </DetailSection>
     )
   );
 };

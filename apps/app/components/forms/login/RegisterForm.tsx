@@ -43,6 +43,7 @@ const RegisterForm = ({
   inputFormValue: identifier,
   redirectTo,
   onSuccess,
+  loginToken,
 }: LoginFormsProps) => {
   // HOOKS
   const { loading, setLoading } = useLoading();
@@ -74,7 +75,7 @@ const RegisterForm = ({
   const onRegisterUser = async (data: RegisterUserFormType) => {
     setLoading(true);
 
-    const res = await registerUser(data, identifier!);
+    const res = await registerUser(data, identifier!, loginToken!);
 
     if (res.error) {
       toast.error(res.error);
@@ -82,7 +83,7 @@ const RegisterForm = ({
       return;
     }
 
-    const auth = await authenticator(identifier!);
+    const auth = await authenticator(identifier!, loginToken!);
 
     if (auth?.error) {
       toast.error(auth.error);

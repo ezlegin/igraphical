@@ -18,6 +18,9 @@ const LoginForm = ({ redirectTo, onSuccess }: Props) => {
   );
   const [inputFormValue, setInputFormValue] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);
+  // Signed proof that the OTP step passed. Required by `authenticator` and
+  // `registerUser`; without it neither will proceed.
+  const [loginToken, setLoginToken] = useState("");
 
   return (
     <>
@@ -38,6 +41,8 @@ const LoginForm = ({ redirectTo, onSuccess }: Props) => {
             isNewUser={isNewUser}
             onSuccess={onSuccess}
             redirectTo={redirectTo}
+            loginToken={loginToken}
+            setLoginToken={setLoginToken}
           />
         )}
       </RecaptchaWrapper>
@@ -47,6 +52,7 @@ const LoginForm = ({ redirectTo, onSuccess }: Props) => {
           inputFormValue={inputFormValue}
           redirectTo={redirectTo}
           onSuccess={onSuccess}
+          loginToken={loginToken}
         />
       )}
     </>
