@@ -15,7 +15,10 @@ export default async function HomeLayout({
     >
       <div className="bg-primary h-28 w-[500px] absolute opacity-15 rounded-full blur-3xl -translate-y-12 top-0 right-1/2 translate-x-1/2" />
       <div>
-        <NotifBar />
+        {/* keeps the notif bar clear of the fixed navbar; collapses when there's no notif */}
+        <div className="[&:not(:empty)]:pt-20">
+          <NotifBar />
+        </div>
         <NavBar />
       </div>
       <main className="relative">

@@ -2,11 +2,12 @@ import IgraphLogoSquare from "@igraph/ui/components/IgraphLogoSquare";
 import SocialsIcon from "@igraph/ui/components/SocialsIcon";
 import { Button } from "@igraph/ui/components/ui/button";
 import { Copyright } from "lucide-react";
+import Reveal from "./motion/Reveal";
 import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="mt-20">
+    <Reveal className="mt-20">
       <div className="flex justify-between md:items-center items-start border-b border-t py-6">
         <div className="space-y-4">
           <Link href={"/"}>
@@ -61,7 +62,7 @@ const Footer = () => {
           تمامی حقوق برای شرکت آی‌گرافیکال محفوظ می باشد!
         </p>
       </div>
-    </div>
+    </Reveal>
   );
 };
 
