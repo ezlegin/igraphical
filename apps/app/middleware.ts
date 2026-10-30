@@ -10,8 +10,8 @@ export async function middleware(req: NextRequest) {
   const isLoggedIn = !!token;
 
   if (
-    nextUrl.pathname.startsWith("/api/digipay") ||
-    nextUrl.pathname.startsWith("/api/sadad")
+    // bank callbacks arrive without our session cookie; reconcile checks its own key
+    nextUrl.pathname.startsWith("/api/pay/")
   ) {
     return NextResponse.next();
   }

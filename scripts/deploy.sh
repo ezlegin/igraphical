@@ -55,5 +55,8 @@ for svc in admin tutor app; do
   exit 1
 done
 
+# @obhco/pay reconcile loop (stock curl image, nothing to pull from ghcr)
+dc up -d --no-deps pay-reconcile
+
 docker image prune -f >/dev/null
 echo "deploy ok: $IMAGE_TAG"

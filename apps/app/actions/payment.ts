@@ -3,18 +3,14 @@
 import { priceType } from "@/app/(CART)/cart/components/Cart";
 import { database, PaymentMethod, User, Wallet } from "@igraph/database";
 import {
-  cashBackCalculator,
   sendSuccessPaymentEmail,
   sendSuccessPaymentEmailToAdmin,
   sendSuccessPaymentSms,
 } from "@igraph/utils";
-import { InitiateZarrinPalPurchase, verifyZarrinPalPurchase } from "./zarinPal";
 import { adminData } from "@/data/adminData";
-import {
-  InitiateDigipayPurchase,
-  verifyDigipayPurchase,
-} from "./payments/digipay";
-import { InitiateSADADPurchase, verifySADADPurchase } from "./sadad";
+import { gatewayOf, pay, siteUrl } from "@/lib/pay";
+import { settleGatewayPayment } from "@/lib/settle-payment";
+import { isPayError } from "@obhco/pay";
 
 //* CREATE PAYMENT -------------------------------------------------------
 
@@ -120,24 +116,38 @@ export const createPayment = async (data: PaymentDataType) => {
 
     // PURCHASE
     if (amount > 0) {
-      const res =
-        paymentMethod === "ZARRIN_PAL"
-          ? await InitiateZarrinPalPurchase(user, amount, newPayment.id)
-          : paymentMethod === "SADAD"
-            ? await InitiateSADADPurchase(user, amount, newPayment.id)
-            : await InitiateDigipayPurchase(
-                user,
-                amount,
-                newPayment.id,
-                existingCourses,
-              );
+      const gateway = gatewayOf[paymentMethod];
+      if (!gateway) return { error: "روش پرداخت معتبر نمی باشد" };
 
-      if (res?.success && res.data.authority && res.data.paymentUrl) {
+      let started;
+      try {
+        started = await pay.start({
+          orderId: String(newPayment.id),
+          amount: Math.round(amount * 10), // Toman → Rial
+          description: `Payment For User ${user.id} | Payment Id: ${newPayment.id}`,
+          gateway,
+          customerMobile: user.phone,
+          returnUrl: `${siteUrl}/checkout-result`,
+          metadata: { userId: user.id },
+        });
+      } catch (error) {
+        console.error("Payment start failed", newPayment.id, error);
+        await database.payment.update({
+          where: { id: newPayment.id },
+          data: { status: "FAILED" },
+        });
+        return {
+          error: "درگاه پرداخت پاسخگو نیست. لطفا دقایقی بعد مجددا تلاش کنید",
+        };
+      }
+
+      // every checkout gateway here redirects with GET (only Mellat needs a POST form)
+      if (started.redirect.method === "GET") {
         const updatedCart = await database.cart.update({
           where: { userId: user.id },
           data: {
             amount: amount * 10,
-            authority: res?.data?.authority,
+            authority: started.payment.reference,
             paymentId: newPayment.id,
           },
           include: { cartItem: true },
@@ -162,7 +172,7 @@ export const createPayment = async (data: PaymentDataType) => {
       }
       return {
         success: "به صفحه پرداخت هدایت می شوید...",
-        paymentUrl: res?.data?.paymentUrl,
+        paymentUrl: started.redirect.url,
       };
     } else {
       if (newPayment.walletUsed) {
@@ -230,165 +240,23 @@ export const createPayment = async (data: PaymentDataType) => {
 
 //* VERIFY PAYMENT -------------------------------------------------------
 
-export const verifyPayment = async (
-  authority: string,
-  status: "OK" | "NOK",
-  paymentMethod: PaymentMethod,
-  trackingCode: string,
-  providerId: string,
-  signData: string,
-) => {
+// Called by the result page with the `reference` the callback appended.
+// The outcome always comes from the stored, bank-verified payment.
+export const verifyPayment = async (reference: string) => {
   try {
-    const existingCart = await database.cart.findFirst({
-      where:
-        paymentMethod === "ZARRIN_PAL" || paymentMethod === "SADAD"
-          ? { authority }
-          : { paymentId: +providerId },
-    });
+    if (!reference) return { error: "کد مرجع معتبر نمی باشد" };
 
-    if (!existingCart) return { error: "کد مرجع معتبر نمی باشد" };
+    let record = await pay.get(reference);
+    if (!record) return { error: "کد مرجع معتبر نمی باشد" };
+    if (record.status === "pending") record = (await pay.recheck(reference)) ?? record;
 
-    const res =
-      paymentMethod === "ZARRIN_PAL"
-        ? await verifyZarrinPalPurchase(authority, existingCart.amount!, status)
-        : paymentMethod === "SADAD"
-          ? await verifySADADPurchase(authority, signData, status)
-          : await verifyDigipayPurchase(trackingCode, providerId, status);
-
-    if (res?.success && res?.data) {
-      const deletedCart = await database.cart.delete({
-        where:
-          paymentMethod === "ZARRIN_PAL"
-            ? { authority }
-            : { paymentId: +providerId },
-        include: { payment: true, cartItem: { include: { course: true } } },
-      });
-
-      //* PAYMENT
-      const updatedPayment = await database.payment.update({
-        where: { id: deletedCart.paymentId! },
-        include: { user: true, enrollment: { include: { course: true } } },
-        data: {
-          status: "SUCCESS",
-          paidAt: new Date(),
-          transactionId:
-            paymentMethod === "ZARRIN_PAL"
-              ? res.data.ref_id.toString()
-              : trackingCode,
-
-          enrollment: {
-            create: deletedCart.cartItem.map((cartItem) => ({
-              userId: deletedCart.userId,
-              courseId: cartItem.courseId,
-              price: cartItem.paidPrice || 0,
-              courseOriginalPrice: cartItem.course.basePrice,
-              classroom: {
-                create: {
-                  userId: deletedCart.userId,
-                },
-              },
-            })),
-          },
-        },
-      });
-
-      //* CASHBACK
-      const cashbackAmount = cashBackCalculator(
-        updatedPayment.total,
-        updatedPayment.paymentMethod === "DIGIPAY",
-      );
-      if (cashbackAmount > 0) {
-        await database.wallet.upsert({
-          where: { userId: updatedPayment.userId },
-          update: {
-            balance: { increment: cashbackAmount },
-            transactions: {
-              create: {
-                amount: cashbackAmount,
-                type: "INCREMENT",
-                description: "شارژ کیف پول جهت خرید دوره",
-                paymentId: updatedPayment.id,
-              },
-            },
-          },
-          create: {
-            balance: cashbackAmount,
-            userId: deletedCart.userId,
-            transactions: {
-              create: {
-                amount: cashbackAmount,
-                type: "INCREMENT",
-                description: "شارژ کیف پول جهت خرید دوره",
-                paymentId: updatedPayment.id,
-              },
-            },
-          },
-        });
-      }
-
-      if (updatedPayment.walletUsed && updatedPayment.walletUsedAmount) {
-        await database.wallet.update({
-          where: { userId: updatedPayment.userId },
-          data: {
-            balance: { decrement: updatedPayment.walletUsedAmount },
-            used: { increment: 1 },
-            transactions: {
-              create: {
-                amount: updatedPayment.walletUsedAmount,
-                type: "DECREMENT",
-                description: "کسر کیف پول جهت خرید دوره",
-                paymentId: updatedPayment.id,
-              },
-            },
-          },
-        });
-      }
-
-      if (updatedPayment.discountCode) {
-        await database.coupon.update({
-          where: { code: updatedPayment.discountCode },
-          data: {
-            used: { increment: 1 },
-          },
-        });
-      }
-
-      //* Send Email
-      await sendSuccessPaymentEmail(
-        updatedPayment.user.email,
-        updatedPayment.user.fullName,
-        updatedPayment,
-      );
-
-      //* Send Email To Admin
-      await sendSuccessPaymentEmailToAdmin(
-        adminData.email,
-        updatedPayment.user.fullName,
-        updatedPayment,
-      );
-
-      //* Send Sms
-      await sendSuccessPaymentSms(
-        updatedPayment.user.firstName,
-        updatedPayment.user.phone,
-      );
-
-      return {
-        success: "پرداخت موفق!",
-        refId: paymentMethod === "ZARRIN_PAL" ? res.data.ref_id : trackingCode,
-      };
-    } else {
-      await database.payment.update({
-        where: { id: existingCart.paymentId! },
-        data: {
-          status: "FAILED",
-        },
-      });
-
-      return { error: "پرداخت ناموفق!" };
-    }
+    const res = await settleGatewayPayment(record);
+    if (res.status === "SUCCESS") return { success: "پرداخت موفق!", refId: res.refId };
+    if (res.status === "PENDING")
+      return { error: "پرداخت هنوز تایید نشده است. چند دقیقه دیگر وضعیت را در لیست پرداخت‌ها بررسی کنید" };
+    return { error: "پرداخت ناموفق!" };
   } catch (error) {
-    console.error((error as Error).message);
-    return { error: String(error) };
+    console.error(isPayError(error) ? error.code : error);
+    return { error: "خطا در بررسی پرداخت" };
   }
 };
