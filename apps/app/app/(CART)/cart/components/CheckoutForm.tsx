@@ -59,7 +59,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
   const walletBalance = wallet?.balance || 0;
   const form = useForm<PaymentFormType>({
     resolver: zodResolver(paymentFormSchema),
-    defaultValues: { code: "", paymentMethod: "ZARRIN_PAL" },
+    defaultValues: { code: "", paymentMethod: "SADAD" },
     mode: "onSubmit",
   });
   const discountAmount = baseTotal - total;
@@ -95,8 +95,8 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
   useEffect(() => {
     if (paymentMethod === "DIGIPAY") {
       if (cartTotal <= minimumValidLoanAmount) {
-        form.setValue("paymentMethod", "ZARRIN_PAL");
-        setPaymentMethod("ZARRIN_PAL");
+        form.setValue("paymentMethod", "SADAD");
+        setPaymentMethod("SADAD");
         toast.warning(
           `حداقل مبلغ سبد خرید برای استفاده از خرید اقساطی ${formatPriceBy3Digits(minimumValidLoanAmount)} تومان می باشد.`,
         );
