@@ -29,6 +29,17 @@ const lexical = (text: string) =>
     },
   });
 
+// generated covers live in apps/app/public/dev-seed (served locally, not on Cloudinary)
+const devImage = (name: string, type: "COURSE" | "POST") => ({
+  create: {
+    public_id: `dev-seed/${name}`,
+    url: `/dev-seed/${name}.png`,
+    format: "png",
+    type,
+    size: 0,
+  },
+});
+
 const lorem =
   "در این دوره قدم‌به‌قدم و با پروژه‌های واقعی، مهارت‌های لازم را یاد می‌گیرید و آماده ورود به بازار کار می‌شوید.";
 
@@ -51,14 +62,17 @@ const lorem =
 
     const cats = [];
     for (const [name, urlSlug] of [
-      ["فتوشاپ", "photoshop"],
-      ["ایلاستریتور", "illustrator"],
-      ["موشن گرافیک", "motion-graphic"],
+      ["نرم افزار های سه بعدی", "3d-software"],
+      ["نرم افزار های ویدیویی", "video-software"],
+      ["گرافیک دیزاین", "graphic-design"],
+      ["نرم افزار های گرافیکی", "graphic-software"],
+      ["طراحی محصول", "product-design"],
+      ["هوش مصنوعی", "ai"],
     ]) {
       cats.push(
         await database.courseCategory.upsert({
           where: { url: urlSlug },
-          update: {},
+          update: { name },
           create: { name, url: urlSlug },
         })
       );
@@ -84,23 +98,34 @@ const lorem =
       );
     }
 
-    const titles = [
-      "فتوشاپ از صفر تا صد",
-      "ایلاستریتور حرفه‌ای",
-      "افتر افکت مقدماتی",
-      "طراحی لوگو و هویت بصری",
-      "رتوش حرفه‌ای عکس",
-      "آموزش کورل دراو",
-      "طراحی پوستر خلاقانه",
-      "موشن گرافیک پیشرفته",
+    // [title, price (0 = free), category index, sections, lessons-per-section]
+    const catalog: [string, number, number, number, number][] = [
+      ["دوره تصویرسازی پیشرفته با هوش مصنوعی", 999_000, 5, 8, 5],
+      ["دوره طراحی رابط کاربری Ui با فیگما 2025", 3_879_000, 4, 14, 11],
+      ["مینی دوره طراحی بسته بندی و لیبل", 0, 2, 3, 6],
+      ["دوره مقدماتی نرم افزار ادوبی ایلوستریتور", 0, 3, 4, 5],
+      ["دوره جامع نرم افزار بلندر", 3_060_000, 0, 11, 6],
+      ["دوره فشرده نرم افزار ادوبی پریمیر", 0, 1, 5, 4],
+      ["دوره طراحی کارت ویزیت برش خاص و معمول", 849_000, 2, 2, 4],
+      ["دوره جامع نرم افزار ادوبی فتوشاپ", 999_000, 3, 3, 10],
+      ["دوره جامع نرم افزار ادوبی ایندیزاین", 999_000, 3, 3, 11],
+      ["دوره جامع نرم افزار ادوبی ایلوستریتور", 3_119_000, 3, 10, 8],
+      ["دوره جامع طراحی بسته بندی و لیبل", 3_279_000, 2, 10, 6],
     ];
-    for (let i = 0; i < titles.length; i++) {
+    for (let i = 0; i < catalog.length; i++) {
+      const [title, price, catIdx, sections, perSection] = catalog[i]!;
       const slug = `dev-course-${i + 1}`;
-      if (await database.course.findUnique({ where: { url: slug } })) continue;
-      const base = 1_200_000 + i * 300_000;
-      const course = await database.course.create({
+      const existing = await database.course.findUnique({ where: { url: slug } });
+      if (existing) {
+        await database.curriculum.deleteMany({ where: { courseId: existing.id } });
+        await database.discount.deleteMany({ where: { courseId: existing.id } });
+        await database.review.deleteMany({ where: { courseId: existing.id } });
+        await database.learn.deleteMany({ where: { courseId: existing.id } });
+        await database.course.delete({ where: { id: existing.id } });
+      }
+      await database.course.create({
         data: {
-          title: titles[i]!,
+          title,
           url: slug,
           summary: lorem,
           description: lexical(lorem),
@@ -108,44 +133,44 @@ const lorem =
           jobMarket: lorem,
           audience: "علاقه‌مندان به طراحی گرافیک",
           needs: "یک کامپیوتر ساده",
-          duration: 3600 * (6 + i),
-          basePrice: base,
-          price: base,
+          duration: 3600 * sections,
+          basePrice: price,
+          price,
           status: "PUBLISHED",
           releaseDate: new Date(),
-          categoryId: cats[i % cats.length]!.id,
+          categoryId: cats[catIdx]!.id,
           tutorId: tutor.id,
+          image: devImage(`course-${i + 1}`, "COURSE"),
           learn: {
-            create: ["کار با ابزارها", "پروژه عملی", "نکات حرفه‌ای"].map(
-              (value) => ({ value })
-            ),
+            create: ["کار با ابزارها", "پروژه عملی", "نکات حرفه‌ای"].map((value) => ({ value })),
           },
           curriculum: {
-            create: [
-              {
-                sectionTitle: "مقدمه",
-                lessons: {
-                  create: [
-                    { title: "معرفی دوره", duration: 300, url: "", isFree: true, type: "VIDEO" },
-                    { title: "نصب نرم‌افزار", duration: 600, url: "", isFree: false, type: "VIDEO" },
-                  ],
-                },
+            create: Array.from({ length: sections }, (_, s) => ({
+              sectionTitle: `فصل ${s + 1}`,
+              lessons: {
+                create: Array.from({ length: perSection }, (_, l) => ({
+                  title: `درس ${l + 1}`,
+                  duration: 420,
+                  url: "",
+                  isFree: s === 0 && l === 0,
+                  type: "VIDEO" as const,
+                })),
               },
-            ],
+            })),
           },
           review: {
             create: users.map((u, k) => ({
               userId: u.id,
-              rate: 4 + (k % 2),
+              rate: k === 3 && i % 2 ? 4 : 5,
               content: "دوره عالی و کاربردی بود، خیلی چیز یاد گرفتم.",
             })),
           },
-          ...(i % 3 === 0
+          ...(i === 9
             ? {
                 discount: {
                   create: {
-                    amount: 20,
-                    type: "PERCENT" as const,
+                    amount: 1_000_000,
+                    type: "FIXED" as const,
                     from: new Date(Date.now() - 86400000),
                     to: new Date(Date.now() + 7 * 86400000),
                   },
@@ -154,7 +179,6 @@ const lorem =
             : {}),
         },
       });
-      void course;
     }
 
     await database.course.updateMany({
@@ -171,18 +195,33 @@ const lorem =
       update: {},
       create: { name: "نکات طراحی", url: "design-tips" },
     });
-    for (let i = 1; i <= 4; i++) {
+    const postTitles = [
+      "طراحی دایلاین آنلاین بسته‌بندی",
+      "بهترین نرم‌افزار طراحی UI/UX | مقایسه ابزارهای طراحی رابط و تجربه کاربری",
+      "طراحی رابط کاربری با هوش مصنوعی | تحول آینده UI Design چگونه رقم می‌خورد؟",
+      "۱۰ ترفند فتوشاپ که هر طراحی باید بلد باشه",
+    ];
+    for (let i = 1; i <= postTitles.length; i++) {
       const slug = `dev-post-${i}`;
-      if (await database.post.findUnique({ where: { url: slug } })) continue;
-      await database.post.create({
-        data: {
-          title: `مقاله نمونه شماره ${i}: ترفندهای طراحی`,
+      await database.post.upsert({
+        where: { url: slug },
+        update: { title: postTitles[i - 1]! },
+        create: {
+          image: devImage(`post-${i}`, "POST"),
+          title: postTitles[i - 1]!,
           url: slug,
           content: lexical(lorem + " " + lorem),
           status: "PUBLISHED",
           categories: { create: { categoryId: pcat.id } },
         },
       });
+    }
+
+    for (let i = 1; i <= postTitles.length; i++) {
+      const post = await database.post.findUnique({ where: { url: `dev-post-${i}` }, include: { image: true } });
+      if (post && !post.image) {
+        await database.post.update({ where: { id: post.id }, data: { image: devImage(`post-${i}`, "POST") } });
+      }
     }
 
     if (!(await database.notifbar.findFirst())) {
@@ -196,6 +235,10 @@ const lorem =
         },
       });
     }
+
+    await database.courseCategory.deleteMany({
+      where: { url: { in: ["photoshop", "illustrator", "motion-graphic"] } },
+    });
 
     console.log("dev seed done");
   } catch (e) {
