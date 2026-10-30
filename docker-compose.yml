@@ -133,6 +133,27 @@ services:
     networks:
       - app_network
 
+  # @obhco/pay housekeeping: calls the app's reconcile route every 5 minutes
+  # over the internal network (CRON_SECRET_KEY comes from app.env.local)
+  pay-reconcile:
+    image: curlimages/curl:8.10.1
+    container_name: pay-reconcile
+    restart: always
+    env_file:
+      - /root/envs/igraphical/app.env.local
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while true; do
+          sleep 300
+          curl -fsS -m 120 -X POST -H "x-cron-key: $$CRON_SECRET_KEY" http://app:3000/api/pay/reconcile || echo "reconcile failed"
+          echo
+        done
+    depends_on:
+      - app
+    networks:
+      - app_network
+
 volumes:
   database:
   certs:
