@@ -117,11 +117,29 @@ const lorem =
       const slug = `dev-course-${i + 1}`;
       const existing = await database.course.findUnique({ where: { url: slug } });
       if (existing) {
-        await database.curriculum.deleteMany({ where: { courseId: existing.id } });
-        await database.discount.deleteMany({ where: { courseId: existing.id } });
-        await database.review.deleteMany({ where: { courseId: existing.id } });
-        await database.learn.deleteMany({ where: { courseId: existing.id } });
-        await database.course.delete({ where: { id: existing.id } });
+        // update in place: carts, enrollments and progress may already point at this course
+        await database.course.update({
+          where: { id: existing.id },
+          data: {
+            title,
+            tizerUrl: "https://dl.igraphical.ir//Courses/ui-design/tizer.mp4",
+            duration: 60 * sections + 30,
+            basePrice: price,
+            price: i === 9 ? price - 1_000_000 : price,
+            categoryId: cats[catIdx]!.id,
+          },
+        });
+        const firstLesson = await database.lesson.findFirst({
+          where: { section: { courseId: existing.id } },
+          orderBy: { id: "asc" },
+        });
+        if (firstLesson) {
+          await database.lesson.update({
+            where: { id: firstLesson.id },
+            data: { isFree: true, url: "https://dl.igraphical.ir//Courses/ui-design/S3-E2.mp4" },
+          });
+        }
+        continue;
       }
       await database.course.create({
         data: {
@@ -129,7 +147,8 @@ const lorem =
           url: slug,
           summary: lorem,
           description: lexical(lorem),
-          tizerUrl: "",
+          // real teaser/episode from the live CDN so the players can be tested locally
+          tizerUrl: "https://dl.igraphical.ir//Courses/ui-design/tizer.mp4",
           jobMarket: lorem,
           audience: "علاقه‌مندان به طراحی گرافیک",
           needs: "یک کامپیوتر ساده",
@@ -151,7 +170,7 @@ const lorem =
                 create: Array.from({ length: perSection }, (_, l) => ({
                   title: `درس ${l + 1}`,
                   duration: 7, // minutes
-                  url: "",
+                  url: s === 0 && l === 0 ? "https://dl.igraphical.ir//Courses/ui-design/S3-E2.mp4" : "",
                   isFree: s === 0 && l === 0,
                   type: "VIDEO" as const,
                 })),
