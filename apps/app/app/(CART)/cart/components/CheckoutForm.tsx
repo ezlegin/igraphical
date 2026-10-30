@@ -540,7 +540,6 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
       >
         <div className="flex gap-2 w-full pb-2">
           <ToggleGroupItem
-            disabled={cartTotal !== 20000}
             className="w-full"
             value="SADAD"
             aria-label="Toggle bold"
