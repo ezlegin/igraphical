@@ -1,0 +1,81 @@
+/* iGraphical "Studio" design language — home page only */
+
+.studio-grid {
+  background-image:
+    linear-gradient(to right, hsl(var(--foreground) / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.studio-fade {
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+.studio-noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.studio-card {
+  position: relative;
+  border-radius: 1.75rem;
+  border: 1px solid hsl(var(--foreground) / 0.08);
+  background:
+    radial-gradient(120% 80% at 50% 0%, hsl(var(--primary) / 0.08), transparent 60%),
+    linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%);
+}
+
+.studio-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 2rem;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.18), transparent);
+}
+
+.text-gradient {
+  background: linear-gradient(120deg, #fff 0%, #cfc4ff 45%, hsl(var(--primary)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-lime {
+  color: #d4ff3f;
+}
+
+.bg-lime {
+  background-color: #d4ff3f;
+}
+
+@keyframes studio-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.studio-marquee {
+  animation: studio-marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.studio-marquee-reverse {
+  animation-direction: reverse;
+}
+
+.studio-marquee-pause:hover .studio-marquee {
+  animation-play-state: paused;
+}
+
+.studio-mask-x {
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-marquee {
+    animation: none;
+  }
+}

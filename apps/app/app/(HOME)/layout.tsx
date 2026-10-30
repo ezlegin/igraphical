@@ -11,7 +11,7 @@ export default async function HomeLayout({
 }) {
   return (
     <div
-      className={`antialiased max-w-screen-xl mx-auto grid grid-rows-[auto_1fr_auto] min-h-screen p-3 relative overflow-clip`}
+      className={`antialiased max-w-screen-xl mx-auto grid grid-cols-1 grid-rows-[auto_1fr_auto] min-h-screen p-3 relative overflow-clip`}
     >
       <div className="bg-primary h-28 w-[500px] absolute opacity-15 rounded-full blur-3xl -translate-y-12 top-0 right-1/2 translate-x-1/2" />
       <div>

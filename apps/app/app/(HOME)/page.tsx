@@ -1,12 +1,17 @@
 import { database } from "@igraph/database";
 import { redirect } from "next/navigation";
-import BlogSection from "./components/BlogSection";
-import LandingPage from "./components/LandingPage";
-import LastCourses from "./components/LastCourses";
-import StudentReviews from "./components/StudentReviews";
-import WelcomeSection from "./components/WelcomeSection";
-import WhereToStartSeciton from "./components/WhereToStartSeciton";
-import SocialProof from "./components/SocialProof";
+import "./components/home/home.css";
+import Categories from "./components/home/Categories";
+import Certificate from "./components/home/Certificate";
+import CoursesShowcase from "./components/home/CoursesShowcase";
+import FinalCta from "./components/home/FinalCta";
+import Hero from "./components/home/Hero";
+import Impact from "./components/home/Impact";
+import Journal from "./components/home/Journal";
+import LearningPath from "./components/home/LearningPath";
+import Promo from "./components/home/Promo";
+import Testimonials from "./components/home/Testimonials";
+import ToolMarquee from "./components/home/ToolMarquee";
 
 interface Props {
   searchParams: Promise<{ p: string }>;
@@ -34,20 +39,20 @@ const page = async ({ searchParams }: Props) => {
   }
 
   return (
-    <div className="space-y-28 md:space-y-52 pt-28 lg:pt-32 mb-20">
-      <LandingPage />
-
-      <WhereToStartSeciton />
-
-      <LastCourses />
-
-      <SocialProof />
-
-      <StudentReviews />
-
-      <WelcomeSection />
-
-      <BlogSection />
+    <div className="space-y-24 pb-20 pt-8 md:space-y-40 md:pt-16 lg:pt-20">
+      <div className="space-y-12 md:space-y-16">
+        <Hero />
+        <ToolMarquee />
+      </div>
+      <Promo />
+      <Categories />
+      <CoursesShowcase />
+      <LearningPath />
+      <Impact />
+      <Testimonials />
+      <Certificate />
+      <Journal />
+      <FinalCta />
     </div>
   );
 };
