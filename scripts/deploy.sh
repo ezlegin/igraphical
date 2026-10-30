@@ -1,10 +1,12 @@
 #!/bin/sh
 # Runs ON THE SERVER (piped over ssh by .github/workflows/deploy.yml).
-# Pulls prebuilt images from ghcr and recreates app/admin/tutor only.
+# Pulls prebuilt images from ghcr and recreates only the apps in $SERVICES
+# (space-separated subset of "app admin tutor"; may be empty).
 # Never touches the database, nginx-proxy or letsencrypt containers.
-# Usage: IMAGE_TAG=<sha> GHCR_USER=.. GHCR_TOKEN=.. sh deploy.sh
+# Usage: SERVICES="app admin" IMAGE_TAG=<sha> GHCR_USER=.. GHCR_TOKEN=.. sh deploy.sh
 set -eu
 
+SERVICES="${SERVICES-app admin tutor}"
 : "${IMAGE_TAG:?}" "${GHCR_USER:?}" "${GHCR_TOKEN:?}"
 DEPLOY_DIR=/root/deploy/igraphical
 BACKUP_DIR=/root/backups/igraphical
@@ -26,7 +28,7 @@ docker exec database mysqldump -uroot --single-transaction --routines igraphical
   | gzip > "$BACKUP_DIR/igraphical_$(date +%F_%H%M%S).sql.gz"
 ls -1t "$BACKUP_DIR"/*.sql.gz | tail -n +8 | xargs -r rm -f
 
-for svc in app admin tutor; do docker pull "$REGISTRY/igraphical-$svc:$IMAGE_TAG"; done
+for svc in $SERVICES; do docker pull "$REGISTRY/igraphical-$svc:$IMAGE_TAG"; done
 
 healthy() { # container returns an HTTP status < 500 on its own hostname:3000
   code=$(docker exec "$1" sh -c 'curl -s -o /dev/null -w "%{http_code}" http://$(hostname):3000/' 2>/dev/null || echo 000)
@@ -34,6 +36,7 @@ healthy() { # container returns an HTTP status < 500 on its own hostname:3000
 }
 
 for svc in admin tutor app; do
+  case " $SERVICES " in *" $svc "*) ;; *) continue ;; esac
   prev=$(docker inspect --format '{{.Image}}' "$svc" 2>/dev/null || true)
   echo "==> deploying $svc ($IMAGE_TAG)"
   ok=0

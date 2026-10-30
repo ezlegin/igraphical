@@ -16,7 +16,43 @@ env:
   OWNER: ezlegin
 
 jobs:
+  # Decides which apps need a new image: apps/<name>/** rebuilds only that app;
+  # anything shared (packages/**, root package/lock/turbo files) rebuilds all.
+  # Manual runs, new branches and force pushes rebuild all to be safe.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.pick.outputs.apps }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          ALL='["app","admin","tutor"]'
+          if [ "$EVENT" = pull_request ]; then BASE="$PR_BASE"; else BASE="$BEFORE"; fi
+          if [ "$EVENT" = workflow_dispatch ] || [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "apps=$ALL" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          files=$(git diff --name-only "$BASE" "${{ github.sha }}")
+          echo "$files"
+          if echo "$files" | grep -qE '^(packages/|package\.json$|package-lock\.json$|turbo\.json$|\.npmrc$)'; then
+            echo "apps=$ALL" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          picked=""
+          for a in app admin tutor; do
+            if echo "$files" | grep -q "^apps/$a/"; then picked="$picked\"$a\","; fi
+          done
+          echo "apps=[${picked%,}]" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: changes
+    if: needs.changes.outputs.apps != '[]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,7 +60,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        app: [app, admin, tutor]
+        app: ${{ fromJSON(needs.changes.outputs.apps) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -61,8 +97,12 @@ jobs:
           cache-to: type=gha,scope=${{ matrix.app }},mode=max
 
   deploy:
-    needs: build
-    if: github.event_name != 'pull_request'
+    needs: [changes, build]
+    # also runs when nothing needed building (e.g. only docker-compose.yml changed)
+    if: >-
+      always() && github.event_name != 'pull_request'
+      && needs.changes.result == 'success'
+      && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -93,4 +133,5 @@ jobs:
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ssh prod "IMAGE_TAG=${{ github.sha }} GHCR_USER=${{ github.actor }} GHCR_TOKEN=$GHCR_TOKEN sh -s" < scripts/deploy.sh
+          SERVICES="${{ join(fromJSON(needs.changes.outputs.apps), ' ') }}"
+          ssh prod "SERVICES='$SERVICES' IMAGE_TAG=${{ github.sha }} GHCR_USER=${{ github.actor }} GHCR_TOKEN=$GHCR_TOKEN sh -s" < scripts/deploy.sh
