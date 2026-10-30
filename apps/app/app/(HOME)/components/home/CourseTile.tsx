@@ -6,16 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface Props {
-  course: CourseType & { category?: { name: string } | null };
+  course: CourseType;
 }
 
 export default function CourseTile({ course }: Props) {
   const lessons = course.curriculum.reduce((acc, c) => acc + c.lessons.length, 0);
-  const finalPrice = course.discount
-    ? course.discount.type === "PERCENT"
-      ? course.price * (1 - course.discount.amount / 100)
-      : course.price - course.discount.amount
-    : course.price;
+  // price is already the final price; basePrice is the pre-discount one
+  const finalPrice = course.price;
 
   return (
     <Link
@@ -73,7 +70,7 @@ export default function CourseTile({ course }: Props) {
               <>
                 {course.discount && (
                   <span className="block text-xs text-muted-foreground line-through">
-                    {formatPriceBy3Digits(course.price)}
+                    {formatPriceBy3Digits(course.basePrice)}
                   </span>
                 )}
                 <span className="text-lg font-bold">{formatPriceBy3Digits(finalPrice)}</span>

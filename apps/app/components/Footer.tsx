@@ -18,7 +18,7 @@ const columns = [
     title: "یادگیری",
     links: [
       { label: "همه دوره‌ها", href: "/courses" },
-      { label: "دوره‌های رایگان", href: "/courses?isFree=true" },
+      { label: "دوره‌های رایگان", href: "/courses?isFree=YES" },
       { label: "وبلاگ", href: "/blog" },
       { label: "استعلام مدرک", href: "/verify-cert" },
     ],

@@ -1,6 +1,5 @@
 import { database } from "@igraph/database";
 import { redirect } from "next/navigation";
-import "./components/home/home.css";
 import Categories from "./components/home/Categories";
 import Certificate from "./components/home/Certificate";
 import CoursesShowcase from "./components/home/CoursesShowcase";

@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
 import ReadOnlyEditor from "@igraph/editor/ReadOnlyEditor";
+import React from "react";
 import CourseAudienceItems from "./CourseAudience";
+import DetailSection from "./DetailSection";
 
 interface CourseDescriptionProps {
   content: string; // Your stored Lexical JSON string
@@ -13,18 +14,14 @@ interface CourseDescriptionProps {
   };
 }
 
-const CourseDescription: React.FC<CourseDescriptionProps> = ({
-  content,
-  courseDescriptionItems,
-}) => {
+const CourseDescription: React.FC<CourseDescriptionProps> = ({ content, courseDescriptionItems }) => {
   return (
-    <div className="space-y-3">
-      <h2 className="text-lg font-semibold">درباره این دوره:</h2>
-      <div className="card p-5">
+    <DetailSection id="about" title="درباره این دوره">
+      <div className="studio-card p-6 leading-8 md:p-8">
         <ReadOnlyEditor content={content} />
       </div>
       <CourseAudienceItems courseContentItems={courseDescriptionItems} />
-    </div>
+    </DetailSection>
   );
 };
 

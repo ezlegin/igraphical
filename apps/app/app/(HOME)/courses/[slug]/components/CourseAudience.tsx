@@ -1,4 +1,5 @@
-import React from "react";
+import { Briefcase, Laptop, Users } from "lucide-react";
+
 interface Props {
   courseContentItems: {
     audience: string;
@@ -8,24 +9,26 @@ interface Props {
 }
 
 const CourseAudienceItems = ({ courseContentItems }: Props) => {
+  const items = [
+    { title: "مخاطبین دوره", text: courseContentItems.audience, icon: Users, tone: "#60a5fa" },
+    { title: "ملزومات دوره", text: courseContentItems.needs, icon: Laptop, tone: "#d4ff3f" },
+    { title: "بازار کار", text: courseContentItems.bazaar, icon: Briefcase, tone: "#f472b6" },
+  ].filter((i) => i.text);
+
   return (
-    <div className="space-y-3">
-      <div className="card space-y-3">
-        <h3 className="text-base text-primary">مخاطبین دوره</h3>
-        <p>{courseContentItems.audience}</p>
-      </div>
-
-      <div className="lg:flex gap-3 space-y-3 lg:space-y-0">
-        <div className="card space-y-2 lg:w-1/2 h-min">
-          <h3 className="text-base text-primary">ملزومات دوره</h3>
-          <pre>{courseContentItems.needs}</pre>
+    <div className="grid gap-3 md:grid-cols-3">
+      {items.map((item) => (
+        <div key={item.title} className="studio-card space-y-3 p-5">
+          <span
+            className="flex size-10 items-center justify-center rounded-xl"
+            style={{ background: `${item.tone}1f`, color: item.tone }}
+          >
+            <item.icon size={18} />
+          </span>
+          <h3 className="font-bold">{item.title}</h3>
+          <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">{item.text}</p>
         </div>
-
-        <div className="card space-y-2 lg:w-1/2 h-min">
-          <h3 className="text-base text-primary">بازار کار</h3>
-          <p>{courseContentItems.bazaar}</p>
-        </div>
-      </div>
+      ))}
     </div>
   );
 };

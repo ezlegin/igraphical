@@ -1,51 +1,42 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-} from "@igraph/ui/components/ui/card";
 import { tutorPlaceholder } from "@/public";
 import { Image as ImageType, Tutor } from "@igraph/database";
+import { ArrowUpLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import DetailSection from "./DetailSection";
 
 interface Props {
   tutor: Tutor & { image: ImageType | null };
 }
 
 const CourseTutor = ({ tutor }: Props) => {
+  if (!tutor) return null;
+
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-3">مدرس دوره:</h2>
-      <Card className="bg-none shadow-none">
-        <CardContent className="py-4 flex flex-col md:flex-row items-center md:items-start flex-wrap md:flex-nowrap md:gap-5">
-          <Image
-            alt="tutor"
-            src={tutor.image?.url || tutorPlaceholder}
-            width={750}
-            height={750}
-            className="w-60 h-7w-60 object-cover"
-          />
-
-          <div className="mt-14 text-muted-foreground space-y-5 ">
-            <div>
-              <h3 className="text-primary-foreground mb-1 text-2xl">
-                <Link href={`/tutors/${tutor.slug}`}>{tutor.displayName}</Link>
-              </h3>
-              <div className="flex gap-2 items-stretch">
-                <div className="w-[2px] bg-muted-foreground" />
-                <pre className="text-muted-foreground text-sm">
-                  {tutor.titles}
-                </pre>
-              </div>
-            </div>
-
-            <CardDescription>{tutor.bio}</CardDescription>
-
-            {/* <SocialsIcon /> */}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <DetailSection id="tutor" title="مدرس دوره">
+      <div className="studio-card studio-noise relative flex flex-col gap-6 overflow-hidden p-6 md:flex-row md:items-center md:p-8">
+        <div className="absolute -left-16 -top-16 size-56 rounded-full bg-primary/20 blur-3xl" />
+        <Image
+          alt={tutor.displayName}
+          src={tutor.image?.url || tutorPlaceholder}
+          width={320}
+          height={320}
+          className="relative size-32 shrink-0 rounded-[1.75rem] object-cover ring-4 ring-primary/20 md:size-40"
+        />
+        <div className="relative space-y-3">
+          <h3 className="text-2xl font-black">{tutor.displayName}</h3>
+          <p className="whitespace-pre-line text-sm text-primary">{tutor.titles}</p>
+          <p className="text-sm leading-7 text-muted-foreground">{tutor.bio}</p>
+          <Link
+            href={`/tutors/${tutor.slug}`}
+            className="inline-flex items-center gap-1 text-sm font-medium text-foreground hover:text-primary"
+          >
+            مشاهده پروفایل و دوره‌ها
+            <ArrowUpLeft size={15} />
+          </Link>
+        </div>
+      </div>
+    </DetailSection>
   );
 };
 

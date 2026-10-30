@@ -14,7 +14,6 @@ import {
   Tutor,
   User,
 } from "@igraph/database";
-import CourseBanner, { CourseInfo } from "./CourseBanner";
 import CourseCurriculum from "./CourseCurriculum";
 import CourseDescription from "./CourseDescription";
 import CourseTutor from "./CourseInstructor";
@@ -22,7 +21,6 @@ import CourseLearnsInCourse from "./CourseLearnsInCourse";
 import CoursePrerequisite from "./CourseRequirements";
 import CourseReviews from "./CourseReviews";
 import CourseExercise from "./CourseSamples";
-import CourseSummery from "./CourseSummery";
 import RelatedCourses from "./RelatedCourses";
 
 export interface CourseType extends Course {
@@ -39,13 +37,6 @@ export interface CourseType extends Course {
 }
 
 const CourseContent = ({ course }: { course: CourseType }) => {
-  const courseInfo: CourseInfo = {
-    title: course.title,
-    category: course.category,
-    reviews: course.review,
-    imageSrc: course.image?.url,
-  };
-
   const learnsInCourse = course.learn.map((item) => item.value);
   const coursePrerequisites = course.prerequisite?.map((item) => item.value);
 
@@ -61,11 +52,7 @@ const CourseContent = ({ course }: { course: CourseType }) => {
   }));
 
   return (
-    <div className="space-y-20">
-      <CourseBanner courseInfo={courseInfo} />
-
-      <CourseSummery summery={course.summary} />
-
+    <div className="min-w-0 space-y-16">
       <CourseLearnsInCourse learnsInCourse={learnsInCourse} />
 
       <CourseDescription

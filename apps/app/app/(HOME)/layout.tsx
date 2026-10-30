@@ -1,3 +1,4 @@
+import "./components/home/home.css";
 import FloatingBanner from "@/components/FloatingBanner";
 import Footer from "@/components/Footer";
 import MobileNavbar from "@/components/MobileNavbar";

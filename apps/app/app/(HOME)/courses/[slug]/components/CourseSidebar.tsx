@@ -73,16 +73,16 @@ const CourseSidebar = async ({ course }: Props) => {
   const isFree = course.price === 0;
 
   return (
-    <div className="order-first md:order-last md:sticky top-16 self-start">
-      <Card className="p-1 pb-3">
-        <CardContent className="p-1 space-y-4">
+    <div className="top-28 self-start lg:sticky">
+      <Card className="studio-card overflow-hidden p-1.5 pb-4 shadow-[0_30px_80px_-40px_hsl(var(--primary)/0.6)]">
+        <CardContent className="space-y-5 p-1">
           {course.tizerUrl && (
-            <div className="rounded-sm overflow-hidden">
+            <div id="course-tizer" className="scroll-mt-28 overflow-hidden rounded-[1.4rem]">
               <TizerVideo url={course.tizerUrl} />
             </div>
           )}
 
-          <div className="px-4 space-y-4">
+          <div className="space-y-5 px-4 pt-2">
             <CourseIncludes
               courseIncludes={courseIncludes as courseIncludesType}
             />

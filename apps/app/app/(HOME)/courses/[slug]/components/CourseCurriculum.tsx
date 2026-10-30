@@ -14,6 +14,7 @@ import {
 } from "@igraph/ui/components/ui/dialog";
 import { Curriculum, Lesson } from "@igraph/database";
 import { Download, File, Lock, Video } from "lucide-react";
+import DetailSection from "./DetailSection";
 
 interface CurriculumType extends Curriculum {
   lessons: Lesson[];
@@ -25,8 +26,7 @@ export interface CurriculumsProps {
 
 const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-3">محتوای این دوره:</h2>
+    <DetailSection id="curriculum" title="سرفصل‌های دوره">
       <Accordion
         type="single"
         collapsible
@@ -37,10 +37,15 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
           <AccordionItem
             key={index}
             value={curriculum.id.toString()}
-            className="border p-1 px-5 rounded-lg bg-background"
+            className="rounded-2xl border border-foreground/10 bg-card/50 px-5 py-1 transition-colors data-[state=open]:border-primary/40 data-[state=open]:bg-card"
           >
             <AccordionTrigger className="font-semibold flex items-center justify-between">
-              <span className="text-sm">{curriculum.sectionTitle}</span>
+              <span className="flex items-center gap-3 text-sm">
+                <span className="en-digits flex size-8 items-center justify-center rounded-lg bg-primary/15 text-xs text-primary">
+                  {index + 1}
+                </span>
+                {curriculum.sectionTitle}
+              </span>
               <div className="flex gap-4 mr-auto ml-4">
                 <span className="text-xs font-normal text-muted-foreground">
                   {curriculum.lessons.length} درس
@@ -55,9 +60,9 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              <ul className="space-y-5 text-muted-foreground">
+              <ul className="space-y-1 text-muted-foreground">
                 {curriculum.lessons.map((lesson, index) => (
-                  <li key={index} className="flex justify-between items-center">
+                  <li key={index} className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-foreground/5">
                     <span className="flex gap-2 items-center">
                       {lesson.type === "VIDEO" ? (
                         <Video size={15} />
@@ -71,8 +76,8 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
                     {lesson.isFree ? (
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Badge variant={"blue"} className="cursor-pointer">
-                            نمایش
+                          <Badge className="cursor-pointer rounded-full bg-lime px-3 text-black hover:bg-lime/90">
+                            پیش‌نمایش رایگان
                           </Badge>
                         </DialogTrigger>
                         <DialogContent className="p-0 border-none max-w-[900px] aspect-video rounded-sm">
@@ -90,7 +95,7 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
           </AccordionItem>
         ))}
       </Accordion>
-    </div>
+    </DetailSection>
   );
 };
 
