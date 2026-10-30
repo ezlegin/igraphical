@@ -577,6 +577,53 @@ model Payment {
   @@map("payment")
 }
 
+// One bank attempt for a Payment, stored for @obhco/pay (see apps/app/lib/pay-store.ts)
+model GatewayPayment {
+  reference          String    @id @db.VarChar(64)
+  orderId            String    @db.VarChar(64)
+  attempt            Int
+  gateway            String    @db.VarChar(32)
+  gatewayOrderId     String    @db.VarChar(32)
+  amount             String    @db.VarChar(32)
+  description        String    @db.Text
+  status             String    @db.VarChar(16)
+  environment        String    @db.VarChar(8)
+  returnUrl          String?   @db.Text
+  customerMobile     String?   @db.VarChar(20)
+  metadata           Json
+  providerSessionId  String?   @db.VarChar(191)
+  providerReference  String?   @db.VarChar(191)
+  traceNumber        String?   @db.VarChar(191)
+  maskedCardNumber   String?   @db.VarChar(64)
+  resultCode         Int?
+  resultText         String?   @db.Text
+  installment        Json?
+  redirect           Json?
+  callbackPayload    Json?
+  createdAt          DateTime  @default(now())
+  expiresAt          DateTime?
+  callbackReceivedAt DateTime?
+  completedAt        DateTime?
+  failedAt           DateTime?
+  reportedStatus     String?   @db.VarChar(16)
+  reportedAt         DateTime?
+
+  @@unique([gateway, gatewayOrderId])
+  @@index([orderId])
+  @@index([gateway, providerSessionId])
+  @@index([status, createdAt])
+  @@map("gateway_payment")
+}
+
+// Row id is the digits-only order number sent to banks (MySQL has no sequences)
+model GatewayOrderNumber {
+  id        Int      @id @default(autoincrement())
+  gateway   String   @db.VarChar(32)
+  createdAt DateTime @default(now())
+
+  @@map("gateway_order_number")
+}
+
 model Expense {
   id        Int      @id @default(autoincrement())
   expense   Float

@@ -3,7 +3,6 @@
 import { verifyPayment } from "@/actions/payment";
 import useError from "@/hooks/useError";
 import useSuccess from "@/hooks/useSuccess";
-import { PaymentMethod } from "@igraph/database";
 import { Button } from "@igraph/ui/components/ui/button";
 import { Check, Loader2, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -14,24 +13,12 @@ import CheckoutSteps from "../cart/components/CheckoutSteps";
 type Status = "SUCCESS" | "FAIL" | "PENDING";
 
 interface Props {
-  authority: string;
-  status: "OK" | "NOK";
-  paymentMethod: PaymentMethod;
-  trackingCode: string;
-  providerId: string;
-  signData: string;
+  reference: string;
 }
 
-const CheckoutResult = ({
-  authority,
-  status,
-  paymentMethod,
-  providerId,
-  trackingCode,
-  signData,
-}: Props) => {
+const CheckoutResult = ({ reference }: Props) => {
   const [result, setResult] = useState<Status>("PENDING");
-  const [refId, setRefId] = useState<number>();
+  const [refId, setRefId] = useState<string>();
   const { error, setError } = useError();
   const { success, setSuccess } = useSuccess();
 
@@ -41,14 +28,7 @@ const CheckoutResult = ({
 
   useEffect(() => {
     const verifyCheckout = async () => {
-      const res = await verifyPayment(
-        authority,
-        status,
-        paymentMethod,
-        trackingCode,
-        providerId,
-        signData,
-      );
+      const res = await verifyPayment(reference);
 
       if (res.error) {
         setResult("FAIL");

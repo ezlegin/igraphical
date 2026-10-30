@@ -18,6 +18,7 @@
     "@igraph/ui": "*",
     "@igraph/utils": "*",
     "@next/third-parties": "^15.2.4",
+    "@obhco/pay": "^0.1.0",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.6.0",
     "clsx": "^2.1.1",

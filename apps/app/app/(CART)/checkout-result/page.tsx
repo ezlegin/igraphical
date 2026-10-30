@@ -1,37 +1,15 @@
 import { Metadata } from "next";
 import CheckoutResult from "./CheckoutResult";
-import { PaymentMethod } from "@igraph/database";
+
 interface Props {
-  searchParams: Promise<{
-    Authority: string;
-    Status: "OK" | "NOK";
-    paymentMethod: PaymentMethod;
-    trackingCode: string;
-    providerId: string;
-    SignData: string;
-  }>;
+  // set by the /api/pay callback; only `reference` is used, the status is re-read from the DB
+  searchParams: Promise<{ reference?: string }>;
 }
 
 const page = async ({ searchParams }: Props) => {
-  const {
-    Authority,
-    Status,
-    paymentMethod,
-    providerId,
-    trackingCode,
-    SignData,
-  } = await searchParams;
+  const { reference } = await searchParams;
 
-  return (
-    <CheckoutResult
-      authority={Authority}
-      status={Status}
-      paymentMethod={paymentMethod}
-      providerId={providerId}
-      trackingCode={trackingCode}
-      signData={SignData}
-    />
-  );
+  return <CheckoutResult reference={reference ?? ""} />;
 };
 
 export default page;
