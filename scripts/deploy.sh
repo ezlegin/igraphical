@@ -36,16 +36,16 @@ healthy() { # container returns an HTTP status < 500 on its own hostname:3000
 for svc in admin tutor app; do
   prev=$(docker inspect --format '{{.Image}}' "$svc" 2>/dev/null || true)
   echo "==> deploying $svc ($IMAGE_TAG)"
-  dc up -d --no-deps --no-build "$svc"
-
   ok=0
-  for _ in $(seq 1 60); do # up to ~3 min (entrypoint runs prisma via npx)
-    sleep 3
-    if healthy "$svc"; then ok=1; break; fi
-  done
+  if dc up -d --no-deps --no-build "$svc"; then
+    for _ in $(seq 1 60); do # up to ~3 min (entrypoint runs prisma via npx)
+      sleep 3
+      if healthy "$svc"; then ok=1; break; fi
+    done
+  fi
   if [ "$ok" = 1 ]; then echo "    $svc healthy"; continue; fi
 
-  echo "!! $svc failed health check"
+  echo "!! $svc failed to start or pass health check"
   docker logs --tail 40 "$svc" || true
   if [ -n "$prev" ]; then
     echo "==> rolling $svc back to previous image"

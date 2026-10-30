@@ -105,7 +105,7 @@ services:
     networks:
       - app_network
     volumes:
-      - /root/projects/igraphical/apps/admin/ga.json:ga.json:ro # THIS IS FOR GOOGLE ANALYTICS
+      - /root/projects/igraphical/apps/admin/ga.json:/app/ga.json:ro # THIS IS FOR GOOGLE ANALYTICS
 
   app:
     image: ghcr.io/ezlegin/igraphical-app:${IMAGE_TAG:-latest}
