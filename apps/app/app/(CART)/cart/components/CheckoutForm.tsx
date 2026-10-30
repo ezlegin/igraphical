@@ -59,7 +59,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
   const walletBalance = wallet?.balance || 0;
   const form = useForm<PaymentFormType>({
     resolver: zodResolver(paymentFormSchema),
-    defaultValues: { code: "", paymentMethod: "SADAD" },
+    defaultValues: { code: "", paymentMethod: "ZARRIN_PAL" },
     mode: "onSubmit",
   });
   const discountAmount = baseTotal - total;
@@ -95,8 +95,8 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
   useEffect(() => {
     if (paymentMethod === "DIGIPAY") {
       if (cartTotal <= minimumValidLoanAmount) {
-        form.setValue("paymentMethod", "SADAD");
-        setPaymentMethod("SADAD");
+        form.setValue("paymentMethod", "ZARRIN_PAL");
+        setPaymentMethod("ZARRIN_PAL");
         toast.warning(
           `حداقل مبلغ سبد خرید برای استفاده از خرید اقساطی ${formatPriceBy3Digits(minimumValidLoanAmount)} تومان می باشد.`,
         );
@@ -540,6 +540,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
       >
         <div className="flex gap-2 w-full pb-2">
           <ToggleGroupItem
+            disabled // Sadad temporarily off
             className="w-full"
             value="SADAD"
             aria-label="Toggle bold"

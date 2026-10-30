@@ -19,6 +19,6 @@ export const pay = createPay({
 // checkout payment method → @obhco/pay gateway code
 export const gatewayOf: Partial<Record<PaymentMethod, string>> = {
   ZARRIN_PAL: "zarinpal",
-  SADAD: "sadad",
+  // SADAD: "sadad", // temporarily off (problem in production)
   DIGIPAY: "digipay",
 };
