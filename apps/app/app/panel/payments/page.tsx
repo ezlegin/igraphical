@@ -2,6 +2,7 @@ import { database } from "@igraph/database";
 import PaymentsList from "./PaymentsList";
 import { getSessionUser } from "@/data/user";
 import { Metadata } from "next";
+import PanelHeader from "../components/PanelHeader";
 
 const page = async () => {
   const userId = (await getSessionUser())?.id;
@@ -20,7 +21,12 @@ const page = async () => {
     },
   });
 
-  return <PaymentsList payments={payments} />;
+  return (
+    <>
+      <PanelHeader title="پرداخت‌ها" description="تاریخچه همه خریدها و تراکنش‌های شما." />
+      <PaymentsList payments={payments} />
+    </>
+  );
 };
 
 export default page;

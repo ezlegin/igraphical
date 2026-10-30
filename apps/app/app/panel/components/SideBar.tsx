@@ -43,27 +43,32 @@ export function SideBar({ user }: Props) {
   const pathName = usePathname();
 
   return (
-    <Sidebar side="right" className="p-2 border-dashed border bg-background">
-      <SidebarHeader className="p-4 space-y-8">
+    <Sidebar side="right" className="border-l border-foreground/10 bg-background p-3">
+      <SidebarHeader className="space-y-6 p-3">
         <Link href={"/"}>
           <IgraphLogo />
         </Link>
 
-        <div className="flex justify-between items-center">
-          <div className="flex gap-2 items-center">
+        <div className="relative flex items-center justify-between overflow-hidden rounded-2xl border border-foreground/10 bg-card p-3">
+          <div className="absolute -left-8 -top-8 size-24 rounded-full bg-primary/25 blur-2xl" />
+          <div className="relative flex min-w-0 items-center gap-2.5">
             <Avatar src={user.image?.url} />
-            <div className="flex flex-col">
-              <span className="font-medium text-primary-foreground">
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-semibold text-foreground">
                 {user.fullName}
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className="en-digits text-[11px] text-muted-foreground">
                 {user.phone}
               </span>
             </div>
           </div>
 
-          <Link href={"/panel/profile"} className="p-1">
-            <Pencil size={14} className="text-muted-foreground" />
+          <Link
+            href={"/panel/profile"}
+            aria-label="ویرایش پروفایل"
+            className="relative flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
+          >
+            <Pencil size={14} />
           </Link>
         </div>
       </SidebarHeader>
@@ -80,9 +85,9 @@ export function SideBar({ user }: Props) {
                       href={item.href}
                       className={cn(
                         pathName === item.href
-                          ? "bg-muted text-primary border"
-                          : "hover:border-border",
-                        "border border-transparent transition-colors",
+                          ? "bg-primary text-primary-foreground shadow-[0_10px_30px_-12px_hsl(var(--primary))] hover:bg-primary hover:text-primary-foreground"
+                          : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
+                        "rounded-xl transition-colors",
                       )}
                     >
                       <item.icon />

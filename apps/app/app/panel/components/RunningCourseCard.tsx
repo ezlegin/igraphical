@@ -1,7 +1,5 @@
-import { Button } from "@igraph/ui/components/ui/button";
-import { Progress } from "@igraph/ui/components/ui/progress";
 import { placeHolder } from "@/public";
-import { MoveLeft } from "lucide-react";
+import { Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,53 +20,52 @@ const RunningCourseCard = ({
   imageUrl,
   classroomUrl,
 }: Props) => {
+  const percent = Math.round(progress || 0);
+
   return (
-    <div className="card py-3">
-      <div className="space-y-5">
-        <div className="flex justify-between">
-          <div className="flex gap-2 items-center">
-            <Image
-              alt=""
-              src={imageUrl || placeHolder}
-              width={85}
-              height={85}
-              className="rounded-md object-cover aspect-video"
-            />
+    <Link
+      href={classroomUrl}
+      className="group flex items-center gap-4 rounded-2xl border border-foreground/10 bg-background/40 p-3 transition-colors hover:border-primary/40"
+    >
+      <div className="relative shrink-0 overflow-hidden rounded-xl">
+        <Image
+          alt={title}
+          src={imageUrl || placeHolder}
+          width={240}
+          height={160}
+          className="aspect-[3/2] w-24 object-cover transition-transform duration-500 group-hover:scale-110 md:w-32"
+        />
+        <span className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+          <Play size={22} className="fill-white text-white" />
+        </span>
+      </div>
 
-            <Link href={classroomUrl}>
-              <p className="font-medium">{title}</p>
-              <p className="text-xs text-gray-500">{tutor}</p>
-            </Link>
-          </div>
-
-          <div className="hidden md:flex gap-2 h-min items-center">
-            <Link href={classroomUrl}>
-              <Button variant={"secondary"} size={"sm"} className="h-7">
-                کلاس درس <MoveLeft />
-              </Button>
-            </Link>
-          </div>
+      <div className="min-w-0 flex-1 space-y-3">
+        <div>
+          <p className="line-clamp-1 font-semibold">{title}</p>
+          <p className="text-xs text-muted-foreground">{tutor}</p>
         </div>
 
-        {progress !== 100 && (
+        {percent !== 100 && (
           <div className="space-y-1.5">
-            <Progress value={progress} />
-            <div
-              dir="ltr"
-              className="text-xs text-gray-500 flex justify-between"
-            >
-              <div className="space-x-2">
-                <span>%{progress?.toFixed()}</span>
-                {/* <span>-</span> */}
-                {/* <span dir="rtl">{completedLessons} جلسه</span> */}
-              </div>
-
-              <div dir="rtl">{remainingLessons} جلسه مانده</div>
+            <div className="h-2 overflow-hidden rounded-full bg-foreground/10">
+              <div
+                className="h-full rounded-full bg-gradient-to-l from-primary to-lime transition-all duration-700"
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[11px] text-muted-foreground">
+              <span>{remainingLessons} جلسه مانده</span>
+              <span className="en-digits">{percent}%</span>
             </div>
           </div>
         )}
       </div>
-    </div>
+
+      <span className="hidden shrink-0 rounded-full bg-primary/15 px-4 py-2 text-xs font-medium text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground md:block">
+        ادامه یادگیری
+      </span>
+    </Link>
   );
 };
 

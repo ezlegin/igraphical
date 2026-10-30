@@ -5,6 +5,7 @@ import { database } from "@igraph/database";
 import { Prisma, TicketStatus } from "@igraph/database";
 import { pagination } from "@igraph/utils";
 import { Metadata } from "next";
+import PanelHeader from "../components/PanelHeader";
 
 interface Props {
   searchParams: Promise<{ time: string; status: string; page: string }>;
@@ -34,7 +35,8 @@ const page = async ({ searchParams }: Props) => {
   });
 
   return (
-    <div className="grid grid-cols-1 gap-3">
+    <div className="grid grid-cols-1 gap-4">
+      <PanelHeader title="پشتیبانی" description="سوالت رو بپرس؛ تیم ما کنارته." />
       <div>
         <FaqBanner />
       </div>
