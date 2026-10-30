@@ -89,16 +89,7 @@ const Footer = () => {
           </a>
         </div>
 
-        {/* giant wordmark */}
-        <p
-          aria-hidden
-          dir="ltr"
-          className="pointer-events-none relative mt-14 select-none bg-gradient-to-b from-foreground/15 to-transparent bg-clip-text text-center text-[14vw] font-black leading-none tracking-tighter text-transparent xl:text-[180px]"
-        >
-          iGraphical
-        </p>
-
-        <div className="relative mt-2 flex flex-col items-center justify-between gap-2 border-t border-foreground/10 pt-5 text-xs text-muted-foreground md:flex-row">
+        <div className="relative mt-12 flex flex-col items-center justify-between gap-2 border-t border-foreground/10 pt-5 text-xs text-muted-foreground md:flex-row">
           <p className="flex items-center gap-1.5">
             <Copyright size={14} />
             تمامی حقوق برای شرکت آی‌گرافیکال محفوظ است.
