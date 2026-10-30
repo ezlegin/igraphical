@@ -9,6 +9,8 @@ import {
 } from "@igraph/ui/components/ui/tabs";
 import CourseCard from "../courses/[slug]/components/CourseCard";
 import { database } from "@igraph/database";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
+import Reveal from "@/components/motion/Reveal";
 
 const LastCourses = async () => {
   const courses = await database.course.findMany({
@@ -30,7 +32,7 @@ const LastCourses = async () => {
   const courseCategories = await database.courseCategory.findMany();
 
   return (
-    <div className="space-y-8">
+    <Reveal className="space-y-8">
       <div className="flex justify-between">
         <div>
           <h2 id="courses">آخرین دوره‌های آی‌گرافیکال</h2>
@@ -65,26 +67,30 @@ const LastCourses = async () => {
         </TabsList>
 
         <TabsContent value="all">
-          <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <Stagger className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <StaggerItem key={course.id}>
+<CourseCard course={course} />
+</StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </TabsContent>
 
         {courseCategories.map((category) => (
           <TabsContent key={category.id} value={category.url}>
-            <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <Stagger className="grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {courses
                 .filter((course) => course.categoryId === category.id)
                 .map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                  <StaggerItem key={course.id}>
+<CourseCard course={course} />
+</StaggerItem>
                 ))}
-            </div>
+            </Stagger>
           </TabsContent>
         ))}
       </Tabs>
-    </div>
+    </Reveal>
   );
 };
 

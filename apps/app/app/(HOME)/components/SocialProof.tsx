@@ -1,5 +1,8 @@
 "use client";
 
+import AnimatedCounter from "@/components/motion/AnimatedCounter";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
+import HoverLift from "@/components/motion/HoverLift";
 import { GraduationCap, Send, Star, Users } from "lucide-react";
 
 const stats = [
@@ -7,6 +10,10 @@ const stats = [
     title: "کاربران فعال",
     subtitle: "ماهانه",
     value: "6K",
+    num: 6,
+    decimals: 0,
+    prefix: "",
+    unit: "K",
     suffix: "+",
     label: "کاربر ماهانه",
     icon: Users,
@@ -18,6 +25,10 @@ const stats = [
     title: "میانگین امتیاز",
     subtitle: "دانش آموزان",
     value: "4.9",
+    num: 4.9,
+    decimals: 1,
+    prefix: "",
+    unit: "",
     suffix: "/5",
     label: "",
     icon: GraduationCap,
@@ -30,6 +41,10 @@ const stats = [
     title: "دوره تماشا شده",
     subtitle: "ماهانه",
     value: "200K",
+    num: 200,
+    decimals: 0,
+    prefix: "",
+    unit: "K",
     suffix: "+",
     label: "ساعت",
     icon: GraduationCap,
@@ -42,6 +57,10 @@ const stats = [
     title: "سوشال مدیا",
     subtitle: "تعداد کاربران",
     value: "+100K",
+    num: 100,
+    decimals: 0,
+    prefix: "+",
+    unit: "K",
     suffix: "",
     label: "کاربر و همراه",
     icon: Send,
@@ -54,6 +73,10 @@ const stats = [
     title: "فارغ التحصیلان",
     subtitle: "از سال 1401",
     value: "+3K",
+    num: 3,
+    decimals: 0,
+    prefix: "+",
+    unit: "K",
     suffix: "",
     label: "فارغ التحصیل",
     icon: Send,
@@ -67,13 +90,12 @@ const stats = [
 export default function SocialProof() {
   return (
     <section className="w-full px-6">
-      <div className="mx-auto grid max-w-[1150px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5 ">
+      <Stagger className="mx-auto grid max-w-[1150px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5 ">
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
 
           return (
-            <div
-              key={idx}
+            <StaggerItem key={idx} className="h-full"><HoverLift className="h-full"><div
               className={`
                 group relative flex min-h-[300px] flex-col items-center
                 overflow-hidden rounded-xl
@@ -120,7 +142,9 @@ export default function SocialProof() {
               {/* Main number */}
               <div className="flex items-baseline justify-center en-digits">
                 <span className="text-4xl font-semibold leading-none tracking-[-0.055em] text-white">
-                  {stat.value}
+                  {stat.prefix}
+                  <AnimatedCounter value={stat.num} decimals={stat.decimals} />
+                  {stat.unit}
                 </span>
 
                 <span
@@ -148,10 +172,10 @@ export default function SocialProof() {
                   {stat.label}
                 </p>
               )}
-            </div>
+            </div></HoverLift></StaggerItem>
           );
         })}
-      </div>
+      </Stagger>
     </section>
   );
 }

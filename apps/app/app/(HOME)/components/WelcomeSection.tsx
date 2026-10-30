@@ -1,4 +1,6 @@
 import { igraphStudent } from "@/public";
+import Reveal from "@/components/motion/Reveal";
+import Float from "@/components/motion/Float";
 import SocialsIcon from "@igraph/ui/components/SocialsIcon";
 import { Button } from "@igraph/ui/components/ui/button";
 import { CircleCheckBig } from "lucide-react";
@@ -8,7 +10,7 @@ import Link from "next/link";
 const WelcomeSection = () => {
   return (
     <div className="flex flex-col lg:flex-row flex-wrap md:flex-nowrap justify-between items-center gap-6 px-8 py-6 text-center md:text-right">
-      <div className="space-y-8">
+      <Reveal x={40} y={0} className="space-y-8">
         <div>
           <h2>
             🎨 به مدرسه هنر <span className="text-primary">آی‌گرافیکال</span>{" "}
@@ -35,9 +37,11 @@ const WelcomeSection = () => {
           </Link>
           <SocialsIcon />
         </div>
-      </div>
+      </Reveal>
 
-      <Image alt="Student" src={igraphStudent} width={425} height={425} />
+      <Float amplitude={8}>
+        <Image alt="Student" src={igraphStudent} width={425} height={425} />
+      </Float>
     </div>
   );
 };

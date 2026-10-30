@@ -4,6 +4,8 @@ import { BadgeCheck, PartyPopper, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@igraph/ui/components/ui/card";
+import Reveal from "@/components/motion/Reveal";
+import { Stagger, StaggerItem } from "@/components/motion/Stagger";
 
 const WhereToStartSeciton = () => {
   return (
@@ -18,7 +20,7 @@ const WhereToStartSeciton = () => {
           height={100}
           className="absolute top-0 left-0 m-5"
         />
-        <div>
+        <Reveal x={-40} y={0}>
           <Image
             alt=""
             src={userTall}
@@ -26,47 +28,58 @@ const WhereToStartSeciton = () => {
             height={270}
             className="md:-translate-y-24"
           />
-        </div>
+        </Reveal>
         <div className="space-y-10 px-10 md:px-0 mb-10">
           <h2 className="mt-10">از کجا شروع کنیم؟</h2>
-          <ol className="relative text-gray-500 border-s border-input">
-            <li className="mb-14 ms-6 mr-8">
-              <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -start-4 ring-4 ring-primary/30">
-                <Search className="text-primary-foreground" size={18} />
-              </span>
-              <h3 className="font-medium text-primary-foreground">
-                1. دوره مد نظرتو انتخاب کن!
-              </h3>
-              <p className="text-sm">
-                دوره‌ای که بهش علاقه داری و مناسب نیازته رو از بین دوره‌های
-                متنوع ما انتخاب کن و یادگیری رو شروع کن.
-              </p>
-            </li>
-            <li className="mb-14 ms-6 mr-8">
-              <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -start-4 ring-4 ring-primary/30">
-                <PartyPopper className="text-primary-foreground" size={18} />
-              </span>
-              <h3 className="font-medium text-primary-foreground">
-                2. دوره تو تموم کن!
-              </h3>
-              <p className="text-sm">
-                با تمرین‌های عملی و پروژه‌های کاربردی، مهارتت رو تقویت کن و دوره
-                رو با موفقیت به پایان برسون..
-              </p>
-            </li>
-            <li className="ms-6 mr-8">
-              <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -start-4 ring-4 ring-primary/30">
-                <BadgeCheck className="text-primary-foreground" size={18} />
-              </span>
-              <h3 className="font-medium text-primary-foreground">
-                3. مدرکشو از ما بگیر!
-              </h3>
-              <p className="text-sm">
-                پس از اتمام دوره، مدرک آی‌گرافیکال رو دریافت کن و با اعتماد به
-                نفس وارد بازار کار شو. 🚀
-              </p>
-            </li>
-          </ol>
+          <Stagger>
+            <ol className="relative text-gray-500 border-s border-input">
+              <StaggerItem>
+                <li className="mb-14 ms-6 mr-8">
+                  <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -start-4 ring-4 ring-primary/30">
+                    <Search className="text-primary-foreground" size={18} />
+                  </span>
+                  <h3 className="font-medium text-primary-foreground">
+                    1. دوره مد نظرتو انتخاب کن!
+                  </h3>
+                  <p className="text-sm">
+                    دوره‌ای که بهش علاقه داری و مناسب نیازته رو از بین دوره‌های
+                    متنوع ما انتخاب کن و یادگیری رو شروع کن.
+                  </p>
+                </li>
+              </StaggerItem>
+              <StaggerItem>
+                <li className="mb-14 ms-6 mr-8">
+                  <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -start-4 ring-4 ring-primary/30">
+                    <PartyPopper
+                      className="text-primary-foreground"
+                      size={18}
+                    />
+                  </span>
+                  <h3 className="font-medium text-primary-foreground">
+                    2. دوره تو تموم کن!
+                  </h3>
+                  <p className="text-sm">
+                    با تمرین‌های عملی و پروژه‌های کاربردی، مهارتت رو تقویت کن و
+                    دوره رو با موفقیت به پایان برسون..
+                  </p>
+                </li>
+              </StaggerItem>
+              <StaggerItem>
+                <li className="ms-6 mr-8">
+                  <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -start-4 ring-4 ring-primary/30">
+                    <BadgeCheck className="text-primary-foreground" size={18} />
+                  </span>
+                  <h3 className="font-medium text-primary-foreground">
+                    3. مدرکشو از ما بگیر!
+                  </h3>
+                  <p className="text-sm">
+                    پس از اتمام دوره، مدرک آی‌گرافیکال رو دریافت کن و با اعتماد
+                    به نفس وارد بازار کار شو. 🚀
+                  </p>
+                </li>
+              </StaggerItem>
+            </ol>
+          </Stagger>
           <div className="flex gap-3">
             <a href="#courses">
               <Button>مشاهده دوره‌ها</Button>
