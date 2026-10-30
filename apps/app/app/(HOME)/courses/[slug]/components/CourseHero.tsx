@@ -8,11 +8,13 @@ import { CourseType } from "./CourseContent";
 
 export default function CourseHero({ course }: { course: CourseType }) {
   const lessons = course.curriculum.reduce((acc, c) => acc + c.lessons.length, 0);
+  // formatDuration returns "<n> ساعت|دقیقه"; split it so the number can stay LTR
+  const [durationValue, durationUnit] = formatDuration(course.duration).split(" ");
   const stats = [
-    { icon: Star, value: calculateCourseRate(course.review), label: "امتیاز", tone: "#ffc928" },
-    { icon: Users, value: course.enrollment.length, label: "دانشجو", tone: "#60a5fa" },
-    { icon: Layers, value: `${course.curriculum.length} فصل · ${lessons} درس`, label: "محتوای دوره", tone: "#d4ff3f" },
-    { icon: Clock, value: formatDuration(course.duration), label: "مدت دوره", tone: "#f472b6" },
+    { icon: Star, value: calculateCourseRate(course.review), unit: "از ۵", label: "امتیاز", tone: "#ffc928" },
+    { icon: Users, value: course.enrollment.length, unit: "نفر", label: "دانشجو", tone: "#60a5fa" },
+    { icon: Layers, value: lessons, unit: "درس", label: `در ${course.curriculum.length} فصل`, tone: "#d4ff3f" },
+    { icon: Clock, value: durationValue, unit: durationUnit, label: "مدت دوره", tone: "#f472b6" },
   ];
 
   return (
@@ -59,7 +61,10 @@ export default function CourseHero({ course }: { course: CourseType }) {
             {stats.map((s) => (
               <div key={s.label} className="rounded-2xl border border-foreground/10 bg-background/50 p-3.5 backdrop-blur">
                 <s.icon size={16} style={{ color: s.tone }} />
-                <p className="en-digits mt-2 text-base font-bold">{s.value}</p>
+                <p className="mt-2 flex items-baseline gap-1 whitespace-nowrap">
+                  <span className="en-digits text-lg font-bold">{s.value}</span>
+                  <span className="text-xs text-muted-foreground">{s.unit}</span>
+                </p>
                 <p className="text-[11px] text-muted-foreground">{s.label}</p>
               </div>
             ))}
