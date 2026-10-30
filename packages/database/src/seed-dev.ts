@@ -133,9 +133,9 @@ const lorem =
           jobMarket: lorem,
           audience: "علاقه‌مندان به طراحی گرافیک",
           needs: "یک کامپیوتر ساده",
-          duration: 3600 * sections,
+          duration: 60 * sections + 30, // minutes
           basePrice: price,
-          price,
+          price: i === 9 ? price - 1_000_000 : price,
           status: "PUBLISHED",
           releaseDate: new Date(),
           categoryId: cats[catIdx]!.id,
@@ -150,7 +150,7 @@ const lorem =
               lessons: {
                 create: Array.from({ length: perSection }, (_, l) => ({
                   title: `درس ${l + 1}`,
-                  duration: 420,
+                  duration: 7, // minutes
                   url: "",
                   isFree: s === 0 && l === 0,
                   type: "VIDEO" as const,
