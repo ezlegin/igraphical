@@ -53,6 +53,7 @@ services:
       - app_network
 
   tutor:
+    image: ghcr.io/ezlegin/igraphical-tutor:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: ./apps/tutor/Dockerfile
@@ -79,6 +80,7 @@ services:
       - app_network
 
   admin:
+    image: ghcr.io/ezlegin/igraphical-admin:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: ./apps/admin/Dockerfile
@@ -106,6 +108,7 @@ services:
       - /root/projects/igraphical/apps/admin/ga.json:ga.json:ro # THIS IS FOR GOOGLE ANALYTICS
 
   app:
+    image: ghcr.io/ezlegin/igraphical-app:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: ./apps/app/Dockerfile
