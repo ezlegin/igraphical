@@ -25,10 +25,6 @@ export async function InitiateSADADPurchase(
     // const merchantId = "000000140336964";
     // const terminalKey = "8v8AEee8YfZX+wwc1TzfShRgH3O9WOho";
 
-    const baseURL =
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:3000"
-        : "https://igraphical.ir";
     const key = CryptoJS.enc.Base64.parse(terminalKey);
     const plaintext = `${terminalId};${orderId};${rialAmount}`;
     const encrypted = CryptoJS.TripleDES.encrypt(plaintext, key, {
@@ -43,7 +39,7 @@ export async function InitiateSADADPurchase(
       Amount: rialAmount,
       OrderId: orderId,
       LocalDateTime: new Date(),
-      ReturnUrl: `${baseURL}/api/sadad?signData=${signData}`,
+      ReturnUrl: `https://igraphical.ir/api/sadad?signData=${signData}`,
       SignData: signData,
       UserId: user.id,
     };

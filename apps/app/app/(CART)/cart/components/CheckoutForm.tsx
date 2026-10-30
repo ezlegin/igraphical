@@ -80,7 +80,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
     useLoading();
   const { loading, setLoading } = useLoading();
   const loanRete = 0;
-  const minimumValidLoanAmount = 650_000;
+  const minimumValidLoanAmount = 1_000_000;
   const isFree = cartTotal === 0;
 
   //! EFFECTS -----------------------------
@@ -506,7 +506,7 @@ const CheckoutForm = ({ courses, wallet, prices, setPrices }: Props) => {
 
               <Button
                 disabled={applyDiscountLoading || isFree}
-                className="absolute px-4 inset-y-0 h-7 left-1 my-auto text-black"
+                className="absolute px-4 inset-y-0 h-7 left-1 my-auto"
                 type="submit"
                 size={"sm"}
                 variant={"secondary"}
