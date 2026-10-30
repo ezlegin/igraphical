@@ -41,6 +41,7 @@ const OtpForm = ({
   inputFormValue: identifier,
   onSuccess,
   redirectTo,
+  setLoginToken,
 }: LoginFormsProps) => {
   // HOOKS
   const { loading, setLoading } = useLoading();
@@ -93,11 +94,16 @@ const OtpForm = ({
 
     setFailedAttempts(0);
 
+    // Keep the signed proof of verification — it is what authorises the login
+    // (and the registration step for a brand-new account).
+    const token = res.loginToken ?? "";
+    setLoginToken?.(token);
+
     // HANDLE RESPONSE
     if (isNewUser) {
       setLoginStep("REGISTER");
     } else {
-      const auth = await authenticator(identifier);
+      const auth = await authenticator(identifier, token);
 
       if (auth?.error) {
         toast.error(auth.error);

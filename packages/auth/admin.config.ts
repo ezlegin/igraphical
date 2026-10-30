@@ -1,6 +1,7 @@
 import { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getAdminById, getAdminByIdentifier } from "./data/admin";
+import { verifyLoginTicket } from "./login-ticket";
 
 export default {
   pages: {
@@ -28,13 +29,22 @@ export default {
       name: "Admin Login",
       credentials: {
         identifier: {},
+        loginToken: {},
       },
       authorize: async (credentials) => {
-        const { identifier } = credentials as {
-          identifier: string;
+        const { identifier, loginToken } = credentials as {
+          identifier?: string;
+          loginToken?: string;
         };
 
         if (!identifier) {
+          throw new Error("Invalid Credentials");
+        }
+
+        // Password + OTP are checked in verifyLogin()/verifyOtp(); those are the
+        // only functions that can mint a loginToken. Without one, knowing an
+        // admin's phone or e-mail must not be enough to obtain a session.
+        if (!verifyLoginTicket(loginToken, identifier)) {
           throw new Error("Invalid Credentials");
         }
 

@@ -3,6 +3,7 @@
 import { database } from "@igraph/database";
 import { kavenegar } from "./config/kavenegar";
 import { generateSmsOtp } from "./otp";
+import { sendOtpEmail } from "./mail";
 import {
   finishCourseSmsText,
   newJoinedStudentSmsText,
@@ -14,7 +15,7 @@ import {
   remindPendingEnrollmentText,
   successfullPaymentSmsText,
 } from "./sms-templates";
-import { convertPersianDigitsToEnglish } from "./utils";
+import { convertPersianDigitsToEnglish, detectInputType } from "./utils";
 
 const sender = process.env.KAVENEGAR_SENDER!;
 
@@ -37,6 +38,21 @@ export const sendOtpSms = async (phone: string, userId?: number) => {
     );
   } catch (error) {
     console.error("Error Sending SMS: " + error);
+  }
+};
+
+/**
+ * Sends an OTP over whichever channel the identifier implies.
+ * Never returns the code — it only exists inside this call and is delivered to
+ * the user's phone/e-mail.
+ */
+export const sendOtp = async (identifier: string, userId?: number) => {
+  const inputType = detectInputType(identifier);
+
+  if (inputType === "phone") {
+    await sendOtpSms(identifier, userId);
+  } else {
+    await sendOtpEmail(identifier, userId);
   }
 };
 

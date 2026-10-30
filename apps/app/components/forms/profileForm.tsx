@@ -68,7 +68,7 @@ const UserProfileForm = ({ user }: Props) => {
   const onSubmit = async (data: ProfileFormType) => {
     setLoading(true);
 
-    const res = await updateUserProfile(data, user.id);
+    const res = await updateUserProfile(data);
 
     if (res.error) {
       toast.error(res.error);
@@ -107,7 +107,7 @@ const UserProfileForm = ({ user }: Props) => {
 
       return;
     }
-    const res = await sendOtp({ phoneOrEmail: identifier, userId: user.id });
+    const res = await sendOtp({ phoneOrEmail: identifier });
 
     if (res.error) {
       toast.error(res.error);

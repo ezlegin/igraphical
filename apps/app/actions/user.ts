@@ -6,23 +6,47 @@ import {
   RegisterUserFormType,
 } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
+import { verifyLoginTicket } from "@igraph/auth";
 import { detectInputType, sendRegistrationCongratsSms } from "@igraph/utils";
 import { UploadApiResponse } from "cloudinary";
 import { deleteCloudFile, uploadCloudFile } from "@igraph/utils";
-import { getUserById } from "@/data/user";
+import { getSessionUser } from "@/data/user";
 
 //* CREATE --------------------------------------------------------
 
 export async function registerUser(
   data: RegisterUserFormType,
   indentifer: string,
+  loginToken: string,
 ) {
   const { email, firstName, lastName, nationalId, phone } = data;
 
   try {
+    // An account may only be created by someone who actually received and
+    // entered the OTP for `indentifer`. Without this the `phoneVerified` /
+    // `emailVerified` flags below were pure self-declaration and anyone could
+    // mint "verified" accounts.
+    if (!verifyLoginTicket(loginToken, indentifer))
+      return { error: "احراز هویت انجام نشده است. لطفا مجددا تلاش کنید." };
+
     //  FORM VALIDATION
     const validation = registerUserFormSchema.safeParse(data);
     if (!validation.success) return { error: "Form Inputs Not Valid" };
+
+    // The identifier that was verified must be one of the contact details being
+    // registered — otherwise the ticket proves nothing about this account.
+    const identifierType = detectInputType(indentifer);
+    const verifiedValue = indentifer.trim().toLowerCase();
+
+    if (
+      (identifierType === "email" &&
+        email.trim().toLowerCase() !== verifiedValue) ||
+      (identifierType === "phone" &&
+        phone.trim() !== indentifer.trim() &&
+        phone.trim() !== indentifer.trim().replace(/^(\+98|0098)/, "0"))
+    ) {
+      return { error: "اطلاعات وارد شده با کد تایید شده مطابقت ندارد." };
+    }
 
     // USER LOOKUP
     const existingUser = await database.user.findFirst({
@@ -40,7 +64,7 @@ export async function registerUser(
     if (existingUser && existingUser.nationalId === nationalId)
       return { error: "با این کد ملی کاربری از قبل وجود دارد." };
 
-    const type = detectInputType(indentifer);
+    const type = identifierType;
     // CREATE USER
     const newUser = await database.user.create({
       data: {
@@ -66,13 +90,17 @@ export async function registerUser(
 
 //* UPDATE --------------------------------------------------------
 
-export const updateUserProfile = async (data: ProfileFormType, id: number) => {
+export const updateUserProfile = async (data: ProfileFormType) => {
   const { firstName, lastName, image, nationalId } = data;
 
   try {
-    // USER LOOP UP
-    const existingUser = await getUserById(id);
+    // The target account is the SESSION user. `id` used to be a function
+    // argument, which let anyone rewrite any user's name, national ID and
+    // profile picture.
+    const existingUser = await getSessionUser();
     if (!existingUser) return { error: "user not found" };
+
+    const id = existingUser.id;
 
     await database.$transaction(async (tx) => {
       if (!existingUser.nationalId) {

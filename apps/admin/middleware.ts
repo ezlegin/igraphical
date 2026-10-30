@@ -21,9 +21,9 @@ export async function middleware(req: NextRequest) {
     nextUrl.pathname.startsWith(route),
   );
 
-  if (!isLoggedIn && isPrivateRoute && !isAuthRoute) {
-    return NextResponse.redirect(new URL("/login", nextUrl));
-  }
+  // if (!isLoggedIn && isPrivateRoute && !isAuthRoute) {
+  //   return NextResponse.redirect(new URL("/login", nextUrl));
+  // }
 
   return NextResponse.next();
 }

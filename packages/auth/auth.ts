@@ -9,3 +9,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   ...authConfig,
 });
+
+/**
+ * Login tickets: the proof that an identifier was verified server-side.
+ * Required by every Credentials `authorize()` callback — see ./login-ticket.ts
+ */
+export {
+  createLoginTicket,
+  normalizeIdentifier,
+  verifyLoginTicket,
+} from "./login-ticket";
