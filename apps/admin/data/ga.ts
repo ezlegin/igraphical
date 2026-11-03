@@ -155,11 +155,24 @@ export async function getCampaignOpensLink(
 //* GET PAGE VIEWS --------------------------------------------
 
 export async function getPageViews(path: string, startDate: Date) {
+  // "today" is the GA property's day, which can lag ours: a fixed start date of
+  // a page made today would come after it. Count back from it with a day spare.
+  const daysAgo = Math.max(
+    1,
+    Math.ceil((Date.now() - startDate.getTime()) / 86_400_000) + 1
+  );
+  try {
+    return await fetchPageViews(path, `${daysAgo}daysAgo`);
+  } catch (error) {
+    console.error("GA page views error:", error);
+    return 0;
+  }
+}
+
+async function fetchPageViews(path: string, startDate: string) {
   const [response] = await analyticsDataClient.runReport({
     property: `properties/${propertyId}`,
-    dateRanges: [
-      { startDate: format(startDate, "yyyy-MM-dd"), endDate: "today" },
-    ],
+    dateRanges: [{ startDate, endDate: "today" }],
     dimensions: [{ name: "pagePath" }],
     metrics: [{ name: "screenPageViews" }],
     dimensionFilter: {
