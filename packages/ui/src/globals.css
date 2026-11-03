@@ -1,5 +1,6 @@
-@config "../tailwind.config.ts"
+/* @import must stay first or the editor (lexical) styles are dropped */
 @import "./lexical.css";
+@config "../tailwind.config.ts";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
