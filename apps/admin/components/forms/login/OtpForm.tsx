@@ -68,7 +68,7 @@ const OtpForm = ({ setLoginStep, identifier }: Props) => {
     }
 
     if (res.success) {
-      const auth = await authenticator(identifier);
+      const auth = await authenticator(identifier, res.loginToken!);
 
       if (auth?.error) {
         toast.error(auth.error);
