@@ -18,6 +18,7 @@ import {
 } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@igraph/ui/lib/utils";
 import { useEffect, type ReactNode } from "react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -164,11 +165,14 @@ export default function Hero() {
 function Words({ text, delay = 0, className }: { text: string; delay?: number; className?: string }) {
   const reduce = useReducedMotion();
   return (
-    <span className={className}>
+    <span>
       {text.split(" ").map((word, i) => (
+        // className (e.g. text-gradient, which uses background-clip: text) goes on
+        // each animated word: on the wrapper it can't paint into the words'
+        // transform/filter layers, leaving them invisible until animation ends.
         <motion.span
           key={i}
-          className="inline-block"
+          className={cn("inline-block", className)}
           initial={reduce ? false : { opacity: 0, y: "0.4em", filter: "blur(8px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 0.7, delay: delay + i * 0.08, ease }}

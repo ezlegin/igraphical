@@ -156,6 +156,7 @@ export async function generateMetadata({
 
   return {
     title: `${tutor.displayName} - مدرس آی‌گرافیکال`,
+    alternates: { canonical: `/tutors/${encodeURIComponent(tutor.slug)}` },
     description: tutor.bio?.slice(0, 120) || `آشنایی با ${tutor.displayName}،`,
     twitter: {
       card: "summary_large_image",

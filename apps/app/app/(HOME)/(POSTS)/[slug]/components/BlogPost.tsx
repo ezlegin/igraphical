@@ -14,6 +14,7 @@ import {
   User,
 } from "@igraph/database";
 import ReadOnlyLexicalEditor from "@igraph/editor/ReadOnlyEditor";
+import StaticLexicalContent from "@igraph/editor/StaticContent";
 import RecaptchaWrapper from "@igraph/ui/components/RecaptchaWrapper";
 import { extractSummaryFromLexical, formatJalaliDate } from "@igraph/utils";
 import { CalendarDays, ChevronLeft, Clock, ListTree, MessageCircle } from "lucide-react";
@@ -48,6 +49,10 @@ type Toc = {
 
 const BlogPost = ({ post, relatedPosts }: Props) => {
   const [tocItems, setTocItems] = useState<Toc>([]);
+  // Server HTML (and first client render) uses the static renderer so the
+  // body is in the initial response; the Lexical editor takes over after mount.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
@@ -195,7 +200,11 @@ const BlogPost = ({ post, relatedPosts }: Props) => {
 
         <div className="min-w-0 space-y-10">
           <div className="studio-card p-6 leading-9 md:p-10 md:text-[17px]">
-            <ReadOnlyLexicalEditor content={post.content} />
+            {mounted ? (
+              <ReadOnlyLexicalEditor content={post.content} />
+            ) : (
+              <StaticLexicalContent content={post.content} />
+            )}
           </div>
 
           <div className="flex items-center justify-between rounded-2xl border border-dashed border-foreground/15 px-5 py-4">

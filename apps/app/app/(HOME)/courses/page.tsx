@@ -159,6 +159,7 @@ export default Page;
 
 export const metadata: Metadata = {
   title: "دوره ها",
+  alternates: { canonical: "/courses" },
   description:
     "دسترسی به کامل‌ترین دوره‌های آموزشی آی‌گرافیکال در زمینه طراحی، نرم‌افزارهای گرافیکی، بسته‌بندی، موشن دیزاین و UI/UX. آموزش‌های پروژه‌محور و بروز.",
 };

@@ -55,6 +55,7 @@ export default Page;
 
 export const metadata: Metadata = {
   title: "قوانین و حریم شخصی",
+  alternates: { canonical: "/terms-and-conditions" },
   description:
     " لطفاً قبل از استفاده از خدمات ما، قوانین و مقررات را مطالعه کنید. شامل شرایط استفاده، مسئولیت‌ها و حقوق کاربران",
 };

@@ -94,6 +94,7 @@ export async function generateMetadata({
 
   return {
     title: `${course.title}`,
+    alternates: { canonical: `/courses/${encodeURIComponent(course.url)}` },
     description,
     openGraph: {
       title: course.title,

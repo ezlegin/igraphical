@@ -25,6 +25,7 @@ export default page;
 
 export const metadata: Metadata = {
   title: "استعلام مدرک",
+  alternates: { canonical: "/verify-cert" },
   description:
     "استعلام آنلاین مدرک دوره‌های گذرانده‌شده در آی‌گرافیکال. به‌سادگی و تنها با وارد کردن سریال مدرک اعتبار مدرک خود را بررسی کنید.",
 };

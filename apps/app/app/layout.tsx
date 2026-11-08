@@ -79,7 +79,6 @@ export const metadata: Metadata = {
     images: ["/og-cover.png"],
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
-  alternates: {
-    canonical: "/",
-  },
+  // No canonical here: every route sets its own (it would otherwise be
+  // inherited, pointing every page at the homepage).
 };

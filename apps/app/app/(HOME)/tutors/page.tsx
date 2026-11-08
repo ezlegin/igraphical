@@ -35,6 +35,7 @@ export default page;
 
 export const metadata: Metadata = {
   title: "مدرسین",
+  alternates: { canonical: "/tutors" },
   description:
     "با مدرسین حرفه‌ای آی‌گرافیکال آشنا شوید. متخصصین با تجربه در حوزه طراحی گرافیک، موشن گرافیک، بسته‌بندی، برنامه‌نویسی و آموزش نرم‌افزارهای کاربردی.",
 };

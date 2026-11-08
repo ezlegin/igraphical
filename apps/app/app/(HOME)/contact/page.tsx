@@ -63,6 +63,7 @@ export default page;
 
 export const metadata: Metadata = {
   title: "تماس با ما",
+  alternates: { canonical: "/contact" },
   description:
     "در صورت نیاز به پشتیبانی، مشاوره یا همکاری با ما در ارتباط باشید. اطلاعات تماس آی‌گرافیکال شامل ایمیل، شماره‌تماس، شبکه‌های اجتماعی و فرم تماس.",
 };

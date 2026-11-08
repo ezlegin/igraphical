@@ -3,7 +3,11 @@ import { getPostCategories } from "@/data/post";
 import { placeHolder } from "@/public";
 import { database, Prisma } from "@igraph/database";
 import Pagination from "@igraph/ui/components/Pagination";
-import { extractSummaryFromLexical, formatJalaliDate, pagination } from "@igraph/utils";
+import {
+  extractSummaryFromLexical,
+  formatJalaliDate,
+  pagination,
+} from "@igraph/utils";
 import { ArrowUpLeft, Newspaper } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -39,7 +43,12 @@ const page = async ({ searchParams }: Props) => {
         take,
         skip,
       })
-      .then((list) => list.map((post) => ({ ...post, categories: post.categories.map((c) => c.category) }))),
+      .then((list) =>
+        list.map((post) => ({
+          ...post,
+          categories: post.categories.map((c) => c.category),
+        })),
+      ),
     database.post.count({ where }),
   ]);
 
@@ -95,8 +104,12 @@ const page = async ({ searchParams }: Props) => {
             />
           </div>
           <div className="flex flex-col justify-center gap-5 p-6 md:p-10">
-            <span className="w-fit rounded-full bg-lime px-3 py-1 text-[11px] font-bold text-black">مقاله ویژه</span>
-            <h2 className="text-2xl font-black leading-snug md:text-3xl">{featured.title}</h2>
+            <span className="w-fit rounded-full bg-lime px-3 py-1 text-[11px] font-bold text-black">
+              مقاله ویژه
+            </span>
+            <h2 className="text-2xl font-black leading-snug md:text-3xl">
+              {featured.title}
+            </h2>
             <p className="line-clamp-3 text-sm leading-7 text-muted-foreground">
               {extractSummaryFromLexical(featured.content)}
             </p>
@@ -124,7 +137,9 @@ const page = async ({ searchParams }: Props) => {
             <span className="flex size-14 items-center justify-center rounded-2xl bg-foreground/5 text-muted-foreground">
               <Newspaper size={24} />
             </span>
-            <p className="text-lg font-bold">هنوز مقاله‌ای در این دسته منتشر نشده</p>
+            <p className="text-lg font-bold">
+              هنوز مقاله‌ای در این دسته منتشر نشده
+            </p>
             <Link href="/blog" className="text-sm text-primary hover:underline">
               نمایش همه مقالات
             </Link>
@@ -143,8 +158,20 @@ export default page;
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "وبلاگ",
-  description:
-    "مطالب تخصصی، آموزش‌های رایگان، بررسی ابزارها، تکنیک‌ها و ترفندهای کاربردی در طراحی گرافیک، بسته‌بندی، موشن گرافیک، و طراحی رابط کاربری.",
-};
+export async function generateMetadata({
+  searchParams,
+}: Props): Promise<Metadata> {
+  const { category, page } = await searchParams;
+  // Self-referencing canonical: keep only the params that change the listing.
+  const qs = new URLSearchParams();
+  if (category) qs.set("category", category);
+  if (page && +page > 1) qs.set("page", String(+page));
+  const query = qs.toString();
+
+  return {
+    title: "وبلاگ",
+    alternates: { canonical: query ? `/blog?${query}` : "/blog" },
+    description:
+      "مطالب تخصصی، آموزش‌های رایگان، بررسی ابزارها، تکنیک‌ها و ترفندهای کاربردی در طراحی گرافیک، بسته‌بندی، موشن گرافیک، و طراحی رابط کاربری.",
+  };
+}

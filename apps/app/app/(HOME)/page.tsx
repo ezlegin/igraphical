@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { database } from "@igraph/database";
 import { redirect } from "next/navigation";
 import Categories from "./components/home/Categories";
@@ -11,6 +12,10 @@ import LearningPath from "./components/home/LearningPath";
 import Promo from "./components/home/Promo";
 import Testimonials from "./components/home/Testimonials";
 import ToolMarquee from "./components/home/ToolMarquee";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 interface Props {
   searchParams: Promise<{ p: string }>;

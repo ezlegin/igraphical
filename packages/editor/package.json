@@ -34,6 +34,7 @@
   "exports": {
     "./Editor": "./src/TextEditor.tsx",
     "./ReadOnlyEditor": "./src/ReadOnlyLexicalEditor.tsx",
+    "./StaticContent": "./src/StaticLexicalContent.tsx",
     "./index.css": "./src/index.css",
     "./getCourseById": "./src/utils/getCourseById.ts",
     "./getPostById": "./src/utils/getPostById.ts"

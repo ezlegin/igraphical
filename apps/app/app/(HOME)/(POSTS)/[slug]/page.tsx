@@ -89,6 +89,7 @@ export async function generateMetadata({
 
   return {
     title: `${post.title} - وبلاگ`,
+    alternates: { canonical: `/${encodeURIComponent(post.url)}` },
     description,
     openGraph: {
       title: post.title,

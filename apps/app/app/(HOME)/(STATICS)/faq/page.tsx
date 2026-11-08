@@ -81,6 +81,7 @@ export default Faq;
 
 export const metadata: Metadata = {
   title: "سوالات متداول",
+  alternates: { canonical: "/faq" },
   description:
     "  سوالات متداول درباره خدمات، حساب کاربری، پرداخت‌ها و پشتیبانی. پاسخ سریع به رایج‌ترین پرسش‌های کاربران.",
 };

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Button } from "@igraph/ui/components/ui/button";
 import {
   ArrowLeft,
@@ -42,6 +43,10 @@ const benefits = [
     desc: "فروش، پرداخت و مدیریت کاربران را آی گرافیکال انجام می‌دهد.",
   },
 ];
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/teach" },
+};
 
 export default function TeachPage() {
   return (
