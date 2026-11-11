@@ -11,6 +11,7 @@ import { adminData } from "@/data/adminData";
 import { gatewayOf, pay, siteUrl } from "@/lib/pay";
 import { settleGatewayPayment } from "@/lib/settle-payment";
 import { isPayError } from "@obhco/pay";
+import { subscriptionsEnabled } from "@/lib/access";
 
 //* CREATE PAYMENT -------------------------------------------------------
 
@@ -53,6 +54,9 @@ export const createPayment = async (data: PaymentDataType) => {
     const existingCourses = await database.course.findMany({
       where: { id: { in: coursesIds } },
     });
+    // Courses are no longer sold one by one once subscriptions are live.
+    if (subscriptionsEnabled() && existingCourses.some((c) => c.price > 0))
+      return { error: "برای دسترسی به دوره‌ها، اشتراک تهیه کنید" };
     if (existingCourses.length === 0)
       return { error: "این دوره (ها) معتبر نمی باشند" };
 

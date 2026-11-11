@@ -518,18 +518,20 @@ model Plan {
 }
 
 model Subscription {
-  id               Int                @id @default(autoincrement())
-  months           Int // snapshot of plan length at purchase
-  startsAt         DateTime
-  endsAt           DateTime
-  mentorship       Boolean            @default(false)
-  mentorshipEndsAt DateTime?
-  price            Float // plan price paid, snapshot
-  mentorshipPrice  Float              @default(0)
-  status           SubscriptionStatus @default(ACTIVE)
-  source           SubscriptionSource @default(PURCHASE)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id                 Int                @id @default(autoincrement())
+  months             Int // snapshot of plan length at purchase
+  startsAt           DateTime
+  endsAt             DateTime
+  mentorship         Boolean            @default(false)
+  // Mentorship stacks on its own timeline, so buying it later starts now.
+  mentorshipStartsAt DateTime?
+  mentorshipEndsAt   DateTime?
+  price              Float // plan price paid, snapshot
+  mentorshipPrice    Float              @default(0)
+  status             SubscriptionStatus @default(PENDING)
+  source             SubscriptionSource @default(PURCHASE)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
@@ -543,6 +545,7 @@ model Subscription {
 }
 
 enum SubscriptionStatus {
+  PENDING // created at checkout, activated when the payment settles
   ACTIVE
   CANCELED
 }

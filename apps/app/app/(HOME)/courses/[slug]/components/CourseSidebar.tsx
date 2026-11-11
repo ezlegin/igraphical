@@ -22,6 +22,8 @@ import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { CourseType } from "./CourseContent";
 import CourseIncludes from "./CourseIncludes";
 import CourseRegisterButton from "./CourseRegisterButton";
+import SubscriptionCourseButton from "./SubscriptionCourseButton";
+import { canAccessCourse, subscriptionsEnabled } from "@/lib/access";
 
 type courseIncludesType = {
   label: string;
@@ -59,7 +61,12 @@ const CourseSidebar = async ({ course }: Props) => {
     { label: "مدرک شرکت در دوره", icon: Star },
     { label: "پشتیبانی رایگان و نامحدود ", icon: Headset },
     { label: "ارتباط مستقیم با مدرس", icon: Send },
-    { label: "دسترسی همیشگی، بدون محدودیت", icon: LockKeyholeOpen },
+    {
+      label: subscriptionsEnabled()
+        ? "دسترسی با اشتراک آی‌گرافیکال"
+        : "دسترسی همیشگی، بدون محدودیت",
+      icon: LockKeyholeOpen,
+    },
   ];
 
   const isInCart = !userId
@@ -72,12 +79,21 @@ const CourseSidebar = async ({ course }: Props) => {
 
   const isFree = course.price === 0;
 
+  const subscriptionMode = subscriptionsEnabled();
+  const canStart =
+    subscriptionMode && !!userId
+      ? await canAccessCourse(userId, course, enrollment)
+      : isFree;
+
   return (
     <div className="top-28 self-start lg:sticky">
       <Card className="studio-card overflow-hidden p-1.5 pb-4 shadow-[0_30px_80px_-40px_hsl(var(--primary)/0.6)]">
         <CardContent className="space-y-5 p-1">
           {course.tizerUrl && (
-            <div id="course-tizer" className="scroll-mt-28 overflow-hidden rounded-[1.4rem]">
+            <div
+              id="course-tizer"
+              className="scroll-mt-28 overflow-hidden rounded-[1.4rem]"
+            >
               <TizerVideo url={course.tizerUrl} />
             </div>
           )}
@@ -112,17 +128,26 @@ const CourseSidebar = async ({ course }: Props) => {
               </>
             )}
 
-            <CourseRegisterButton
-              isPresale={course.status === "PRESALE"}
-              releaseDate={course.releaseDate}
-              classroomId={classroomId}
-              isUserEnrolled={isUserEnrolled}
-              basePrice={course.basePrice}
-              discount={course.discount}
-              price={course.price}
-              courseId={course.id}
-              isInCart={isInCart}
-            />
+            {subscriptionMode ? (
+              <SubscriptionCourseButton
+                courseId={course.id}
+                classroomId={classroomId}
+                canStart={canStart}
+                isLoggedIn={!!userId}
+              />
+            ) : (
+              <CourseRegisterButton
+                isPresale={course.status === "PRESALE"}
+                releaseDate={course.releaseDate}
+                classroomId={classroomId}
+                isUserEnrolled={isUserEnrolled}
+                basePrice={course.basePrice}
+                discount={course.discount}
+                price={course.price}
+                courseId={course.id}
+                isInCart={isInCart}
+              />
+            )}
           </div>
         </CardContent>
       </Card>

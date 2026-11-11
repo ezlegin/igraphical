@@ -58,8 +58,10 @@ const hasActiveMentorship = async (userId: number) => {
   const now = new Date();
   return !!(await database.subscription.findFirst({
     where: {
-      ...activeSubscriptionWhere(userId, now),
+      userId,
+      status: "ACTIVE",
       mentorship: true,
+      mentorshipStartsAt: { lte: now },
       mentorshipEndsAt: { gt: now },
     },
     select: { id: true },

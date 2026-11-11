@@ -7,6 +7,7 @@ import {
   sendSuccessPaymentEmailToAdmin,
   sendSuccessPaymentSms,
 } from "@igraph/utils";
+import { activateSubscriptionForPayment } from "./subscription";
 
 export type SettleResult =
   | { status: "SUCCESS"; refId: string }
@@ -44,6 +45,20 @@ export async function settleGatewayPayment(record: PaymentRecord): Promise<Settl
     return { status: "FAILED" };
   }
 
+  // Subscription order: claim by flipping PENDING → SUCCESS exactly once.
+  const subscription = await database.subscription.findUnique({ where: { paymentId } });
+  if (subscription) {
+    const { count } = await database.payment.updateMany({
+      where: { id: paymentId, status: { in: ["PENDING", "CANCELED", "FAILED"] } },
+      data: { status: "SUCCESS", paidAt: record.completedAt ?? new Date(), transactionId: refId },
+    });
+    if (count === 1) {
+      await activateSubscriptionForPayment(paymentId);
+      await applyPaidPaymentEffects(paymentId);
+    }
+    return { status: "SUCCESS", refId };
+  }
+
   const cart = await database.cart.findFirst({
     where: { paymentId },
     include: { cartItem: { include: { course: true } } },
@@ -74,6 +89,21 @@ export async function settleGatewayPayment(record: PaymentRecord): Promise<Settl
         })),
       },
     },
+  });
+
+  await applyPaidPaymentEffects(updatedPayment.id);
+
+  return { status: "SUCCESS", refId };
+}
+
+/**
+ * Cashback, wallet debit, coupon usage and notifications for a payment that
+ * has just been marked SUCCESS. Call once, right after winning the claim.
+ */
+export async function applyPaidPaymentEffects(paymentId: number) {
+  const updatedPayment = await database.payment.findUniqueOrThrow({
+    where: { id: paymentId },
+    include: { user: true, enrollment: { include: { course: true } } },
   });
 
   //* CASHBACK
@@ -131,5 +161,4 @@ export async function settleGatewayPayment(record: PaymentRecord): Promise<Settl
     console.error("Payment notifications failed", paymentId, error);
   }
 
-  return { status: "SUCCESS", refId };
 }
