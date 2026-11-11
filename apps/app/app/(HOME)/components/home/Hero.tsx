@@ -41,14 +41,14 @@ export default function Hero() {
   }, [mx, my, reduce]);
 
   return (
-    <section className="relative isolate px-3 pb-8 pt-4 md:pb-14">
+    <section className="relative isolate flex min-h-[calc(100svh-8.5rem)] flex-col justify-center px-3 py-10">
       {/* canvas backdrop, faded out well before the edges so no box shows */}
       <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_40%,#000_30%,transparent_100%)]">
         <div className="studio-grid absolute inset-0" />
         <div className="absolute left-1/2 top-10 h-[360px] w-[620px] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px]" />
       </div>
 
-      <div className="relative mx-auto flex max-w-4xl flex-col items-center pt-8 text-center">
+      <div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
         <h1 className="text-4xl font-black leading-[1.2] tracking-tight sm:text-5xl md:text-[56px] md:leading-[1.2]">
           <Words text="ایده‌ها وقتی" delay={0.1} />{" "}
           <SelectionFrame>ساخته</SelectionFrame>
