@@ -158,7 +158,7 @@ const PlansCheckout = ({
           role="radiogroup"
           aria-label="مدت اشتراک"
           style={{ gridTemplateColumns: `repeat(${plans.length}, minmax(0, 1fr))` }}
-          className="grid w-full max-w-lg gap-1 rounded-full border border-foreground/10 bg-background/60 p-1"
+          className="grid gap-1 rounded-full border border-foreground/10 bg-background/60 p-1"
         >
           {plans.map((p) => {
             const active = p.id === planId;
@@ -170,7 +170,7 @@ const PlansCheckout = ({
                 role="radio"
                 aria-checked={active}
                 onClick={() => setPlanId(p.id)}
-                className={`relative rounded-full px-2 py-2.5 text-xs font-medium transition-colors md:text-sm ${
+                className={`relative whitespace-nowrap rounded-full px-4 py-2.5 text-xs font-medium transition-colors md:text-sm ${
                   active
                     ? "bg-primary text-primary-foreground shadow"
                     : "text-muted-foreground hover:text-foreground"
@@ -179,11 +179,13 @@ const PlansCheckout = ({
                 {periodLabel(p.months)}
                 {save > 0 && (
                   <span
-                    className={`absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-1.5 py-px text-[9px] font-bold ${
+                    dir="ltr"
+                    aria-label={`${save}% تخفیف`}
+                    className={`ms-1.5 inline-block whitespace-nowrap rounded-full px-1 align-middle text-[9px] font-bold leading-4 ${
                       active ? "bg-lime text-black" : "bg-lime/20 text-lime"
                     }`}
                   >
-                    <span>{save}%</span> تخفیف
+                    -{save}%
                   </span>
                 )}
               </button>
