@@ -41,7 +41,7 @@ const page = async ({ searchParams }: Props) => {
   }
 
   return (
-    <div className="space-y-20 pb-20 md:space-y-28">
+    <div className="space-y-28 pb-24 md:space-y-40">
       <div className="space-y-12 md:space-y-16">
         <Hero />
         <ToolMarquee />

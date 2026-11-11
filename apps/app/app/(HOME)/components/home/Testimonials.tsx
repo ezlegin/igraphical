@@ -62,7 +62,7 @@ export default function Testimonials() {
   const rowBDoubled = [...rowB, ...rowB];
 
   return (
-    <section className="space-y-12">
+    <section className="space-y-12 py-8 md:py-16">
       <SectionHeading
         index="05"
         eyebrow="دانشجوهای آی‌گرافیکال گفتن"
