@@ -9,12 +9,17 @@ import Loader from "@igraph/ui/components/Loader";
 import { Button } from "@igraph/ui/components/ui/button";
 import { Input } from "@igraph/ui/components/ui/input";
 import { Switch } from "@igraph/ui/components/ui/switch";
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@igraph/ui/components/ui/toggle-group";
 import { formatPriceBy3Digits } from "@igraph/utils";
-import { Check } from "lucide-react";
+import {
+  Award,
+  Check,
+  Download,
+  Headset,
+  Infinity as InfinityIcon,
+  MessageCircleQuestion,
+  Sparkles,
+  TvMinimalPlay,
+} from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
@@ -29,6 +34,13 @@ type PlanView = {
   mentorshipPrice: number;
 };
 
+type Stats = {
+  courses: number;
+  hours: number;
+  lessons: number;
+  catalogValue: number;
+};
+
 type Method = "SADAD" | "ZARRIN_PAL" | "DIGIPAY";
 
 type QuoteView = {
@@ -38,12 +50,22 @@ type QuoteView = {
   total: number;
 };
 
+const periodLabel = (m: number) => (m === 12 ? "سالانه" : `${m} ماهه`);
+
+const methods: { value: Method; label: string; logo: string }[] = [
+  { value: "SADAD", label: "بانک ملی", logo: sadadLogo },
+  { value: "ZARRIN_PAL", label: "زرین پال", logo: zarrinpalLogo },
+  { value: "DIGIPAY", label: "اقساطی", logo: digipayLogo },
+];
+
 const PlansCheckout = ({
   plans,
+  stats,
   isLoggedIn,
   walletBalance,
 }: {
   plans: PlanView[];
+  stats: Stats;
   isLoggedIn: boolean;
   walletBalance: number;
 }) => {
@@ -51,6 +73,7 @@ const PlansCheckout = ({
   const pathname = usePathname();
   const [planId, setPlanId] = useState(plans.at(-1)!.id);
   const [mentorship, setMentorship] = useState(false);
+  const [showCoupon, setShowCoupon] = useState(false);
   const [couponInput, setCouponInput] = useState("");
   const [couponCode, setCouponCode] = useState<string>();
   const [useWallet, setUseWallet] = useState(false);
@@ -59,7 +82,16 @@ const PlansCheckout = ({
   const [paying, startPaying] = useTransition();
 
   const plan = plans.find((p) => p.id === planId)!;
+  const monthlyBase =
+    Math.max(...plans.filter((p) => p.months === 1).map((p) => p.price), 0) ||
+    Math.round(plans[0]!.price / plans[0]!.months);
+  const savingPct = (p: PlanView) =>
+    monthlyBase && p.months > 1
+      ? Math.round((1 - p.price / (monthlyBase * p.months)) * 100)
+      : 0;
+
   const localTotal = plan.price + (mentorship ? plan.mentorshipPrice : 0);
+  const total = quote?.total ?? localTotal;
 
   // The server is the source of truth for the final amount.
   useEffect(() => {
@@ -106,168 +138,319 @@ const PlansCheckout = ({
       }
     });
 
-  const total = quote?.total ?? localTotal;
+  const features = [
+    {
+      icon: TvMinimalPlay,
+      text: `دسترسی کامل به ${stats.courses} دوره، بیش از ${stats.hours} ساعت آموزش`,
+    },
+    { icon: Sparkles, text: "همه دوره‌های جدیدی که منتشر می‌شوند" },
+    { icon: Award, text: "مدرک پایان دوره با کد استعلام" },
+    { icon: Download, text: "فایل‌های تمرین و پروژه‌ها" },
+    { icon: Headset, text: "پشتیبانی از طریق تیکت" },
+    { icon: InfinityIcon, text: "پیشرفت و مدارک شما همیشه محفوظ می‌ماند" },
+  ];
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-      <div className="grid gap-3 sm:grid-cols-2">
-        {plans.map((p) => {
-          const selected = p.id === planId;
-          return (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setPlanId(p.id)}
-              className={`rounded-2xl border p-5 text-right transition ${
-                selected
-                  ? "border-primary bg-primary/5 ring-2 ring-primary"
-                  : "hover:border-primary/50"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-bold">{p.title}</span>
-                {selected && <Check className="text-primary" size={20} />}
-              </div>
-              <div className="mt-3 space-y-1">
-                {p.compareAtPrice && p.compareAtPrice > p.price && (
-                  <div className="text-sm text-muted-foreground line-through">
-                    {formatPriceBy3Digits(p.compareAtPrice)} تومان
-                  </div>
+    <div className="studio-card studio-noise mx-auto max-w-4xl overflow-hidden shadow-[0_40px_120px_-60px_hsl(var(--primary)/0.8)]">
+      {/* Period toggle */}
+      <div className="flex justify-center border-b border-foreground/10 p-4">
+        <div
+          role="radiogroup"
+          aria-label="مدت اشتراک"
+          style={{ gridTemplateColumns: `repeat(${plans.length}, minmax(0, 1fr))` }}
+          className="grid w-full max-w-lg gap-1 rounded-full border border-foreground/10 bg-background/60 p-1"
+        >
+          {plans.map((p) => {
+            const active = p.id === planId;
+            const save = savingPct(p);
+            return (
+              <button
+                key={p.id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => setPlanId(p.id)}
+                className={`relative rounded-full px-2 py-2.5 text-xs font-medium transition-colors md:text-sm ${
+                  active
+                    ? "bg-primary text-primary-foreground shadow"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {periodLabel(p.months)}
+                {save > 0 && (
+                  <span
+                    className={`absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-1.5 py-px text-[9px] font-bold ${
+                      active ? "bg-lime text-black" : "bg-lime/20 text-lime"
+                    }`}
+                  >
+                    <span className="en-digits">{save}%</span> تخفیف
+                  </span>
                 )}
-                <div className="text-xl font-bold">
-                  {formatPriceBy3Digits(p.price)} تومان
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  ماهانه {formatPriceBy3Digits(Math.round(p.price / p.months))}{" "}
-                  تومان
-                </div>
-              </div>
-            </button>
-          );
-        })}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="card space-y-5 self-start rounded-2xl border p-5">
-        <label className="flex items-center justify-between gap-3">
-          <div>
-            <div className="font-medium">منتورشیپ (پرسش از مدرس)</div>
-            <div className="text-xs text-muted-foreground">
-              به مدت {plan.months} ماه، +
-              {formatPriceBy3Digits(plan.mentorshipPrice)} تومان
+      <div className="grid md:grid-cols-[1fr_1.1fr]">
+        {/* What's included */}
+        <div className="space-y-6 border-b border-foreground/10 p-6 md:border-b-0 md:border-l md:p-8">
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">{plan.title}</p>
+            <div className="flex flex-wrap items-baseline gap-x-2">
+              <span className="en-digits text-4xl font-black md:text-5xl">
+                {formatPriceBy3Digits(plan.price)}
+              </span>
+              <span className="text-sm text-muted-foreground">تومان</span>
             </div>
-          </div>
-          <Switch
-            dir="ltr"
-            checked={mentorship}
-            onCheckedChange={setMentorship}
-          />
-        </label>
-
-        {isLoggedIn && (
-          <>
-            <div className="flex gap-2">
-              <Input
-                placeholder="کد تخفیف"
-                value={couponInput}
-                disabled={!!couponCode}
-                onChange={(e) => setCouponInput(e.target.value)}
-              />
-              {couponCode ? (
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setCouponCode(undefined);
-                    setCouponInput("");
-                  }}
-                >
-                  حذف
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  disabled={!couponInput.trim()}
-                  onClick={() => setCouponCode(couponInput.trim())}
-                >
-                  اعمال
-                </Button>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              {plan.compareAtPrice && plan.compareAtPrice > plan.price && (
+                <span className="en-digits line-through">
+                  {formatPriceBy3Digits(plan.compareAtPrice)}
+                </span>
+              )}
+              {plan.months > 1 && (
+                <span>
+                  معادل ماهی{" "}
+                  <span className="en-digits text-foreground">
+                    {formatPriceBy3Digits(Math.round(plan.price / plan.months))}
+                  </span>{" "}
+                  تومان
+                </span>
               )}
             </div>
-
-            {walletBalance > 0 && (
-              <label className="flex items-center justify-between gap-3 text-sm">
-                <span>
-                  استفاده از کیف پول ({formatPriceBy3Digits(walletBalance)}{" "}
-                  تومان)
-                </span>
-                <Switch
-                  dir="ltr"
-                  checked={useWallet}
-                  onCheckedChange={setUseWallet}
-                />
-              </label>
-            )}
-          </>
-        )}
-
-        <div className="space-y-1 text-sm">
-          <Row label="مبلغ" value={quote?.itemsTotal ?? localTotal} />
-          {!!quote?.couponAmount && (
-            <Row label="کد تخفیف" value={-quote.couponAmount} />
-          )}
-          {!!quote?.walletAmount && (
-            <Row label="کیف پول" value={-quote.walletAmount} />
-          )}
-          <div className="flex justify-between border-t pt-2 font-bold">
-            <span>قابل پرداخت</span>
-            <span>{formatPriceBy3Digits(total)} تومان</span>
           </div>
+
+          <ul className="space-y-3">
+            {features.map(({ icon: Icon, text }) => (
+              <li key={text} className="flex items-start gap-3 text-sm">
+                <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                  <Icon size={14} />
+                </span>
+                {text}
+              </li>
+            ))}
+          </ul>
+
+          {stats.catalogValue > plan.price && (
+            <p className="rounded-2xl border border-dashed border-foreground/15 p-3 text-xs leading-6 text-muted-foreground">
+              ارزش خرید جداگانه همه دوره‌ها{" "}
+              <span className="en-digits font-bold text-foreground">
+                {formatPriceBy3Digits(stats.catalogValue)}
+              </span>{" "}
+              تومان است.
+            </p>
+          )}
         </div>
 
-        {total > 0 && (
-          <ToggleGroup
-            type="single"
-            dir="rtl"
-            variant="outline"
-            className="flex-col"
-            value={paymentMethod}
-            onValueChange={(v) => v && setPaymentMethod(v as Method)}
+        {/* Checkout */}
+        <div className="space-y-5 p-6 md:p-8">
+          <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setMentorship((m) => !m);
+              }
+            }}
+            onClick={() => setMentorship((m) => !m)}
+            className={`w-full cursor-pointer rounded-2xl border p-4 text-right transition-colors ${
+              mentorship
+                ? "border-primary bg-primary/10"
+                : "border-foreground/10 hover:border-foreground/25"
+            }`}
           >
-            <div className="flex w-full gap-2">
-              <ToggleGroupItem className="w-full" value="SADAD">
-                <Image alt="" src={sadadLogo} width={25} height={25} />
-                درگاه بانک ملی
-              </ToggleGroupItem>
-              <ToggleGroupItem className="w-full" value="ZARRIN_PAL">
-                <Image alt="" src={zarrinpalLogo} width={25} height={25} />
-                زرین پال
-              </ToggleGroupItem>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex gap-3">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-lime text-black">
+                  <MessageCircleQuestion size={20} />
+                </span>
+                <div>
+                  <p className="font-bold">افزودن منتورشیپ</p>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                    پرسش و پاسخ مستقیم با مدرس در همه دوره‌ها، به مدت{" "}
+                    {plan.months} ماه
+                  </p>
+                </div>
+              </div>
+              <Switch
+                dir="ltr"
+                checked={mentorship}
+                onCheckedChange={setMentorship}
+                onClick={(e) => e.stopPropagation()}
+                aria-label="منتورشیپ"
+              />
             </div>
-            <ToggleGroupItem className="w-full" value="DIGIPAY">
-              <Image alt="" src={digipayLogo} width={23} height={23} />
-              پرداخت اقساطی
-            </ToggleGroupItem>
-          </ToggleGroup>
-        )}
+            <p className="mt-3 text-xs">
+              +{" "}
+              <span className="en-digits font-bold">
+                {formatPriceBy3Digits(plan.mentorshipPrice)}
+              </span>{" "}
+              تومان
+            </p>
+          </div>
 
-        <Button className="w-full" disabled={paying} onClick={onPay}>
-          <Loader loading={paying} />
-          {!isLoggedIn
-            ? "ورود و خرید اشتراک"
-            : total === 0
-              ? "فعال‌سازی اشتراک"
-              : `پرداخت ${formatPriceBy3Digits(total)} تومان`}
-        </Button>
+          {isLoggedIn && (
+            <div className="space-y-3 text-sm">
+              {walletBalance > 0 && (
+                <label className="flex cursor-pointer items-center justify-between gap-3">
+                  <span className="text-muted-foreground">
+                    استفاده از کیف پول (
+                    <span className="en-digits">
+                      {formatPriceBy3Digits(walletBalance)}
+                    </span>{" "}
+                    تومان)
+                  </span>
+                  <Switch
+                    dir="ltr"
+                    checked={useWallet}
+                    onCheckedChange={setUseWallet}
+                  />
+                </label>
+              )}
+
+              {!showCoupon && !couponCode ? (
+                <button
+                  type="button"
+                  className="text-xs text-primary underline-offset-4 hover:underline"
+                  onClick={() => setShowCoupon(true)}
+                >
+                  کد تخفیف دارید؟
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="کد تخفیف"
+                    value={couponInput}
+                    disabled={!!couponCode}
+                    onChange={(e) => setCouponInput(e.target.value)}
+                    className="rounded-full"
+                  />
+                  {couponCode ? (
+                    <Button
+                      variant="outline"
+                      className="rounded-full"
+                      onClick={() => {
+                        setCouponCode(undefined);
+                        setCouponInput("");
+                      }}
+                    >
+                      حذف
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      className="rounded-full"
+                      disabled={!couponInput.trim()}
+                      onClick={() => setCouponCode(couponInput.trim())}
+                    >
+                      اعمال
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="space-y-2 rounded-2xl bg-foreground/[0.03] p-4 text-sm">
+            <Row
+              label={`اشتراک ${periodLabel(plan.months)}`}
+              value={plan.price}
+            />
+            {mentorship && (
+              <Row label="منتورشیپ" value={plan.mentorshipPrice} />
+            )}
+            {!!quote?.couponAmount && (
+              <Row label="کد تخفیف" value={-quote.couponAmount} accent />
+            )}
+            {!!quote?.walletAmount && (
+              <Row label="کیف پول" value={-quote.walletAmount} accent />
+            )}
+            <div className="flex items-baseline justify-between border-t border-foreground/10 pt-3">
+              <span className="font-medium">قابل پرداخت</span>
+              <span>
+                <span className="en-digits text-xl font-black">
+                  {formatPriceBy3Digits(total)}
+                </span>{" "}
+                <span className="text-xs text-muted-foreground">تومان</span>
+              </span>
+            </div>
+          </div>
+
+          {isLoggedIn && total > 0 && (
+            <div
+              className="grid grid-cols-3 gap-2"
+              role="radiogroup"
+              aria-label="روش پرداخت"
+            >
+              {methods.map((m) => (
+                <button
+                  key={m.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={paymentMethod === m.value}
+                  onClick={() => setPaymentMethod(m.value)}
+                  className={`flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 text-xs transition-colors ${
+                    paymentMethod === m.value
+                      ? "border-primary bg-primary/10"
+                      : "border-foreground/10 text-muted-foreground hover:border-foreground/25"
+                  }`}
+                >
+                  <Image alt="" src={m.logo} width={24} height={24} />
+                  {m.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <Button
+            size="lg"
+            className="h-12 w-full rounded-full text-base"
+            disabled={paying}
+            onClick={onPay}
+          >
+            <Loader loading={paying} />
+            {!isLoggedIn ? (
+              "ورود و خرید اشتراک"
+            ) : total === 0 ? (
+              "فعال‌سازی اشتراک"
+            ) : (
+              <>
+                پرداخت{" "}
+                <span className="en-digits">{formatPriceBy3Digits(total)}</span>{" "}
+                تومان
+              </>
+            )}
+          </Button>
+
+          <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
+            <Check size={12} className="text-lime" />
+            خرید جدید به انتهای اشتراک فعلی شما اضافه می‌شود
+          </p>
+        </div>
       </div>
     </div>
   );
 };
 
-const Row = ({ label, value }: { label: string; value: number }) => (
+const Row = ({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: number;
+  accent?: boolean;
+}) => (
   <div className="flex justify-between">
     <span className="text-muted-foreground">{label}</span>
-    <span>
-      {value < 0 && "−"}
-      {formatPriceBy3Digits(Math.abs(value))} تومان
+    <span className={accent ? "text-lime" : undefined}>
+      <span className="en-digits">
+        {value < 0 && "−"}
+        {formatPriceBy3Digits(Math.abs(value))}
+      </span>{" "}
+      تومان
     </span>
   </div>
 );
