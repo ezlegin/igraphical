@@ -16,7 +16,7 @@ import SectionHeading from "./SectionHeading";
 
 export default function Impact() {
   return (
-    <section className="space-y-12">
+    <section className="mx-auto max-w-5xl space-y-8">
       <SectionHeading
         index="04"
         eyebrow="چرا آی‌گرافیکال؟"
@@ -28,20 +28,20 @@ export default function Impact() {
         description="مدرسه هنر آی‌گرافیکال؛ جایی که یادگیری فقط درس و تمرین نیست، یه تجربه‌ی باحاله."
       />
 
-      <Stagger className="grid auto-rows-[minmax(170px,auto)] grid-cols-2 gap-4 md:grid-cols-4">
+      <Stagger className="grid auto-rows-[minmax(120px,auto)] grid-cols-2 gap-3 md:grid-cols-4">
         {/* hero stat */}
         <StaggerItem className="col-span-2 row-span-2">
-          <div className="studio-card studio-noise relative flex h-full flex-col justify-between overflow-hidden p-7 md:p-9">
-            <div className="absolute -left-20 -top-20 size-72 rounded-full bg-primary/30 blur-3xl" />
-            <span className="relative flex size-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
-              <Users size={22} />
+          <div className="studio-card studio-noise relative flex h-full flex-col justify-between overflow-hidden p-5 md:p-6">
+            <div className="absolute -left-16 -top-16 size-56 rounded-full bg-primary/25 blur-3xl" />
+            <span className="relative flex size-9 items-center justify-center rounded-xl bg-primary/20 text-primary">
+              <Users size={17} />
             </span>
             <div className="relative">
-              <p className="en-digits text-5xl font-black tracking-tight md:text-6xl">
+              <p className="en-digits text-4xl font-black tracking-tight md:text-5xl">
                 <AnimatedCounter value={6} />
                 <span className="text-primary">K+</span>
               </p>
-              <p className="mt-2 text-lg font-semibold">کاربر فعال ماهانه</p>
+              <p className="mt-1.5 font-semibold">کاربر فعال ماهانه</p>
               <p className="mt-1 text-sm text-muted-foreground">که هر روز با آی‌گرافیکال یاد می‌گیرن و می‌سازن.</p>
             </div>
             <MiniBars />
@@ -63,7 +63,7 @@ export default function Impact() {
 
         {/* features */}
         <StaggerItem className="col-span-2">
-          <Feature icon={InfinityIcon} title="دسترسی دائمی" text="یک بار ثبت‌نام کن، برای همیشه به دوره و آپدیت‌هاش دسترسی داری." />
+          <Feature icon={InfinityIcon} title="یک اشتراک، همه دوره‌ها" text="با یک اشتراک به کل کتابخانه آموزشی و دوره‌های جدید دسترسی داری." />
         </StaggerItem>
         <StaggerItem>
           <Feature icon={RefreshCw} title="همیشه به‌روز" text="آپدیت‌ترین آموزش‌ها و نسخه‌ها." compact />
@@ -90,16 +90,16 @@ function StatCard({
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className="studio-card flex h-full flex-col justify-between gap-6 p-5 md:p-6"
+      className="studio-card flex h-full flex-col justify-between gap-4 p-4 md:p-5"
     >
       <span
-        className="flex size-10 items-center justify-center rounded-xl"
+        className="flex size-8 items-center justify-center rounded-lg"
         style={{ background: `${tone}1f`, color: tone }}
       >
-        <Icon size={18} />
+        <Icon size={15} />
       </span>
       <div>
-        <p className="en-digits text-3xl font-bold tracking-tight md:text-4xl">{value}</p>
+        <p className="en-digits text-2xl font-bold tracking-tight md:text-3xl">{value}</p>
         <p className="mt-1.5 text-xs text-muted-foreground">{label}</p>
       </div>
     </motion.div>
@@ -120,13 +120,13 @@ function Feature({
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className={`studio-card flex h-full gap-4 p-5 md:p-6 ${compact ? "flex-col" : "items-center"}`}
+      className={`studio-card flex h-full gap-3 p-4 md:p-5 ${compact ? "flex-col" : "items-center"}`}
     >
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-foreground/5 text-lime">
-        <Icon size={20} />
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-foreground/5 text-lime">
+        <Icon size={17} />
       </span>
       <div>
-        <h3 className="font-bold">{title}</h3>
+        <h3 className="text-sm font-bold">{title}</h3>
         <p className="mt-1 text-xs leading-6 text-muted-foreground">{text}</p>
       </div>
     </motion.div>
@@ -136,7 +136,7 @@ function Feature({
 function MiniBars() {
   const bars = [30, 45, 38, 60, 52, 75, 68, 90, 82, 100];
   return (
-    <div className="relative mt-6 flex h-16 items-end gap-1.5" dir="ltr">
+    <div className="relative mt-4 flex h-12 items-end gap-1.5" dir="ltr">
       {bars.map((h, i) => (
         <motion.span
           key={i}

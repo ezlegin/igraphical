@@ -8,7 +8,7 @@ interface Props {
   items: { id: number; categoryId: number | null; node: ReactNode }[];
 }
 
-const INITIAL = 8;
+const INITIAL = 10;
 
 export default function CourseFilter({ categories, items }: Props) {
   const [active, setActive] = useState<number | "all">("all");
@@ -49,7 +49,7 @@ export default function CourseFilter({ categories, items }: Props) {
         </div>
       </LayoutGroup>
 
-      <motion.div layout className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <motion.div layout className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
         <AnimatePresence mode="popLayout" initial={false}>
           {visible.map((item, i) => (
             <motion.div
