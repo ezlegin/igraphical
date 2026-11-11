@@ -55,10 +55,10 @@ mentorship on their paid courses from that date.
     student can start a course; ask-tutor works only with mentorship
   - admin → Subscriptions lists the purchase
 
-## 6. Signed video links (after launch is stable)
+## 6. Course files on ArvanCloud
 
-Follow `deploy/dl-host/README.md`: install `v.php`, set `DL_SIGNING_SECRET`,
-then block direct access to `/Courses`.
+Follow `MEDIA-STORAGE.md`: copy `Courses` to the `igraphical-prod` bucket,
+add the `S3_*` variables to `app.env.local`, then close the old host.
 
 ## Rollback
 

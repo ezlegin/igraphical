@@ -1,37 +1,72 @@
-// Signed, expiring links for files on the download host (dl.igraphical.ir).
-// Server-only: never import this from a client component.
-import { createHmac } from "crypto";
+// Expiring links for course files. Server-only: never import from a client
+// component (it needs the storage secret).
+//
+// Lesson URLs in the database still point at the old download host
+// (https://dl.igraphical.ir/Courses/...). The same files live in the private
+// ArvanCloud bucket under the same path (Courses/...), so we translate the
+// URL to a bucket key and hand out a presigned link instead. Until the S3_*
+// variables are set, URLs are returned unchanged.
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const MEDIA_HOST = "dl.igraphical.ir";
-const LINK_TTL_SECONDS = 3 * 60 * 60; // a lesson link works for 3 hours
+const OLD_MEDIA_HOST = "dl.igraphical.ir";
+const LINK_TTL_SECONDS = 3 * 60 * 60; // a link works for 3 hours
 
-/**
- * Turns https://dl.igraphical.ir/Courses/x.mp4 into
- * https://dl.igraphical.ir/v.php?p=/Courses/x.mp4&u=<user>&e=<expiry>&s=<hmac>,
- * checked by deploy/dl-host/public_html/v.php. Until DL_SIGNING_SECRET is set
- * (i.e. the gateway is installed), URLs are returned unchanged.
- */
-export const signMediaUrl = (rawUrl: string, userId: number) => {
-  const secret = process.env.DL_SIGNING_SECRET;
-  if (!secret || secret.length < 32) return rawUrl;
+let client: S3Client | null = null;
 
-  let url: URL;
+const storage = () => {
+  const {
+    S3_ENDPOINT,
+    S3_REGION,
+    S3_BUCKET,
+    S3_ACCESS_KEY_ID,
+    S3_SECRET_ACCESS_KEY,
+  } = process.env;
+  if (!S3_ENDPOINT || !S3_BUCKET || !S3_ACCESS_KEY_ID || !S3_SECRET_ACCESS_KEY)
+    return null;
+
+  // accept "s3.ir-thr-at1.arvanstorage.ir" as well as a full https:// URL
+  const endpoint = /^https?:\/\//.test(S3_ENDPOINT)
+    ? S3_ENDPOINT
+    : `https://${S3_ENDPOINT}`;
+
+  client ??= new S3Client({
+    endpoint,
+    region: S3_REGION || "default",
+    forcePathStyle: true,
+    credentials: {
+      accessKeyId: S3_ACCESS_KEY_ID,
+      secretAccessKey: S3_SECRET_ACCESS_KEY,
+    },
+  });
+  return { client, bucket: S3_BUCKET };
+};
+
+/** "https://dl.igraphical.ir//Courses/a/b.mp4" → "Courses/a/b.mp4" */
+export const bucketKeyFor = (rawUrl: string) => {
   try {
-    url = new URL(rawUrl);
+    const url = new URL(rawUrl);
+    if (url.hostname !== OLD_MEDIA_HOST) return null;
+    return decodeURIComponent(url.pathname).replace(/\/+/g, "/").replace(/^\//, "");
   } catch {
+    return null;
+  }
+};
+
+/** Presigned link to a course file that stops working after 3 hours. */
+export const signMediaUrl = async (rawUrl: string) => {
+  const s3 = storage();
+  const key = bucketKeyFor(rawUrl);
+  if (!s3 || !key) return rawUrl;
+
+  try {
+    return await getSignedUrl(
+      s3.client,
+      new GetObjectCommand({ Bucket: s3.bucket, Key: key }),
+      { expiresIn: LINK_TTL_SECONDS },
+    );
+  } catch (error) {
+    console.error("Presigning media URL failed", key, error);
     return rawUrl;
   }
-  if (url.hostname !== MEDIA_HOST) return rawUrl;
-
-  const p = decodeURIComponent(url.pathname);
-  const u = String(userId);
-  const e = String(Math.floor(Date.now() / 1000) + LINK_TTL_SECONDS);
-  const s = createHmac("sha256", secret).update(`${p}|${u}|${e}`).digest("hex");
-
-  const signed = new URL(`https://${MEDIA_HOST}/v.php`);
-  signed.searchParams.set("p", p);
-  signed.searchParams.set("u", u);
-  signed.searchParams.set("e", e);
-  signed.searchParams.set("s", s);
-  return signed.toString();
 };

@@ -25,7 +25,13 @@ export interface CurriculumsProps {
   curriculums: CurriculumType[];
 }
 
-const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
+const CourseCurriculum = async ({ curriculums }: CurriculumsProps) => {
+  // only free-preview lessons get a (short-lived) link on the public page
+  const previewUrls = new Map<number, string>();
+  for (const section of curriculums)
+    for (const lesson of section.lessons)
+      if (lesson.isFree) previewUrls.set(lesson.id, await signMediaUrl(lesson.url));
+
   return (
     <DetailSection id="curriculum" title="سرفصل‌های دوره">
       <Accordion
@@ -83,7 +89,7 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
                         </DialogTrigger>
                         <DialogContent className="p-0 border-none max-w-[900px] aspect-video rounded-sm">
                           <DialogTitle className="sr-only" />
-                          <CurriculumPlay url={signMediaUrl(lesson.url, 0)} />
+                          <CurriculumPlay url={previewUrls.get(lesson.id)!} />
                         </DialogContent>
                       </Dialog>
                     ) : (

@@ -262,5 +262,5 @@ export const getLessonSource = async (
     create: { userId: user.id, lessonId: lesson.id, day },
   });
 
-  return { url: signMediaUrl(lesson.url, user.id) };
+  return { url: await signMediaUrl(lesson.url) };
 };

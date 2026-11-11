@@ -22,6 +22,7 @@ import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { CourseType } from "./CourseContent";
 import CourseIncludes from "./CourseIncludes";
 import SubscriptionCourseButton from "./SubscriptionCourseButton";
+import { signMediaUrl } from "@/lib/media-url";
 import { canAccessCourse, subscriptionsEnabled } from "@/lib/access";
 
 type courseIncludesType = {
@@ -86,7 +87,7 @@ const CourseSidebar = async ({ course }: Props) => {
               id="course-tizer"
               className="scroll-mt-28 overflow-hidden rounded-[1.4rem]"
             >
-              <TizerVideo url={course.tizerUrl} />
+              <TizerVideo url={await signMediaUrl(course.tizerUrl)} />
             </div>
           )}
 
