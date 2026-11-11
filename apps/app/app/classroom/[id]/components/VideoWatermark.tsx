@@ -37,7 +37,7 @@ const VideoWatermark = ({ text }: { text: string }) => {
       <span
         dir="ltr"
         style={positions[i]}
-        className="absolute whitespace-nowrap rounded px-1.5 py-0.5 font-mono text-[11px] text-white/35 transition-all duration-[1500ms] ease-in-out [text-shadow:0_0_2px_rgba(0,0,0,0.6)] md:text-sm"
+        className="absolute whitespace-nowrap rounded px-1.5 py-0.5 font-mono text-[11px] font-light text-white/35 transition-all duration-[1500ms] ease-in-out [text-shadow:0_0_2px_rgba(0,0,0,0.6)] md:text-sm"
       >
         {text}
       </span>
