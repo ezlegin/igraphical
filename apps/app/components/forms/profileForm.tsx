@@ -1,9 +1,8 @@
 "use client";
 
 import { sendOtp } from "@/actions/login/otp";
-import { updateUserProfile } from "@/actions/user";
+import { isIdentifierTaken, updateUserProfile } from "@/actions/user";
 import CardBox from "@/app/panel/components/CardBox";
-import { getUserByIdentifier } from "@/data/user";
 import { profileFormSchema, ProfileFormType } from "@/lib/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Image, User } from "@igraph/database";
@@ -96,8 +95,14 @@ const UserProfileForm = ({ user }: Props) => {
       setIdentifier(phone);
     }
 
-    const existingUser = await getUserByIdentifier(identifier);
-    if (existingUser) {
+    const check = await isIdentifierTaken(identifier);
+    if ("error" in check && check.error) {
+      toast.error(check.error);
+      if (emailType) setSendEmailOtpLoading(false);
+      else setSendSmsOtpLoading(false);
+      return;
+    }
+    if ("taken" in check && check.taken) {
       toast.warning(
         `با این ${emailType ? "ایمیل" : "شماره تماس"} از قبل حساب کاربری وجود دارد.`,
       );

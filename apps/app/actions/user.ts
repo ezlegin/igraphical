@@ -7,7 +7,11 @@ import {
 } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
 import { verifyLoginTicket } from "@igraph/auth";
-import { detectInputType, sendRegistrationCongratsSms } from "@igraph/utils";
+import {
+  detectInputType,
+  rateLimit,
+  sendRegistrationCongratsSms,
+} from "@igraph/utils";
 import { UploadApiResponse } from "cloudinary";
 import { deleteCloudFile, uploadCloudFile } from "@igraph/utils";
 import { getSessionUser } from "@/data/user";
@@ -168,4 +172,26 @@ export const updateUserProfile = async (data: ProfileFormType) => {
   } catch (error) {
     return { error: String(error) };
   }
+};
+
+/**
+ * For the profile form: is this phone/email already used by another account?
+ * Logged-in only, rate limited, and returns a boolean, never the record.
+ */
+export const isIdentifierTaken = async (identifier: string) => {
+  const user = await getSessionUser();
+  if (!user) return { error: "لطفا مجددا وارد شوید." };
+  if (!rateLimit(`identifier-taken:${user.id}`, 10, 10 * 60 * 1000).allowed)
+    return { error: "تعداد درخواست‌ها بیش از حد مجاز است" };
+
+  const value = String(identifier ?? "").trim();
+  if (!value) return { taken: false };
+  const existing = await database.user.findFirst({
+    where: {
+      OR: [{ phone: value }, { email: value }],
+      NOT: { id: user.id },
+    },
+    select: { id: true },
+  });
+  return { taken: !!existing };
 };

@@ -1,4 +1,5 @@
-"use server";
+// Server-only lookups. Deliberately NOT "use server": that would make every
+// export a public HTTP endpoint that returns full records by phone/email.
 
 import { database } from "@igraph/database";
 
