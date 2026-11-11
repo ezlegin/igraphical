@@ -13,7 +13,7 @@ export default async function Promo() {
 
   return (
     <Reveal>
-      <div className="rounded-[2rem] border border-foreground/10 bg-card/40 p-2 md:p-3">
+      <div className="mx-auto max-w-5xl rounded-[2rem] border border-foreground/10 bg-card/40 p-2 md:p-3">
         <Slider type="MAIN" sliders={sliders} />
       </div>
     </Reveal>
