@@ -49,7 +49,7 @@ export default function Certificate() {
               </li>
             ))}
           </ul>
-          <Link href="/verify-cert">
+          <Link href="/verify-cert" className="inline-block pt-2">
             <Button size="lg" className="h-12 rounded-full px-7">
               <ShieldCheck />
               استعلام مدرک

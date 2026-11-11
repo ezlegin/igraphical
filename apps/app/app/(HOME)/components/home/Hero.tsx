@@ -41,32 +41,15 @@ export default function Hero() {
   }, [mx, my, reduce]);
 
   return (
-    <section className="relative isolate -mx-3 overflow-hidden px-3 pb-10 pt-6 md:pb-20">
-      {/* canvas backdrop */}
-      <div className="studio-grid studio-fade absolute inset-0 -z-10" />
-      <div className="absolute left-1/2 top-0 -z-10 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-primary/25 blur-[140px]" />
-      <div className="absolute -left-40 top-60 -z-10 size-[380px] rounded-full bg-[#d4ff3f]/10 blur-[120px]" />
-
-      {/* rulers */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 hidden h-6 border-b border-foreground/5 md:block">
-        <Ruler />
+    <section className="relative isolate px-3 pb-8 pt-4 md:pb-14">
+      {/* canvas backdrop, faded out well before the edges so no box shows */}
+      <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_60%_55%_at_50%_40%,#000_30%,transparent_100%)]">
+        <div className="studio-grid absolute inset-0" />
+        <div className="absolute left-1/2 top-10 h-[360px] w-[620px] -translate-x-1/2 rounded-full bg-primary/20 blur-[120px]" />
       </div>
 
-      <div className="relative mx-auto flex max-w-5xl flex-col items-center pt-12 text-center">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease }}
-          className="flex items-center gap-2 rounded-full border border-foreground/10 bg-background/60 py-1.5 pe-4 ps-1.5 text-xs backdrop-blur"
-        >
-          <span className="flex items-center gap-1.5 rounded-full bg-lime px-2.5 py-1 font-semibold text-black">
-            <span className="size-1.5 animate-pulse rounded-full bg-black" />
-            جدید
-          </span>
-          <span className="text-muted-foreground">دوره طراحی رابط کاربری با فیگما ۲۰۲۵ منتشر شد</span>
-        </motion.div>
-
-        <h1 className="mt-8 text-[44px] font-black leading-[1.15] tracking-tight sm:text-6xl md:text-7xl lg:text-[88px] lg:leading-[1.1]">
+      <div className="relative mx-auto flex max-w-4xl flex-col items-center pt-8 text-center">
+        <h1 className="text-4xl font-black leading-[1.2] tracking-tight sm:text-5xl md:text-[56px] md:leading-[1.2]">
           <Words text="ایده‌ها وقتی" delay={0.1} />{" "}
           <SelectionFrame>ساخته</SelectionFrame>
           <br />
@@ -77,7 +60,7 @@ export default function Hero() {
           initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.9, ease }}
-          className="mt-7 max-w-2xl text-sm leading-8 text-muted-foreground md:text-lg md:leading-9"
+          className="mt-5 max-w-xl text-sm leading-7 text-muted-foreground md:text-base md:leading-8"
         >
           از مبتدی تا حرفه‌ای، طراحی گرافیک رو با دوره‌های تخصصی و پروژه‌محور یاد بگیر.
           جدیدترین تکنیک‌ها و نرم‌افزارها، همه در یک‌جا.
@@ -87,12 +70,12 @@ export default function Hero() {
           initial={reduce ? false : { opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.05, ease }}
-          className="mt-9 flex flex-col items-center gap-3 sm:flex-row"
+          className="mt-7 flex flex-col items-center gap-3 sm:flex-row"
         >
           <a href="#courses">
             <Button
               size="lg"
-              className="group h-14 rounded-full px-8 text-base shadow-[0_10px_40px_-10px_hsl(var(--primary))]"
+              className="group h-12 rounded-full px-7 shadow-[0_10px_40px_-14px_hsl(var(--primary))]"
             >
               شروع یادگیری
               <ArrowLeft className="transition-transform group-hover:-translate-x-1" />
@@ -102,7 +85,7 @@ export default function Hero() {
             <Button
               size="lg"
               variant="outline"
-              className="h-14 rounded-full border-foreground/15 bg-background/40 px-7 text-base backdrop-blur"
+              className="h-12 rounded-full border-foreground/15 bg-background/40 px-6 backdrop-blur"
             >
               <Play className="size-4 fill-current" />
               مشاوره رایگان
@@ -114,7 +97,7 @@ export default function Hero() {
           initial={reduce ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.3 }}
-          className="mt-10 flex items-center gap-4 text-xs text-muted-foreground"
+          className="mt-8 flex items-center gap-4 text-xs text-muted-foreground"
         >
           <div className="flex -space-x-3 space-x-reverse">
             {[studentProfile1, studentProfile2, studentProfile3, studentProfile4].map((src) => (
@@ -372,21 +355,6 @@ function ToolDock() {
         >
           <Icon size={16} />
         </span>
-      ))}
-    </div>
-  );
-}
-
-function Ruler() {
-  return (
-    <div className="flex h-full items-end overflow-hidden" dir="ltr">
-      {Array.from({ length: 80 }).map((_, i) => (
-        <div key={i} className="relative w-6 shrink-0">
-          <span className={`absolute bottom-0 left-0 w-px bg-foreground/15 ${i % 4 === 0 ? "h-3" : "h-1.5"}`} />
-          {i % 4 === 0 && (
-            <span className="en-digits absolute bottom-3 left-1 text-[8px] text-foreground/25">{i * 24}</span>
-          )}
-        </div>
       ))}
     </div>
   );

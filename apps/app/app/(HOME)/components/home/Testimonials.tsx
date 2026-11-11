@@ -62,7 +62,8 @@ export default function Testimonials() {
   const rowBDoubled = [...rowB, ...rowB];
 
   return (
-    <section className="space-y-12">
+    <section className="studio-card studio-noise relative overflow-hidden px-6 py-12 md:px-12 md:py-14 space-y-12 [&>*:not([aria-hidden])]:relative">
+      <div aria-hidden className="pointer-events-none absolute -right-24 bottom-0 size-96 rounded-full bg-primary/15 blur-3xl" />
       <SectionHeading
         index="05"
         eyebrow="دانشجوهای آی‌گرافیکال گفتن"

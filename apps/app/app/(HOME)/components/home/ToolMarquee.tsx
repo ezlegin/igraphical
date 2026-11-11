@@ -6,7 +6,8 @@ const tools = [
   { name: "After Effects", short: "Ae", color: "#9999ff", bg: "#00005b" },
   { name: "Blender", short: "Bl", color: "#f5792a", bg: "#2b1405" },
   { name: "Figma", short: "Fi", color: "#a259ff", bg: "#1e0b33" },
-  { name: "Midjourney", short: "Mj", color: "#ffffff", bg: "#1a1a1a" },
+  { name: "ChatGPT", short: "Gp", color: "#10a37f", bg: "#062b22" },
+  { name: "Gemini", short: "Ge", color: "#8ab4f8", bg: "#0b1a33" },
 ];
 
 export default function ToolMarquee() {

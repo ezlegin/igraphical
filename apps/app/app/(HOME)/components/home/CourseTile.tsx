@@ -5,12 +5,13 @@ import { ArrowUpLeft, Layers, PlayCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { subscriptionsEnabled } from "@/lib/access";
+import { getStartingPlanPrice } from "@/lib/subscription";
 
 interface Props {
   course: CourseType;
 }
 
-export default function CourseTile({ course }: Props) {
+export default async function CourseTile({ course }: Props) {
   const lessons = course.curriculum.reduce(
     (acc, c) => acc + c.lessons.length,
     0,
@@ -18,6 +19,7 @@ export default function CourseTile({ course }: Props) {
   // price is already the final price; basePrice is the pre-discount one
   const finalPrice = course.price;
   const inSubscription = subscriptionsEnabled() && !!finalPrice;
+  const startingPrice = inSubscription ? await getStartingPlanPrice() : null;
 
   return (
     <Link
@@ -80,8 +82,14 @@ export default function CourseTile({ course }: Props) {
             {!finalPrice ? (
               <span className="text-lg font-bold text-lime">رایگان</span>
             ) : inSubscription ? (
-              <span className="text-sm font-bold text-primary">
-                در اشتراک آی‌گرافیکال
+              <span className="text-sm text-muted-foreground">
+                شروع از{" "}
+                <span className="text-lg font-bold text-foreground">
+                  {startingPrice
+                    ? formatPriceBy3Digits(startingPrice)
+                    : "اشتراک"}
+                </span>{" "}
+                {startingPrice ? "تومان" : ""}
               </span>
             ) : (
               <>

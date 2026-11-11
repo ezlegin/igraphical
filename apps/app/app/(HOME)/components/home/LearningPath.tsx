@@ -38,7 +38,8 @@ export default function LearningPath() {
   const progress = useSpring(scrollYProgress, { stiffness: 80, damping: 20 });
 
   return (
-    <section className="space-y-14">
+    <section className="studio-card studio-noise relative overflow-hidden px-6 py-12 md:px-12 md:py-14 space-y-12 [&>*:not([aria-hidden])]:relative">
+      <div aria-hidden className="pointer-events-none absolute -right-24 top-0 size-96 rounded-full bg-primary/15 blur-3xl" />
       <SectionHeading
         index="03"
         eyebrow="از کجا شروع کنیم؟"

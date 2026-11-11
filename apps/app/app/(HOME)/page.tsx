@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { database } from "@igraph/database";
 import { redirect } from "next/navigation";
-import Categories from "./components/home/Categories";
 import Certificate from "./components/home/Certificate";
 import CoursesShowcase from "./components/home/CoursesShowcase";
-import FinalCta from "./components/home/FinalCta";
 import Hero from "./components/home/Hero";
 import Impact from "./components/home/Impact";
 import Journal from "./components/home/Journal";
@@ -43,20 +41,18 @@ const page = async ({ searchParams }: Props) => {
   }
 
   return (
-    <div className="space-y-24 pb-20 pt-8 md:space-y-40 md:pt-16 lg:pt-20">
+    <div className="space-y-20 pb-20 pt-6 md:space-y-28 md:pt-10">
       <div className="space-y-12 md:space-y-16">
         <Hero />
         <ToolMarquee />
       </div>
       <Promo />
-      <Categories />
       <CoursesShowcase />
       <LearningPath />
       <Impact />
       <Testimonials />
       <Certificate />
       <Journal />
-      <FinalCta />
     </div>
   );
 };

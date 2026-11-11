@@ -1,6 +1,7 @@
 // Subscription pricing and activation. Server-only (not "use server"):
 // every amount here is computed from the database, never from the client.
 import { database, PaymentMethod } from "@igraph/database";
+import { cache } from "react";
 
 export const DIGIPAY_MIN_AMOUNT = 1_000_000; // Toman
 
@@ -157,3 +158,13 @@ export const activateSubscriptionForPayment = async (paymentId: number) =>
     });
     return count === 1;
   });
+
+/** Cheapest visible plan price, for "starting from …" labels. Cached per request. */
+export const getStartingPlanPrice = cache(async () => {
+  const plan = await database.plan.findFirst({
+    where: { isActive: true, price: { gt: 0 } },
+    orderBy: { price: "asc" },
+    select: { price: true },
+  });
+  return plan?.price ?? null;
+});

@@ -25,7 +25,7 @@ export default function SectionHeading({
         centered ? "items-center text-center md:flex-col md:items-center" : "md:justify-between"
       }`}
     >
-      <div className={`space-y-4 ${centered ? "max-w-2xl" : "max-w-xl"}`}>
+      <div className={`space-y-3 ${centered ? "max-w-2xl" : "max-w-xl"}`}>
         <p
           className={`flex items-center gap-3 text-xs font-medium text-muted-foreground ${
             centered ? "justify-center" : ""
@@ -36,7 +36,7 @@ export default function SectionHeading({
           </span>
           {eyebrow}
         </p>
-        <h2 className="text-3xl font-bold leading-tight md:text-5xl md:leading-[1.15]">{title}</h2>
+        <h2 className="text-2xl font-bold leading-tight md:text-4xl md:leading-[1.2]">{title}</h2>
         {description && (
           <p className="text-sm leading-7 text-muted-foreground md:text-base">{description}</p>
         )}

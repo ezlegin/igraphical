@@ -16,7 +16,8 @@ import SectionHeading from "./SectionHeading";
 
 export default function Impact() {
   return (
-    <section className="space-y-12">
+    <section className="studio-card studio-noise relative overflow-hidden px-6 py-12 md:px-12 md:py-14 space-y-12 [&>*:not([aria-hidden])]:relative">
+      <div aria-hidden className="pointer-events-none absolute -left-24 top-0 size-96 rounded-full bg-primary/15 blur-3xl" />
       <SectionHeading
         index="04"
         eyebrow="چرا آی‌گرافیکال؟"
@@ -37,7 +38,7 @@ export default function Impact() {
               <Users size={22} />
             </span>
             <div className="relative">
-              <p className="en-digits text-7xl font-black tracking-tight md:text-8xl">
+              <p className="en-digits text-5xl font-black tracking-tight md:text-6xl">
                 <AnimatedCounter value={6} />
                 <span className="text-primary">K+</span>
               </p>
