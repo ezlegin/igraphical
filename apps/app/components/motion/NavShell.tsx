@@ -17,7 +17,7 @@ export default function NavShell({ children }: { children: ReactNode }) {
       className="sticky top-3 z-50 w-full"
     >
       <div
-        className={`flex justify-between max-w-screen-lg mx-auto backdrop-blur-2xl items-center border p-1.5 rounded-full transition-all duration-300 ${
+        className={`flex w-full justify-between backdrop-blur-2xl items-center border p-1.5 rounded-full transition-all duration-300 ${
           scrolled ? "bg-background/70 shadow-lg shadow-primary/10" : "bg-background/30"
         }`}
       >
