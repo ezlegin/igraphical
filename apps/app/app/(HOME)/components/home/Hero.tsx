@@ -53,7 +53,14 @@ export default function Hero() {
           <Words text="ایده‌ها وقتی" delay={0.1} />{" "}
           <SelectionFrame>ساخته</SelectionFrame>
           <br />
-          <Words text="میشن، دیده میشن!" delay={0.5} className="text-gradient" />
+          <motion.span
+            className="text-gradient inline-block"
+            initial={reduce ? false : { opacity: 0, y: "0.3em", filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.8, delay: 0.5, ease }}
+          >
+            میشن، دیده میشن!
+          </motion.span>
         </h1>
 
         <motion.p
@@ -184,7 +191,7 @@ function SelectionFrame({ children }: { children: ReactNode }) {
             <span key={pos} className={`absolute size-3 rounded-[2px] border-2 border-primary bg-background ${pos}`} />
           ),
         )}
-        <span className="en-digits absolute -bottom-8 left-1/2 hidden md:block -translate-x-1/2 whitespace-nowrap rounded bg-primary px-1.5 py-0.5 text-[11px] font-medium tracking-normal text-primary-foreground">
+        <span className="en-digits absolute -top-8 left-1/2 hidden md:block -translate-x-1/2 whitespace-nowrap rounded bg-primary px-1.5 py-0.5 text-[11px] font-medium tracking-normal text-primary-foreground">
           248 × 96
         </span>
       </motion.span>
