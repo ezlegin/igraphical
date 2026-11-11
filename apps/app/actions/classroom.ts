@@ -4,12 +4,41 @@ import { getSessionUser } from "@/data/user";
 import { database } from "@igraph/database";
 import { sendFinishCourseEmail, sendFinishCourseSms } from "@igraph/utils";
 import { generateCertificateForUser } from "./certificate";
+import { canAccessCourse } from "@/lib/access";
 
 export const createLessonProgress = async (
   lessonId: number,
   classroomId: string,
 ) => {
   try {
+    const sessionUser = await getSessionUser();
+    if (!sessionUser) return { error: "لطفا مجددا وارد شوید." };
+
+    const owned = await database.classRoom.findUnique({
+      where: { id: classroomId },
+      include: {
+        enrollment: {
+          include: {
+            course: { include: { curriculum: { include: { lessons: true } } } },
+          },
+        },
+      },
+    });
+    if (!owned || owned.userId !== sessionUser.id)
+      return { error: "کلاس درس یافت نشد" };
+    if (
+      !(await canAccessCourse(
+        sessionUser.id,
+        owned.enrollment.course,
+        owned.enrollment,
+      ))
+    )
+      return { error: "اشتراک شما به پایان رسیده است." };
+    const lessonInCourse = owned.enrollment.course.curriculum.some((c) =>
+      c.lessons.some((l) => l.id === lessonId),
+    );
+    if (!lessonInCourse) return { error: "درس یافت نشد" };
+
     const result = await database.$transaction(async (tx) => {
       const existingClassroom = await tx.classRoom.findFirst({
         where: { id: classroomId },

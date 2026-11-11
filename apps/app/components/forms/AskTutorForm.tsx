@@ -29,21 +29,11 @@ import { toast } from "sonner";
 
 interface Props {
   classRoomId: string;
-  tutorId: number;
-  userId: number;
-  courseId: number;
   askTutorId: number | null;
   status: AskTutorStatus;
 }
 
-const AskTutorForm = ({
-  classRoomId,
-  tutorId,
-  userId,
-  courseId,
-  status,
-  askTutorId,
-}: Props) => {
+const AskTutorForm = ({ classRoomId, status, askTutorId }: Props) => {
   // HOOKS
   const router = useRouter();
 
@@ -60,7 +50,7 @@ const AskTutorForm = ({
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps<AskTutorFormType, "file">
+    field: ControllerRenderProps<AskTutorFormType, "file">,
   ) => {
     const file = e.target.files?.[0];
 
@@ -92,14 +82,7 @@ const AskTutorForm = ({
   const onSubmit = async (data: TicketMessageFormType) => {
     setLoading(true);
 
-    const res = await createAskTutor(
-      data,
-      classRoomId,
-      tutorId,
-      userId,
-      courseId,
-      askTutorId
-    );
+    const res = await createAskTutor(data, classRoomId);
 
     if (res?.error) {
       toast.error(res.error);

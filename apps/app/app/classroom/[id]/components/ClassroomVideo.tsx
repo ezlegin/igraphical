@@ -35,13 +35,13 @@ const ClassroomVideo = ({ currentLesson, isLastLesson }: Props) => {
 
     const res = await createLessonProgress(currentLesson.id, classroomId);
 
-    if (res.error) {
-      toast.error("خطا! لطفا مجدد تلاش کنید.");
+    if ("error" in res && res.error) {
+      toast.error(res.error);
       setLoading(false);
       return;
     }
 
-    if (res.success) {
+    if ("success" in res && res.success) {
       toast.success(res.success);
       setLoading(false);
 

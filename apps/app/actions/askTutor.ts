@@ -4,20 +4,43 @@ import { TicketMessageFormType } from "@/lib/validationSchema";
 import { sendNewQaCreationSms, uploadCloudFile } from "@igraph/utils";
 import { UploadApiResponse } from "cloudinary";
 import { database } from "@igraph/database";
+import { getSessionUser } from "@/data/user";
+import { canAccessCourse, canUseMentorship } from "@/lib/access";
 
 export const createAskTutor = async (
   data: TicketMessageFormType,
   classRoomId: string,
-  tutorId: number,
-  userId: number,
-  courseId: number,
-  askTutorId: number | null
 ) => {
   const { message, file } = data;
 
   if (!message || message.trim() === "") {
     return { error: "Message content is required." };
   }
+
+  // Everything below is derived from the session and the classroom row,
+  // never from client-supplied ids.
+  const user = await getSessionUser();
+  if (!user) return { error: "لطفا مجددا وارد شوید." };
+
+  const classroom = await database.classRoom.findUnique({
+    where: { id: classRoomId },
+    include: { enrollment: { include: { course: true } } },
+  });
+  if (!classroom || classroom.userId !== user.id)
+    return { error: "کلاس درس یافت نشد" };
+
+  const { enrollment } = classroom;
+  const userId = user.id;
+  const courseId = enrollment.courseId;
+  const tutorId = enrollment.course.tutorId;
+  const askTutorId = classroom.askTutorId;
+  if (!tutorId) return { error: "مدرس این دوره یافت نشد" };
+
+  if (
+    !(await canAccessCourse(userId, enrollment.course, enrollment)) ||
+    !(await canUseMentorship(userId, enrollment))
+  )
+    return { error: "منتورشیپ برای شما فعال نیست." };
 
   try {
     await database.$transaction(async (tx) => {

@@ -61,9 +61,10 @@ interface ClassroomType extends ClassRoom {
 
 interface Props {
   classroom: ClassroomType;
+  mentorshipActive: boolean;
 }
 
-const ClassroomContent = ({ classroom }: Props) => {
+const ClassroomContent = ({ classroom, mentorshipActive }: Props) => {
   const lessons = classroom.enrollment.course.curriculum.flatMap((curr) =>
     curr.lessons.map((less) => less),
   );
@@ -151,14 +152,18 @@ const ClassroomContent = ({ classroom }: Props) => {
         <Separator />
 
         <div className="space-y-3">
-          <AskTutorForm
-            status={classroom.askTutor?.status!}
-            classRoomId={classroom.id}
-            askTutorId={classroom.askTutorId}
-            courseId={classroom.enrollment?.courseId!}
-            tutorId={classroom.enrollment.course.tutorId!}
-            userId={classroom.enrollment?.userId!}
-          />
+          {mentorshipActive ? (
+            <AskTutorForm
+              status={classroom.askTutor?.status!}
+              classRoomId={classroom.id}
+              askTutorId={classroom.askTutorId}
+            />
+          ) : (
+            <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
+              منتورشیپ (پرسش از مدرس) برای شما فعال نیست. برای فعال‌سازی، هنگام
+              خرید اشتراک گزینه منتورشیپ را انتخاب کنید.
+            </div>
+          )}
           <div className="max-h-[600px] overflow-y-auto">
             <AskTutorChat
               messages={classroom.askTutor?.messages}

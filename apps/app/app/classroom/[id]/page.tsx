@@ -16,6 +16,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import ClassroomContent from "./components/ClassroomContent";
+import { canAccessCourse, canUseMentorship } from "@/lib/access";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -81,6 +82,33 @@ const page = async ({ params }: Props) => {
 
   if (user.id !== classroom.userId) return redirect("/panel");
 
+  const { enrollment } = classroom;
+  const hasAccess = await canAccessCourse(
+    user.id,
+    enrollment.course,
+    enrollment,
+  );
+
+  // Expired: lock the classroom but keep progress and certificates intact.
+  if (!hasAccess)
+    return (
+      <div className="max-w-screen-sm mx-auto py-20 text-center space-y-5">
+        <OctagonMinus className="mx-auto text-destructive" size={60} />
+        <h1 className="text-xl font-bold">
+          دسترسی شما به این دوره به پایان رسیده است
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          پیشرفت و مدارک شما محفوظ است. با تمدید اشتراک، دوباره به همه دوره‌ها
+          دسترسی خواهید داشت.
+        </p>
+        <Link href="/plans">
+          <Button>خرید یا تمدید اشتراک</Button>
+        </Link>
+      </div>
+    );
+
+  const mentorshipActive = await canUseMentorship(user.id, enrollment);
+
   return (
     <div>
       <div className="space-y-3 max-w-screen-xl mx-auto">
@@ -88,7 +116,10 @@ const page = async ({ params }: Props) => {
           finalStep="کلاس درس"
           steps={[{ label: "دوره ها", href: "/panel/courses" }]}
         />
-        <ClassroomContent classroom={classroom} />
+        <ClassroomContent
+          classroom={classroom}
+          mentorshipActive={mentorshipActive}
+        />
       </div>
 
       <Dialog open={!user.nationalId}>
