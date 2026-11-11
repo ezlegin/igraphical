@@ -173,16 +173,18 @@ export const courseFormSchema = z.object({
             url: z.string().url(),
             isFree: z.boolean(),
             type: z.enum(lessonsType, { message: "Invalid" }),
-          })
+          }),
         ),
-      })
+      }),
     )
     .optional(),
 
   // Gallery Schema
   gallery: z
     .array(
-      z.instanceof(File, { message: "Each gallery item must be an image file" })
+      z.instanceof(File, {
+        message: "Each gallery item must be an image file",
+      }),
     )
     .optional(),
 });
@@ -204,7 +206,7 @@ export const slidersFormSchema = z.object({
       link: z.string().url().optional(),
       image: z.instanceof(File).optional(),
       active: z.boolean(),
-    })
+    }),
   ),
 });
 export type SlidersFormType = z.infer<typeof slidersFormSchema>;
@@ -235,7 +237,7 @@ export const paymentFormSchema = z.object({
       courseId: z.number().positive({ message: "Course ID is required." }),
       originalPrice: z.number(),
       price: z.number(),
-    })
+    }),
   ),
   payment: z.object({
     discountCode: z.string(),
@@ -269,44 +271,6 @@ export const couponFormSchema = z.object({
   courseExclude: z.array(z.object({ id: z.number() })).optional(),
 });
 export type CouponFormType = z.infer<typeof couponFormSchema>;
-
-export const campaignFormSchema = z.object({
-  title: z.string().min(1).trim(),
-  url: z.string().min(1).trim(),
-  message: z.string().min(1),
-  sellGoal: z.number().min(1).optional(),
-  couponId: z.number(),
-  date: z.object({
-    from: z.date(),
-    to: z.date(),
-  }),
-});
-export type CampaignFormType = z.infer<typeof campaignFormSchema>;
-
-// -------------------------------------
-export const campaignOnGoingFormSchema = z.object({
-  title: z.string().min(1).trim(),
-  date: z.object({
-    from: z.date(),
-    to: z.date(),
-  }),
-});
-export type CampaignOnGoingFormType = z.infer<typeof campaignOnGoingFormSchema>;
-
-// -------------------------------------
-
-export const overallOffFormSchema = z.object({
-  amount: z.number().min(0),
-  type: z.enum(couponType),
-  active: z.boolean(),
-  date: z
-    .object({
-      from: z.date().optional(),
-      to: z.date().optional(),
-    })
-    .optional(),
-});
-export type OverallOffFormType = z.infer<typeof overallOffFormSchema>;
 
 //! TICKET FORM
 export const TicketFormSchema = z.object({

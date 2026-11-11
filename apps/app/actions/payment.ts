@@ -67,13 +67,6 @@ export const createPayment = async (data: PaymentDataType) => {
     if (existingEnrollment)
       return { error: "شما قبلا در حداقل یکی از این دوره ها ثبت نام کرده اید" };
 
-    const existingCampaign = await database.campaignOnGoing.findFirst({
-      where: {
-        startAt: { lte: new Date() },
-        endAt: { gte: new Date() },
-      },
-    });
-
     const newPayment = await database.payment.create({
       data: {
         status: amount > 0 ? "PENDING" : "SUCCESS",
@@ -87,7 +80,6 @@ export const createPayment = async (data: PaymentDataType) => {
         discountAmount,
         walletUsed: useWallet,
         walletUsedAmount: useWalletAmount,
-        campaignOnGoingId: existingCampaign?.id,
 
         enrollment:
           amount === 0
@@ -252,12 +244,17 @@ export const verifyPayment = async (reference: string) => {
 
     let record = await pay.get(reference);
     if (!record) return { error: "کد مرجع معتبر نمی باشد" };
-    if (record.status === "pending") record = (await pay.recheck(reference)) ?? record;
+    if (record.status === "pending")
+      record = (await pay.recheck(reference)) ?? record;
 
     const res = await settleGatewayPayment(record);
-    if (res.status === "SUCCESS") return { success: "پرداخت موفق!", refId: res.refId };
+    if (res.status === "SUCCESS")
+      return { success: "پرداخت موفق!", refId: res.refId };
     if (res.status === "PENDING")
-      return { error: "پرداخت هنوز تایید نشده است. چند دقیقه دیگر وضعیت را در لیست پرداخت‌ها بررسی کنید" };
+      return {
+        error:
+          "پرداخت هنوز تایید نشده است. چند دقیقه دیگر وضعیت را در لیست پرداخت‌ها بررسی کنید",
+      };
     return { error: "پرداخت ناموفق!" };
   } catch (error) {
     console.error(isPayError(error) ? error.code : error);

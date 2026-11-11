@@ -1,7 +1,7 @@
 "use server";
 
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
-import { subDays, format, formatDate } from "date-fns";
+import { subDays, format } from "date-fns";
 
 const analyticsDataClient = new BetaAnalyticsDataClient();
 const propertyId = process.env.GA_PROPERTY_ID;
@@ -29,7 +29,7 @@ export const getGAViewsAndSessions = async () => {
     const [sessionsReport] = sessionsResponse;
 
     const last90Days = Array.from({ length: 90 }, (_, i) =>
-      format(subDays(new Date(), 90 - i), "yyyyMMdd")
+      format(subDays(new Date(), 90 - i), "yyyyMMdd"),
     );
 
     const viewsMap: Record<string, number> = {};
@@ -111,47 +111,6 @@ export const getTopPages = async () => {
   }
 };
 
-//* GET CAMPAIGN OPENED LINK BY USERS --------------------------------------------
-
-export async function getCampaignOpensLink(
-  campaignName: string,
-  start: Date,
-  end: Date
-) {
-  try {
-    const [response] = await analyticsDataClient.runReport({
-      property: `properties/${propertyId}`,
-      dateRanges: [
-        {
-          startDate: formatDate(start, "yyyy-MM-dd"),
-          endDate: formatDate(end, "yyyy-MM-dd"),
-        },
-      ],
-      dimensions: [{ name: "sessionCampaignName" }],
-      metrics: [{ name: "sessions" }],
-      dimensionFilter: {
-        filter: {
-          fieldName: "sessionCampaignName",
-          stringFilter: {
-            matchType: "EXACT",
-            value: campaignName,
-          },
-        },
-      },
-    });
-
-    const total = parseInt(
-      response.rows?.[0]?.metricValues?.[0]?.value || "0",
-      10
-    );
-
-    return { data: total };
-  } catch (err) {
-    console.error("Error fetching GA4 data:", err);
-    return { data: 0, error: "Failed to fetch campaign opens" };
-  }
-}
-
 //* GET PAGE VIEWS --------------------------------------------
 
 export async function getPageViews(path: string, startDate: Date) {
@@ -159,7 +118,7 @@ export async function getPageViews(path: string, startDate: Date) {
   // a page made today would come after it. Count back from it with a day spare.
   const daysAgo = Math.max(
     1,
-    Math.ceil((Date.now() - startDate.getTime()) / 86_400_000) + 1
+    Math.ceil((Date.now() - startDate.getTime()) / 86_400_000) + 1,
   );
   try {
     return await fetchPageViews(path, `${daysAgo}daysAgo`);

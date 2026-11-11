@@ -1,3 +1,4 @@
+import { computeSettlement } from "@/lib/settlement";
 import { database } from "@igraph/database";
 import { sendPaidSettlmentSms } from "@igraph/utils";
 import { endOfMonth, startOfMonth, subDays } from "date-fns";
@@ -17,44 +18,19 @@ export async function POST(req: NextRequest) {
     const endOfThisMonth = endOfMonth(subDays(new Date(), 1));
 
     for (const tutor of allTutors) {
-      const enrollments = await database.enrollment.groupBy({
-        by: ["enrolledAt"],
-        where: {
-          course: { tutorId: tutor.id },
-          enrolledAt: {
-            gte: startOfThisMonth,
-            lte: endOfThisMonth,
-          },
-        },
-        _sum: { price: true },
-      });
-
-      const totalSell = enrollments.reduce(
-        (acc, curr) => acc + (curr._sum.price || 0),
-        0
+      const calc = await computeSettlement(
+        tutor,
+        startOfThisMonth,
+        endOfThisMonth,
       );
-
-      const amount = totalSell * (tutor.profit / 100);
-
-      const totalEnrollments = await database.enrollment.count({
-        where: {
-          course: { tutorId: tutor.id },
-          enrolledAt: {
-            gte: startOfThisMonth,
-            lte: endOfThisMonth,
-          },
-        },
-      });
+      const { amount } = calc;
 
       await database.settlement.create({
         data: {
-          amount,
+          ...calc,
           from: startOfThisMonth,
           to: endOfThisMonth,
-          profit: tutor.profit,
           status: "PENDING",
-          totalEnrollments,
-          totalSell,
           tutorId: tutor.id,
           paidAt: null,
         },
@@ -73,7 +49,7 @@ export async function POST(req: NextRequest) {
     console.error("[SETTLEMENT_CREATION_ERROR]", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,10 +2,13 @@
 
 import { SettlementFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
+import { requireAdmin } from "@/lib/require-admin";
+import { computeSettlement } from "@/lib/settlement";
 
 export const createSettlement = async (data: SettlementFormType) => {
   const { date } = data;
   const tutorId = +data.tutorId;
+  if (!(await requireAdmin())) return { error: "Unauthorized" };
 
   try {
     const existingTutor = await database.tutor.findFirst({
@@ -13,38 +16,14 @@ export const createSettlement = async (data: SettlementFormType) => {
     });
     if (!existingTutor) throw new Error("No Tutor Found");
 
-    // CALCULATIONS
-    const enrollments = await database.enrollment.groupBy({
-      by: ["enrolledAt"],
-      where: {
-        course: {
-          tutorId,
-        },
-        enrolledAt: {
-          gte: date.from,
-          lte: date.to,
-        },
-      },
-      _sum: { price: true },
-    });
+    const calc = await computeSettlement(existingTutor, date.from, date.to);
 
-    const totalSell = enrollments.reduce(
-      (acc, curr) => acc + (curr._sum.price || 0),
-      0
-    );
-    const profitFactor = existingTutor.profit / 100;
-    const amount = totalSell * profitFactor;
-
-    // CREATE SETTLEMENT
     await database.settlement.create({
       data: {
-        amount,
+        ...calc,
         from: date.from,
         to: date.to,
-        profit: existingTutor.profit,
         status: "PENDING",
-        totalEnrollments: 2,
-        totalSell: totalSell,
         tutorId,
         paidAt: null,
       },
@@ -58,9 +37,10 @@ export const createSettlement = async (data: SettlementFormType) => {
 
 export const updateSettlement = async (
   data: SettlementFormType,
-  settlementId: number
+  settlementId: number,
 ) => {
   const { status } = data;
+  if (!(await requireAdmin())) return { error: "Unauthorized" };
   try {
     const existingSettlement = await database.settlement.findFirst({
       where: { id: settlementId },
@@ -88,6 +68,7 @@ export const updateSettlement = async (
 };
 
 export const deleteSettlement = async (settlementId: number) => {
+  if (!(await requireAdmin())) return { error: "Unauthorized" };
   try {
     const existingSettlement = await database.settlement.findFirst({
       where: { id: settlementId },

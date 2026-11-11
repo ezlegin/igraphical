@@ -2,6 +2,7 @@ import {
   BookOpen,
   ChartBarBig,
   ChartNoAxesCombined,
+  Crown,
   Download,
   FileDown,
   GalleryHorizontal,
@@ -79,15 +80,19 @@ export const sideBarMenuItems = [
         ],
       },
       {
+        tabName: "Subscriptions",
+        tabHref: "/subscriptions/list",
+        tabIcon: Crown,
+        subMenuItems: [
+          { label: "List", href: "/subscriptions/list" },
+          { label: "Plans & Prices", href: "/subscriptions/plans" },
+        ],
+      },
+      {
         tabName: "Marketing",
         tabHref: "/marketing/coupons",
         tabIcon: Percent,
-        subMenuItems: [
-          { label: "Coupons", href: "/marketing/coupons" },
-          { label: "Campaigns", href: "/marketing/campaigns" },
-          { label: "Campaigns On Going", href: "/marketing/campaignsOnGoing" },
-          { label: "Overall Off", href: "/marketing/overall-off" },
-        ],
+        subMenuItems: [{ label: "Coupons", href: "/marketing/coupons" }],
       },
       {
         tabName: "Wallet",

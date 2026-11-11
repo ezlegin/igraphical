@@ -17,7 +17,7 @@ export const createPayment = async (data: PaymentFormType) => {
   try {
     const existingUser = await getUserById(userId);
     const existingCourses = await getAllCoursesByIds(
-      courses.map((c) => c.courseId)
+      courses.map((c) => c.courseId),
     );
 
     if (!existingCourses || !existingUser)
@@ -31,15 +31,6 @@ export const createPayment = async (data: PaymentFormType) => {
 
         if (!existingCoupon) throw new Error("Invalid Coupon Code");
       }
-
-      const existingCampaign = await database.campaignOnGoing.findFirst({
-        where: {
-          startAt: { lte: enrolledAt },
-          endAt: { gte: enrolledAt },
-        },
-      });
-
-      console.log("----------------------------------------", existingCampaign);
 
       const newerPayment = await tx.payment.create({
         data: {
@@ -55,7 +46,6 @@ export const createPayment = async (data: PaymentFormType) => {
           couponId: existingCoupon?.id,
           userId,
           paidAt: enrolledAt,
-          campaignOnGoingId: existingCampaign?.id,
         },
       });
 
@@ -115,14 +105,14 @@ export const createPayment = async (data: PaymentFormType) => {
       const enrolledCourseIds = existingEnrollments.map((e) => e.courseId);
 
       const coursesToEnroll = courses.filter(
-        (course) => !enrolledCourseIds.includes(course.courseId)
+        (course) => !enrolledCourseIds.includes(course.courseId),
       );
 
       if (coursesToEnroll.length !== courses.length) {
         throw new Error(
           `User is already enrolled in ${
             courses.length - coursesToEnroll.length
-          } of the selected courses.`
+          } of the selected courses.`,
         );
       }
 
@@ -165,7 +155,7 @@ export const createPayment = async (data: PaymentFormType) => {
 
 export const updateEnrollmentStatus = async (
   data: EnrollmentStatusFormType,
-  id: number
+  id: number,
 ) => {
   try {
     const existingEnrollment = await database.enrollment.findUnique({
@@ -193,14 +183,14 @@ export const updateEnrollmentStatus = async (
 
 export const updatePayment = async (
   data: PaymentFormType,
-  paymentId: number
+  paymentId: number,
 ) => {
   const { courses, enrolledAt, userId, payment } = data;
 
   try {
     const existingUser = await getUserById(userId);
     const existingCourses = await getAllCoursesByIds(
-      courses.map((c) => c.courseId)
+      courses.map((c) => c.courseId),
     );
 
     if (!existingCourses || !existingUser)
@@ -291,14 +281,14 @@ export const updatePayment = async (
       const enrolledCourseIds = existingEnrollments.map((e) => e.courseId);
 
       const coursesToEnroll = courses.filter(
-        (course) => !enrolledCourseIds.includes(course.courseId)
+        (course) => !enrolledCourseIds.includes(course.courseId),
       );
 
       if (coursesToEnroll.length !== courses.length) {
         throw new Error(
           `User is already enrolled in ${
             courses.length - coursesToEnroll.length
-          } of the selected courses.`
+          } of the selected courses.`,
         );
       }
 
