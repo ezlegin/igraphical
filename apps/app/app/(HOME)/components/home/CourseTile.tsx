@@ -24,7 +24,7 @@ export default async function CourseTile({ course }: Props) {
   return (
     <Link
       href={`/courses/${course.url}`}
-      className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-card/60 p-2.5 transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-[0_30px_60px_-30px_hsl(var(--primary)/0.6)]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-card/60 p-2.5 transition-all duration-500 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_24px_50px_-34px_hsl(var(--primary)/0.45)]"
     >
       <div className="relative overflow-hidden rounded-[1.35rem]">
         <Image
@@ -32,9 +32,9 @@ export default async function CourseTile({ course }: Props) {
           src={course.image?.url || placeHolder}
           width={600}
           height={450}
-          className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
         <div className="absolute inset-x-3 top-3 flex items-center justify-between">
           {course.category && (
             <span className="max-w-[65%] truncate whitespace-nowrap rounded-full bg-black/50 px-3 py-1 text-[11px] text-white backdrop-blur-md">
@@ -52,7 +52,7 @@ export default async function CourseTile({ course }: Props) {
           ) : null}
         </div>
         <PlayCircle
-          size={56}
+          size={44}
           strokeWidth={1.2}
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-50 text-white opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100"
         />
@@ -107,7 +107,7 @@ export default async function CourseTile({ course }: Props) {
               </>
             )}
           </div>
-          <span className="flex size-10 items-center justify-center rounded-full bg-foreground/5 transition-all duration-500 group-hover:rotate-[-45deg] group-hover:bg-primary group-hover:text-primary-foreground">
+          <span className="flex size-10 items-center justify-center rounded-full bg-foreground/5 transition-all duration-500 group-hover:rotate-[-20deg] group-hover:bg-primary group-hover:text-primary-foreground">
             <ArrowUpLeft size={18} />
           </span>
         </div>
