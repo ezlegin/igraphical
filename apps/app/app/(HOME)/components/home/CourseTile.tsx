@@ -1,7 +1,7 @@
 import type { CourseType } from "../../courses/[slug]/components/CourseCard";
 import { placeHolder } from "@/public";
 import { calculateCourseRate, formatPriceBy3Digits } from "@igraph/utils";
-import { ArrowUpLeft, Layers, PlayCircle, Star } from "lucide-react";
+import { ArrowUpLeft, Layers, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { subscriptionsEnabled } from "@/lib/access";
@@ -51,11 +51,6 @@ export default async function CourseTile({ course }: Props) {
             </span>
           ) : null}
         </div>
-        <PlayCircle
-          size={44}
-          strokeWidth={1.2}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-50 text-white opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100"
-        />
       </div>
 
       <div className="flex flex-1 flex-col gap-4 px-2 pb-2 pt-4">
