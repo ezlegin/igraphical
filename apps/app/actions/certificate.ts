@@ -19,22 +19,32 @@ export const verifyCertificate = async (
 
     const normalizedSerial = convertPersianDigitsToEnglish(serial);
 
-    const certificate = await database.certificate.findFirst({
+    // Public endpoint: return only what a certificate shows, never the
+    // student's contact details or ID numbers.
+    const found = await database.certificate.findFirst({
       where: { serial: normalizedSerial },
-      include: {
+      select: {
+        serial: true,
+        issuedAt: true,
         enrollment: {
-          include: {
-            user: true,
-            course: true,
+          select: {
+            user: { select: { fullName: true } },
+            course: { select: { title: true, duration: true } },
           },
         },
       },
     });
 
-    if (certificate) {
+    if (found) {
       return {
         success: "این مدرک مورد تایید آی‌گرافیکال می باشد",
-        certificate,
+        certificate: {
+          serial: found.serial,
+          issuedAt: found.issuedAt,
+          studentName: found.enrollment.user.fullName,
+          courseTitle: found.enrollment.course.title,
+          courseMinutes: found.enrollment.course.duration,
+        },
       };
     } else {
       return { error: "این مدرک در سیستم مدارک آی‌گرافیکال ثبت نگردیده است." };

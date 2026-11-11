@@ -12,7 +12,7 @@ interface Props {
   exercises: { title: string; url: string }[] | undefined;
 }
 
-// Student work as a swipeable film strip.
+// Student work as a grid of square tiles.
 const CourseExercise = ({ exercises, courseTitle }: Props) => {
   if (!exercises?.length) return null;
 
@@ -21,20 +21,20 @@ const CourseExercise = ({ exercises, courseTitle }: Props) => {
       eyebrow="نمونه‌کارها"
       title="چیزهایی که توی این دوره ساخته می‌شه"
     >
-      <div className="studio-mask-x -mx-3 overflow-x-auto px-3 pb-3 [scrollbar-width:none]">
-        <div className="flex snap-x snap-mandatory gap-3">
+      <div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {exercises.map((item, index) => (
             <Dialog key={index}>
               <DialogTrigger asChild>
                 <button
                   type="button"
-                  className="group relative aspect-[4/5] w-56 shrink-0 snap-start overflow-hidden rounded-2xl border border-foreground/10 md:w-64"
+                  className="group relative aspect-square overflow-hidden rounded-2xl border border-foreground/10"
                 >
                   <Image
                     alt={`${courseTitle} - نمونه ${index + 1}`}
                     src={item.url}
                     fill
-                    sizes="256px"
+                    sizes="(min-width: 1024px) 180px, 50vw"
                     draggable={false}
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   />
