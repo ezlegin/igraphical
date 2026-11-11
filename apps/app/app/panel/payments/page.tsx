@@ -23,7 +23,10 @@ const page = async () => {
 
   return (
     <>
-      <PanelHeader title="پرداخت‌ها" description="تاریخچه همه خریدها و تراکنش‌های شما." />
+      <PanelHeader
+        title="پرداخت‌ها"
+        description="تاریخچه همه خریدها و تراکنش‌های شما."
+      />
       <PaymentsList payments={payments} />
     </>
   );

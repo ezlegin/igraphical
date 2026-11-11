@@ -45,7 +45,10 @@ const page = async () => {
 
   return (
     <div className="space-y-4">
-      <PanelHeader title="دوره‌های من" description="از همون جایی که موندی ادامه بده." />
+      <PanelHeader
+        title="دوره‌های من"
+        description="از همون جایی که موندی ادامه بده."
+      />
       <RunningCourses runningCourses={runningCourses} />
 
       <CompletedCourses />

@@ -9,6 +9,8 @@ import {
   Tutor,
 } from "@igraph/database";
 import Link from "next/link";
+import { subscriptionsEnabled } from "@/lib/access";
+import { formatJalaliDate } from "@igraph/utils";
 import CardBox from "./CardBox";
 import RunningCourseCard from "./RunningCourseCard";
 
@@ -26,6 +28,15 @@ interface Props {
   showBtn?: boolean;
 }
 
+const accessNoteFor = (course: CourseType) => {
+  if (!subscriptionsEnabled() || course.price === 0) return undefined;
+  const e = course.enrollment[0];
+  if (!e?.isLegacy || !e.accessEndsAt) return undefined;
+  return e.accessEndsAt > new Date()
+    ? { text: `دسترسی تا ${formatJalaliDate(e.accessEndsAt)}`, expired: false }
+    : { text: "دسترسی به پایان رسیده — با اشتراک ادامه دهید", expired: true };
+};
+
 const RunningCourses = ({ runningCourses, showBtn }: Props) => {
   return (
     <CardBox
@@ -36,8 +47,13 @@ const RunningCourses = ({ runningCourses, showBtn }: Props) => {
     >
       {runningCourses.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-14 text-center">
-          <p className="text-sm text-muted-foreground">شما دوره در جریانی ندارید.</p>
-          <Link href="/courses" className="rounded-full bg-primary/15 px-4 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground">
+          <p className="text-sm text-muted-foreground">
+            شما دوره در جریانی ندارید.
+          </p>
+          <Link
+            href="/courses"
+            className="rounded-full bg-primary/15 px-4 py-2 text-xs font-medium text-primary hover:bg-primary hover:text-primary-foreground"
+          >
             مشاهده دوره‌ها
           </Link>
         </div>
@@ -71,6 +87,7 @@ const RunningCourses = ({ runningCourses, showBtn }: Props) => {
               tutor={course.tutor?.displayName!}
               imageUrl={course.image?.url}
               classroomUrl={`/classroom/${course.enrollment[0]?.classroom?.id}`}
+              accessNote={accessNoteFor(course)}
             />
           );
         })

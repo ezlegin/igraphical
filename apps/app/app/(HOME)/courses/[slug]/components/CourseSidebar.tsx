@@ -18,6 +18,7 @@ import {
   TvMinimalPlay,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { CourseType } from "./CourseContent";
 import CourseIncludes from "./CourseIncludes";
@@ -105,7 +106,17 @@ const CourseSidebar = async ({ course }: Props) => {
 
             <Separator />
 
-            {!isUserEnrolled && (
+            {!isUserEnrolled && subscriptionMode && !isFree && (
+              <div className="rounded-2xl bg-primary/10 p-3 text-center text-sm">
+                این دوره در{" "}
+                <Link href="/plans" className="font-bold text-primary">
+                  اشتراک آی‌گرافیکال
+                </Link>{" "}
+                قرار دارد؛ با یک اشتراک به همه دوره‌ها دسترسی دارید.
+              </div>
+            )}
+
+            {!isUserEnrolled && (!subscriptionMode || isFree) && (
               <>
                 <div className="flex justify-between items-center">
                   <Price

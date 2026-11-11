@@ -13,7 +13,10 @@ const page = async () => {
 
   return (
     <>
-      <PanelHeader title="پروفایل من" description="اطلاعات حساب کاربری‌ات رو اینجا مدیریت کن." />
+      <PanelHeader
+        title="پروفایل من"
+        description="اطلاعات حساب کاربری‌ات رو اینجا مدیریت کن."
+      />
       <UserProfileForm user={user} />
     </>
   );

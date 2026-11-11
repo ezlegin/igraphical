@@ -27,7 +27,10 @@ const CardBox = ({
             className="group flex items-center gap-1 rounded-full px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground"
           >
             {btn.title}
-            <ArrowUpLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
+            <ArrowUpLeft
+              size={14}
+              className="transition-transform group-hover:-translate-x-0.5"
+            />
           </Link>
         )}
       </div>

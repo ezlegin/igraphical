@@ -4,15 +4,20 @@ import { calculateCourseRate, formatPriceBy3Digits } from "@igraph/utils";
 import { ArrowUpLeft, Layers, PlayCircle, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { subscriptionsEnabled } from "@/lib/access";
 
 interface Props {
   course: CourseType;
 }
 
 export default function CourseTile({ course }: Props) {
-  const lessons = course.curriculum.reduce((acc, c) => acc + c.lessons.length, 0);
+  const lessons = course.curriculum.reduce(
+    (acc, c) => acc + c.lessons.length,
+    0,
+  );
   // price is already the final price; basePrice is the pre-discount one
   const finalPrice = course.price;
+  const inSubscription = subscriptionsEnabled() && !!finalPrice;
 
   return (
     <Link
@@ -35,9 +40,13 @@ export default function CourseTile({ course }: Props) {
             </span>
           )}
           {!finalPrice ? (
-            <span className="whitespace-nowrap rounded-full bg-lime px-3 py-1 text-[11px] font-bold text-black">رایگان</span>
-          ) : course.discount ? (
-            <span className="whitespace-nowrap rounded-full bg-pink-500 px-3 py-1 text-[11px] font-bold text-white">تخفیف ویژه</span>
+            <span className="whitespace-nowrap rounded-full bg-lime px-3 py-1 text-[11px] font-bold text-black">
+              رایگان
+            </span>
+          ) : inSubscription ? null : course.discount ? (
+            <span className="whitespace-nowrap rounded-full bg-pink-500 px-3 py-1 text-[11px] font-bold text-white">
+              تخفیف ویژه
+            </span>
           ) : null}
         </div>
         <PlayCircle
@@ -51,7 +60,9 @@ export default function CourseTile({ course }: Props) {
         <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
           <span className="flex items-center gap-1">
             <Star size={13} className="fill-[#ffc928] text-[#ffc928]" />
-            <span className="en-digits text-foreground">{calculateCourseRate(course.review)}</span>
+            <span className="en-digits text-foreground">
+              {calculateCourseRate(course.review)}
+            </span>
           </span>
           <span className="size-1 rounded-full bg-foreground/20" />
           <span className="flex items-center gap-1">
@@ -60,12 +71,18 @@ export default function CourseTile({ course }: Props) {
           </span>
         </div>
 
-        <h3 className="line-clamp-2 text-[15px] font-semibold leading-7">{course.title}</h3>
+        <h3 className="line-clamp-2 text-[15px] font-semibold leading-7">
+          {course.title}
+        </h3>
 
         <div className="mt-auto flex items-end justify-between">
           <div>
             {!finalPrice ? (
               <span className="text-lg font-bold text-lime">رایگان</span>
+            ) : inSubscription ? (
+              <span className="text-sm font-bold text-primary">
+                در اشتراک آی‌گرافیکال
+              </span>
             ) : (
               <>
                 {course.discount && (
@@ -73,8 +90,12 @@ export default function CourseTile({ course }: Props) {
                     {formatPriceBy3Digits(course.basePrice)}
                   </span>
                 )}
-                <span className="text-lg font-bold">{formatPriceBy3Digits(finalPrice)}</span>
-                <span className="mr-1 text-xs text-muted-foreground">تومان</span>
+                <span className="text-lg font-bold">
+                  {formatPriceBy3Digits(finalPrice)}
+                </span>
+                <span className="mr-1 text-xs text-muted-foreground">
+                  تومان
+                </span>
               </>
             )}
           </div>

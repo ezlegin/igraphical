@@ -25,29 +25,29 @@ const NavBar = async () => {
 
   return (
     <NavShell>
-        <Link href={"/"}>
-          <IgraphLogoSquare size={40} />
-        </Link>
-        <NavLinks items={menuItems} />
+      <Link href={"/"}>
+        <IgraphLogoSquare size={40} />
+      </Link>
+      <NavLinks items={menuItems} />
 
-        <div className="flex gap-2">
-          <Link href={"/cart"} className="relative">
-            <Button variant={"outline"} size={"icon"}>
-              <ShoppingCart />
-            </Button>
-            {isThereItemsInCart && (
-              <div className="h-2.5 animate-pulse w-2.5 rounded-full bg-red-500 z-10 absolute top-0 right-0 m-1" />
-            )}
-          </Link>
-
-          {!user ? (
-            <Link href={"/panel"}>
-              <Button>حساب کاربری</Button>
-            </Link>
-          ) : (
-            <UserBar user={user} />
+      <div className="flex gap-2">
+        <Link href={"/cart"} className="relative">
+          <Button variant={"outline"} size={"icon"}>
+            <ShoppingCart />
+          </Button>
+          {isThereItemsInCart && (
+            <div className="h-2.5 animate-pulse w-2.5 rounded-full bg-red-500 z-10 absolute top-0 right-0 m-1" />
           )}
-        </div>
+        </Link>
+
+        {!user ? (
+          <Link href={"/panel"}>
+            <Button>حساب کاربری</Button>
+          </Link>
+        ) : (
+          <UserBar user={user} />
+        )}
+      </div>
     </NavShell>
   );
 };
@@ -56,6 +56,9 @@ export default NavBar;
 
 const menuItems: { label: string; href: string }[] = [
   { label: "دوره‌ها", href: "/courses" },
+  ...(process.env.SUBSCRIPTIONS_ENABLED === "true"
+    ? [{ label: "اشتراک", href: "/plans" }]
+    : []),
   { label: "وبلاگ", href: "/blog" },
   { label: "مدرسین", href: "/tutors" },
   { label: "استعلام مدرک", href: "/verify-cert" },

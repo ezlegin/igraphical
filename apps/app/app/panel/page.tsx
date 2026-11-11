@@ -8,6 +8,8 @@ import { ArrowUpLeft, Wallet } from "lucide-react";
 import Link from "next/link";
 import { formatPriceBy3Digits } from "@igraph/utils";
 import Slider from "@/components/Slider";
+import SubscriptionStatusCard from "./components/SubscriptionStatusCard";
+import { subscriptionsEnabled } from "@/lib/access";
 
 const page = async () => {
   const user = await getSessionUser();
@@ -70,7 +72,8 @@ const page = async () => {
         <div>
           <p className="text-sm text-muted-foreground">خوش برگشتی 👋</p>
           <h1 className="mt-1 text-3xl font-black md:text-4xl">
-            سلام <span className="text-gradient">{user?.firstName}</span>، امروز چی می‌سازیم؟
+            سلام <span className="text-gradient">{user?.firstName}</span>، امروز
+            چی می‌سازیم؟
           </h1>
         </div>
         <Link
@@ -78,9 +81,16 @@ const page = async () => {
           className="group flex w-fit items-center gap-1.5 rounded-full border border-foreground/15 px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
         >
           کشف دوره‌های جدید
-          <ArrowUpLeft size={15} className="transition-transform group-hover:-translate-x-0.5" />
+          <ArrowUpLeft
+            size={15}
+            className="transition-transform group-hover:-translate-x-0.5"
+          />
         </Link>
       </Reveal>
+
+      {subscriptionsEnabled() && userId && (
+        <SubscriptionStatusCard userId={userId} />
+      )}
 
       {sliders.length > 0 && (
         <div className="overflow-hidden rounded-[1.75rem] border border-foreground/10">
@@ -94,10 +104,14 @@ const page = async () => {
         <div className="studio-card studio-noise relative col-span-2 flex items-center justify-between gap-3 overflow-hidden p-5 lg:col-span-1">
           <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-lime/20 blur-2xl" />
           <div className="relative space-y-1">
-            <span className="text-xs text-muted-foreground">موجودی کیف پول</span>
+            <span className="text-xs text-muted-foreground">
+              موجودی کیف پول
+            </span>
             <p className="text-xl font-black">
               {formatPriceBy3Digits(wallet?.balance || 0)}
-              <span className="mr-1 text-xs font-normal text-muted-foreground">تومان</span>
+              <span className="mr-1 text-xs font-normal text-muted-foreground">
+                تومان
+              </span>
             </p>
           </div>
           <span className="relative flex size-12 items-center justify-center rounded-2xl bg-lime text-black">

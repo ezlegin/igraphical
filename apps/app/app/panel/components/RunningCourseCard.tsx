@@ -10,6 +10,8 @@ interface Props {
   imageUrl?: string;
   classroomUrl: string;
   remainingLessons: number;
+  /** e.g. legacy access end date, or "access ended" */
+  accessNote?: { text: string; expired: boolean };
 }
 
 const RunningCourseCard = ({
@@ -19,6 +21,7 @@ const RunningCourseCard = ({
   tutor,
   imageUrl,
   classroomUrl,
+  accessNote,
 }: Props) => {
   const percent = Math.round(progress || 0);
 
@@ -44,6 +47,13 @@ const RunningCourseCard = ({
         <div>
           <p className="line-clamp-1 font-semibold">{title}</p>
           <p className="text-xs text-muted-foreground">{tutor}</p>
+          {accessNote && (
+            <p
+              className={`mt-1 text-[11px] ${accessNote.expired ? "text-destructive" : "text-primary"}`}
+            >
+              {accessNote.text}
+            </p>
+          )}
         </div>
 
         {percent !== 100 && (

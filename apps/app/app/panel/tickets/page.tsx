@@ -36,7 +36,10 @@ const page = async ({ searchParams }: Props) => {
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      <PanelHeader title="پشتیبانی" description="سوالت رو بپرس؛ تیم ما کنارته." />
+      <PanelHeader
+        title="پشتیبانی"
+        description="سوالت رو بپرس؛ تیم ما کنارته."
+      />
       <div>
         <FaqBanner />
       </div>

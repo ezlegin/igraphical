@@ -12,13 +12,17 @@ const FaqBanner = () => {
       <div className="relative flex-1 space-y-1">
         <h2 className="text-lg font-bold">قبل از ارسال تیکت</h2>
         <p className="text-sm leading-7 text-muted-foreground">
-          با مراجعه به صفحه <span className="font-semibold text-primary">سوالات متداول</span> می‌تونی خیلی سریع
-          مشکلت رو حل کنی!
+          با مراجعه به صفحه{" "}
+          <span className="font-semibold text-primary">سوالات متداول</span>{" "}
+          می‌تونی خیلی سریع مشکلت رو حل کنی!
         </p>
       </div>
       <div className="relative flex gap-3">
         <Link href={"/faq"}>
-          <Button variant="outline" className="rounded-full border-foreground/15">
+          <Button
+            variant="outline"
+            className="rounded-full border-foreground/15"
+          >
             سوالات متداول
           </Button>
         </Link>
