@@ -68,12 +68,11 @@ const page = async () => {
     <div className="mx-auto max-w-screen-xl space-y-14 py-6 md:py-10">
       <section className="relative isolate overflow-hidden rounded-[2rem] border border-foreground/10 px-6 pb-10 pt-12 md:px-12 md:pt-16">
         <div className="studio-grid studio-fade absolute inset-0 -z-10" />
-        <div className="absolute -top-24 left-1/2 -z-10 h-64 w-[560px] -translate-x-1/2 rounded-full bg-primary/25 blur-[110px]" />
-        <div className="absolute -bottom-24 right-10 -z-10 size-64 rounded-full bg-[#d4ff3f]/10 blur-[100px]" />
-
+        <div className="absolute -top-24 left-1/2 -z-10 h-64 w-[560px] -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]" />
+        
         <Reveal className="mx-auto max-w-2xl space-y-4 text-center">
           <p className="inline-flex items-center gap-2 rounded-full border border-foreground/10 px-3 py-1 text-xs text-muted-foreground">
-            <span className="size-1.5 rounded-full bg-lime" />
+            <span className="size-1.5 rounded-full bg-primary" />
             اشتراک آی‌گرافیکال
           </p>
           <h1 className="text-3xl font-black leading-tight md:text-5xl md:leading-[1.25]">
@@ -85,7 +84,7 @@ const page = async () => {
             باشید.
           </p>
           {summary?.endsAt && (
-            <p className="inline-block rounded-full bg-primary/15 px-4 py-1.5 text-xs text-primary">
+            <p className="inline-block rounded-full bg-foreground/5 px-4 py-1.5 text-xs text-muted-foreground">
               اشتراک شما تا {formatJalaliDate(summary.endsAt)} فعال است؛ خرید
               جدید به انتهای آن اضافه می‌شود.
             </p>
@@ -123,7 +122,7 @@ const page = async () => {
           {faqs.map((f) => (
             <details
               key={f.q}
-              className="group rounded-2xl border border-foreground/10 bg-background/40 p-5 open:border-primary/40"
+              className="group rounded-2xl border border-foreground/10 bg-background/40 p-5 open:border-foreground/25"
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium">
                 {f.q}
