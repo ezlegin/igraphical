@@ -1,6 +1,6 @@
 import { Check } from "lucide-react";
 
-const steps = ["سبد خرید", "پرداخت", "شروع یادگیری"];
+const steps = ["انتخاب اشتراک", "پرداخت", "شروع یادگیری"];
 
 export default function CheckoutSteps({ current }: { current: number }) {
   return (

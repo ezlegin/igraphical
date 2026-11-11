@@ -1,7 +1,6 @@
 import { getEnrollmentByUserIdAndCourseId } from "@/data/enrollment";
 import { getSessionUser } from "@/data/user";
 import { installmentPayment } from "@/public";
-import { database } from "@igraph/database";
 import CashBackCard from "@igraph/ui/components/CashBackCard";
 import Price from "@igraph/ui/components/Price";
 import TizerVideo from "@igraph/ui/components/TizerVideo";
@@ -22,7 +21,6 @@ import Link from "next/link";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { CourseType } from "./CourseContent";
 import CourseIncludes from "./CourseIncludes";
-import CourseRegisterButton from "./CourseRegisterButton";
 import SubscriptionCourseButton from "./SubscriptionCourseButton";
 import { canAccessCourse, subscriptionsEnabled } from "@/lib/access";
 
@@ -70,13 +68,6 @@ const CourseSidebar = async ({ course }: Props) => {
     },
   ];
 
-  const isInCart = !userId
-    ? false
-    : Boolean(
-        await database.cartItem.findFirst({
-          where: { courseId: course.id, cart: { userId } },
-        }),
-      );
 
   const isFree = course.price === 0;
 
@@ -139,26 +130,12 @@ const CourseSidebar = async ({ course }: Props) => {
               </>
             )}
 
-            {subscriptionMode ? (
-              <SubscriptionCourseButton
+            <SubscriptionCourseButton
                 courseId={course.id}
                 classroomId={classroomId}
                 canStart={canStart}
                 isLoggedIn={!!userId}
               />
-            ) : (
-              <CourseRegisterButton
-                isPresale={course.status === "PRESALE"}
-                releaseDate={course.releaseDate}
-                classroomId={classroomId}
-                isUserEnrolled={isUserEnrolled}
-                basePrice={course.basePrice}
-                discount={course.discount}
-                price={course.price}
-                courseId={course.id}
-                isInCart={isInCart}
-              />
-            )}
           </div>
         </CardContent>
       </Card>

@@ -8,7 +8,7 @@ import { Check, Loader2, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import CheckoutSteps from "../cart/components/CheckoutSteps";
+import CheckoutSteps from "./CheckoutSteps";
 
 type Status = "SUCCESS" | "FAIL" | "PENDING";
 
@@ -116,9 +116,9 @@ const CheckoutResult = ({ reference }: Props) => {
             </Link>
           )}
           {fail && (
-            <Link href={"/cart"} className="block">
+            <Link href={"/plans"} className="block">
               <Button size="lg" className="h-12 w-full rounded-full">
-                بازگشت به سبد خرید
+                بازگشت به خرید اشتراک
               </Button>
             </Link>
           )}

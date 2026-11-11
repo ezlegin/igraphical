@@ -50,8 +50,6 @@ export const loginPageRoute = "/login";
 export const privateRoutes = [
   "/panel",
   "/api",
-  "/cart",
-  "/quick-cart",
   "/checkout-result",
   "/classroom",
 ];

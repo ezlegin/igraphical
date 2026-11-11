@@ -112,13 +112,6 @@ export const profileFormSchema = z.object({
 });
 export type ProfileFormType = z.infer<typeof profileFormSchema>;
 
-//! CART FORM
-export const paymentFormSchema = z.object({
-  code: z.string().min(1),
-  paymentMethod: z.enum(paymentMethod).optional(),
-});
-export type PaymentFormType = z.infer<typeof paymentFormSchema>;
-
 //! CONTACT FORM
 export const contactFormSchema = z.object({
   fullName: z.string().min(1, { message: required }),

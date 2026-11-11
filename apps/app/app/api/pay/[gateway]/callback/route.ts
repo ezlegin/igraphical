@@ -7,7 +7,7 @@ import { callbackRoute } from "@obhco/pay";
 async function handle(request: Request, ctx: { params: Promise<{ gateway: string }> }) {
   const { gateway } = await ctx.params;
   return callbackRoute(pay, gateway, {
-    fallbackUrl: `${siteUrl}/cart`,
+    fallbackUrl: `${siteUrl}/plans`,
     onResult: async (payment) => {
       try {
         await settleGatewayPayment(payment);
