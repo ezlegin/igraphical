@@ -73,6 +73,8 @@ services:
       DATABASE_URL: "mysql://root@database:3306/igraphical"
       NEXTAUTH_URL: https://tutor.igraphical.ir
       CLIENT_MAX_BODY_SIZE: 10m
+      NODE_OPTIONS: --max-old-space-size=160
+    mem_limit: 256m
     depends_on:
       database:
         condition: service_healthy
@@ -99,6 +101,8 @@ services:
       LETSENCRYPT_EMAIL: admin@igraphical.ir
       NEXTAUTH_URL: https://admin.igraphical.ir
       CLIENT_MAX_BODY_SIZE: 10m
+      NODE_OPTIONS: --max-old-space-size=224
+    mem_limit: 384m
     depends_on:
       database:
         condition: service_healthy
@@ -127,6 +131,8 @@ services:
       LETSENCRYPT_EMAIL: admin@igraphical.ir
       NEXTAUTH_URL: https://igraphical.ir
       CLIENT_MAX_BODY_SIZE: 10m
+      NODE_OPTIONS: --max-old-space-size=320
+    mem_limit: 512m
     depends_on:
       database:
         condition: service_healthy
