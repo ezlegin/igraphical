@@ -10,7 +10,7 @@ export default async function Layout({
 }) {
   return (
     <div
-      className={`max-w-screen-xl mx-auto p-3 grid grid-cols-1 grid-rows-[auto_1fr_auto] h-screen`}
+      className={`max-w-[1400px] mx-auto p-3 grid grid-cols-1 grid-rows-[auto_1fr_auto] h-screen`}
     >
       <div>
         <NotifBar />

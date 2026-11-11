@@ -65,7 +65,7 @@ const page = async () => {
   const enabled = subscriptionsEnabled() && plans.length > 0;
 
   return (
-    <div className="mx-auto max-w-screen-xl space-y-14 py-6 md:py-10">
+    <div className="mx-auto max-w-[1400px] space-y-14 py-6 md:py-10">
       <section className="relative isolate overflow-hidden px-2 pb-10 pt-12 md:px-6 md:pt-16">
         <div className="studio-grid studio-fade absolute inset-0 -z-10" />
         <div className="absolute -top-24 left-1/2 -z-10 h-64 w-[560px] -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]" />

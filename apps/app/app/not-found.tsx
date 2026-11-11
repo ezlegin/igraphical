@@ -10,7 +10,7 @@ import SimpleFooter from "@/components/SimpleFooter";
 const notFound = () => {
   return (
     <>
-      <div className="max-w-screen-xl mx-auto p-3 h-screen grid grid-rows-[auto_1fr_auto]">
+      <div className="max-w-[1400px] mx-auto p-3 h-screen grid grid-rows-[auto_1fr_auto]">
         <NavBar />
         <div className="flex flex-col items-center justify-center select-none my-6">
           <Image
