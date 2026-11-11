@@ -55,6 +55,11 @@ mentorship on their paid courses from that date.
     student can start a course; ask-tutor works only with mentorship
   - admin → Subscriptions lists the purchase
 
+## 6. Signed video links (after launch is stable)
+
+Follow `deploy/dl-host/README.md`: install `v.php`, set `DL_SIGNING_SECRET`,
+then block direct access to `/Courses`.
+
 ## Rollback
 
 - **Fast:** set `SUBSCRIPTIONS_ENABLED=false` and recreate the app container.
@@ -68,7 +73,5 @@ mentorship on their paid courses from that date.
 - After deploy, log in to admin as an AUTHOR once and check the blog pages
   still work (posts, comments, images, categories are allowed for AUTHOR;
   everything else now requires ADMIN).
-- Lesson video URLs are plain Cloudinary links; signed URLs would stop sharing
-  after a subscription expires.
 - Campaign / overall-off tables are still in the database (unused); drop them
   later if wanted.

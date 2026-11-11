@@ -5,6 +5,7 @@ import { database } from "@igraph/database";
 import { sendFinishCourseEmail, sendFinishCourseSms } from "@igraph/utils";
 import { generateCertificateForUser } from "./certificate";
 import { canAccessCourse } from "@/lib/access";
+import { signMediaUrl } from "@/lib/media-url";
 
 export const createLessonProgress = async (
   lessonId: number,
@@ -261,5 +262,5 @@ export const getLessonSource = async (
     create: { userId: user.id, lessonId: lesson.id, day },
   });
 
-  return { url: lesson.url };
+  return { url: signMediaUrl(lesson.url, user.id) };
 };

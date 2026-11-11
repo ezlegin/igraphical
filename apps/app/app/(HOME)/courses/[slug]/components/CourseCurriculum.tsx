@@ -1,4 +1,5 @@
 import CurriculumPlay from "@igraph/ui/components/CurriculumPlay";
+import { signMediaUrl } from "@/lib/media-url";
 import {
   Accordion,
   AccordionContent,
@@ -82,7 +83,7 @@ const CourseCurriculum = ({ curriculums }: CurriculumsProps) => {
                         </DialogTrigger>
                         <DialogContent className="p-0 border-none max-w-[900px] aspect-video rounded-sm">
                           <DialogTitle className="sr-only" />
-                          <CurriculumPlay url={lesson.url} />
+                          <CurriculumPlay url={signMediaUrl(lesson.url, 0)} />
                         </DialogContent>
                       </Dialog>
                     ) : (
