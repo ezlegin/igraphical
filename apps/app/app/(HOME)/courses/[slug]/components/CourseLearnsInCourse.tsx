@@ -1,24 +1,36 @@
-import { Check } from "lucide-react";
 import DetailSection from "./DetailSection";
 
-const CourseLearnsInCourse = ({ learnsInCourse }: { learnsInCourse: string[] }) => {
+const CourseLearnsInCourse = ({
+  learnsInCourse,
+}: {
+  learnsInCourse: string[];
+}) => {
   if (!learnsInCourse.length) return null;
 
   return (
-    <DetailSection id="learn" title="در این دوره یاد می‌گیری">
-      <ul className="grid gap-3 sm:grid-cols-2">
+    <DetailSection
+      id="learn"
+      index="01"
+      eyebrow="خروجی دوره"
+      title={
+        <>
+          بعد از این دوره <span className="text-gradient">می‌تونی…</span>
+        </>
+      }
+    >
+      <ol className="grid gap-x-10 sm:grid-cols-2">
         {learnsInCourse.map((item, index) => (
           <li
             key={index}
-            className="flex items-start gap-3 rounded-2xl border border-foreground/10 bg-card/50 p-4 text-sm leading-7"
+            className="flex items-baseline gap-4 border-t border-foreground/10 py-5 text-sm leading-7 md:text-[15px]"
           >
-            <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-lime text-black">
-              <Check size={14} strokeWidth={3} />
+            <span className="en-digits w-8 shrink-0 text-lg font-black text-primary/80">
+              {String(index + 1).padStart(2, "0")}
             </span>
             {item}
           </li>
         ))}
-      </ul>
+      </ol>
     </DetailSection>
   );
 };

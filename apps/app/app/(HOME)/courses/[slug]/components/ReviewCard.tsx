@@ -16,7 +16,11 @@ const ReviewCard = ({ review }: Props) => {
           <Star
             key={i}
             size={14}
-            className={i < review.rate ? "fill-[#ffc928] text-[#ffc928]" : "text-foreground/15"}
+            className={
+              i < review.rate
+                ? "fill-[#ffc928] text-[#ffc928]"
+                : "text-foreground/15"
+            }
           />
         ))}
       </div>

@@ -13,7 +13,12 @@ const CourseTutor = ({ tutor }: Props) => {
   if (!tutor) return null;
 
   return (
-    <DetailSection id="tutor" title="مدرس دوره">
+    <DetailSection
+      id="tutor"
+      index="04"
+      eyebrow="مدرس دوره"
+      title="از کی یاد می‌گیری؟"
+    >
       <div className="studio-card studio-noise relative flex flex-col gap-6 overflow-hidden p-6 md:flex-row md:items-center md:p-8">
         <div className="absolute -left-16 -top-16 size-56 rounded-full bg-primary/20 blur-3xl" />
         <Image
@@ -25,7 +30,9 @@ const CourseTutor = ({ tutor }: Props) => {
         />
         <div className="relative space-y-3">
           <h3 className="text-2xl font-black">{tutor.displayName}</h3>
-          <p className="whitespace-pre-line text-sm text-primary">{tutor.titles}</p>
+          <p className="whitespace-pre-line text-sm text-primary">
+            {tutor.titles}
+          </p>
           <p className="text-sm leading-7 text-muted-foreground">{tutor.bio}</p>
           <Link
             href={`/tutors/${tutor.slug}`}

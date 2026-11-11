@@ -4,61 +4,60 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@igraph/ui/components/ui/dialog";
-import { ScrollArea } from "@igraph/ui/components/ui/scroll-area";
 import Image from "next/image";
 import DetailSection from "./DetailSection";
 
 interface Props {
   courseTitle: string;
-  exercises:
-    | {
-        title: string;
-        url: string;
-      }[]
-    | undefined;
+  exercises: { title: string; url: string }[] | undefined;
 }
 
+// Student work as a swipeable film strip.
 const CourseExercise = ({ exercises, courseTitle }: Props) => {
+  if (!exercises?.length) return null;
+
   return (
-    exercises && (
-      <DetailSection title="تمرین‌ها و نمونه‌کارهای دوره">
-
-        <ScrollArea className="rounded-md h-96 lg:h-full">
-          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-2 px-4">
-            {exercises.map((item, index) => (
-              <Dialog key={index}>
-                <DialogTrigger asChild>
+    <DetailSection
+      eyebrow="نمونه‌کارها"
+      title="چیزهایی که توی این دوره ساخته می‌شه"
+    >
+      <div className="studio-mask-x -mx-3 overflow-x-auto px-3 pb-3 [scrollbar-width:none]">
+        <div className="flex snap-x snap-mandatory gap-3">
+          {exercises.map((item, index) => (
+            <Dialog key={index}>
+              <DialogTrigger asChild>
+                <button
+                  type="button"
+                  className="group relative aspect-[4/5] w-56 shrink-0 snap-start overflow-hidden rounded-2xl border border-foreground/10 md:w-64"
+                >
                   <Image
-                    key={index}
-                    alt={courseTitle}
+                    alt={`${courseTitle} - نمونه ${index + 1}`}
                     src={item.url}
-                    width={300}
-                    height={300}
+                    fill
+                    sizes="256px"
                     draggable={false}
-                    className="aspect-square cursor-pointer rounded-2xl object-cover transition-transform duration-500 hover:scale-[1.03]"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   />
-                </DialogTrigger>
-
-                <DialogContent className="max-w-4xl w-fit gap-2 p-1.5 border-none pb-2 bg-slate-700 flex flex-col items-center">
-                  <Image
-                    key={index}
-                    alt={courseTitle}
-                    src={item.url}
-                    width={900}
-                    height={900}
-                    draggable={false}
-                    className="rounded-lg bg-muted-foreground"
-                  />
-                  <DialogTitle className="text-muted-foreground text-sm font-medium">
-                    نمونه ای از تمرینات یا بخشی از این دوره
-                  </DialogTitle>
-                </DialogContent>
-              </Dialog>
-            ))}
-          </div>
-        </ScrollArea>
-      </DetailSection>
-    )
+                </button>
+              </DialogTrigger>
+              <DialogContent className="flex w-fit max-w-4xl flex-col items-center gap-2 border-none bg-card p-1.5 pb-2">
+                <Image
+                  alt={courseTitle}
+                  src={item.url}
+                  width={900}
+                  height={900}
+                  draggable={false}
+                  className="rounded-lg"
+                />
+                <DialogTitle className="text-sm font-medium text-muted-foreground">
+                  نمونه‌ای از تمرین‌های این دوره
+                </DialogTitle>
+              </DialogContent>
+            </Dialog>
+          ))}
+        </div>
+      </div>
+    </DetailSection>
   );
 };
 

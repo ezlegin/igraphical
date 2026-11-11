@@ -34,8 +34,12 @@ const CourseReviews = ({ reviews }: Props) => {
 
   return (
     reviews.length > 0 && (
-      <DetailSection id="reviews" title="نظرات دانشجوها">
-
+      <DetailSection
+        id="reviews"
+        index="05"
+        eyebrow="نظرات"
+        title="دانشجوها چی می‌گن"
+      >
         <Masonry
           breakpointCols={{ default: 2, 1024: 1 }}
           className="flex gap-3"

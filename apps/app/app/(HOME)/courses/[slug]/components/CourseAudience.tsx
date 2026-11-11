@@ -10,23 +10,25 @@ interface Props {
 
 const CourseAudienceItems = ({ courseContentItems }: Props) => {
   const items = [
-    { title: "مخاطبین دوره", text: courseContentItems.audience, icon: Users, tone: "#60a5fa" },
-    { title: "ملزومات دوره", text: courseContentItems.needs, icon: Laptop, tone: "#d4ff3f" },
-    { title: "بازار کار", text: courseContentItems.bazaar, icon: Briefcase, tone: "#f472b6" },
+    { title: "برای چه کسانیه", text: courseContentItems.audience, icon: Users },
+    { title: "چی لازم داری", text: courseContentItems.needs, icon: Laptop },
+    { title: "بازار کار", text: courseContentItems.bazaar, icon: Briefcase },
   ].filter((i) => i.text);
 
   return (
-    <div className="grid gap-3 md:grid-cols-3">
+    <div className="grid gap-8 md:grid-cols-3 md:gap-10">
       {items.map((item) => (
-        <div key={item.title} className="studio-card space-y-3 p-5">
-          <span
-            className="flex size-10 items-center justify-center rounded-xl"
-            style={{ background: `${item.tone}1f`, color: item.tone }}
-          >
-            <item.icon size={18} />
-          </span>
-          <h3 className="font-bold">{item.title}</h3>
-          <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">{item.text}</p>
+        <div
+          key={item.title}
+          className="space-y-3 border-t border-foreground/10 pt-5"
+        >
+          <h3 className="flex items-center gap-2 font-bold">
+            <item.icon size={17} className="text-primary" />
+            {item.title}
+          </h3>
+          <p className="whitespace-pre-line text-sm leading-7 text-muted-foreground">
+            {item.text}
+          </p>
         </div>
       ))}
     </div>

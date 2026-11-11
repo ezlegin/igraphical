@@ -35,7 +35,7 @@ const RelatedCourses = async ({
   if (!courses.length) return;
 
   return (
-    <DetailSection title="دوره‌های مرتبط">
+    <DetailSection eyebrow="ادامه مسیر" title="دوره‌های مرتبط">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {courses.map((course, index) => (
           <CourseCard key={index} course={course} />
