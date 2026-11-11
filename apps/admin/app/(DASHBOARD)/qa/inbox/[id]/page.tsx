@@ -2,12 +2,15 @@ import { database } from "@igraph/database";
 import { notFound } from "next/navigation";
 import React from "react";
 import QaChat from "./QaChat";
+import { requireAdmin } from "@/lib/require-admin";
+import { redirect } from "next/navigation";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
 const page = async ({ params }: Props) => {
+  if (!(await requireAdmin())) redirect("/");
   const { id } = await params;
 
   const qa = await database.askTutor.findFirst({

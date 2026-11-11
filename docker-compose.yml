@@ -52,35 +52,6 @@ services:
     networks:
       - app_network
 
-  tutor:
-    image: ghcr.io/ezlegin/igraphical-tutor:${IMAGE_TAG:-latest}
-    build:
-      context: .
-      dockerfile: ./apps/tutor/Dockerfile
-      args:
-        DATABASE_URL: ${DATABASE_URL}
-        NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-        RESEND_API_KEY: ${RESEND_API_KEY}
-    container_name: tutor
-    restart: always
-    env_file:
-      - /root/envs/igraphical/tutor.env.local
-    environment:
-      VIRTUAL_PORT: 3000
-      VIRTUAL_HOST: tutor.igraphical.ir
-      LETSENCRYPT_HOST: tutor.igraphical.ir
-      LETSENCRYPT_EMAIL: admin@igraphical.ir
-      DATABASE_URL: "mysql://root@database:3306/igraphical"
-      NEXTAUTH_URL: https://tutor.igraphical.ir
-      CLIENT_MAX_BODY_SIZE: 10m
-      NODE_OPTIONS: --max-old-space-size=160
-    mem_limit: 256m
-    depends_on:
-      database:
-        condition: service_healthy
-    networks:
-      - app_network
-
   admin:
     image: ghcr.io/ezlegin/igraphical-admin:${IMAGE_TAG:-latest}
     build:

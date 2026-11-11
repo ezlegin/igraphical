@@ -75,7 +75,7 @@ const renderRows = (qa: QaType) => {
       </TableCell>
 
       <TableCell>
-        <ViewButton href={`/qa/${qa.id}`} />
+        <ViewButton href={`/qa/inbox/${qa.id}`} />
       </TableCell>
     </TableRow>
   );

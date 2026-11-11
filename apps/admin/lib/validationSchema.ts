@@ -358,3 +358,10 @@ export const exportUsersFormSchema = z.object({
   excludedCourses: z.array(z.object({ id: z.number() })),
 });
 export type ExportUsersFormType = z.infer<typeof exportUsersFormSchema>;
+
+//! Q&A REPLY FORM
+export const QaFormSchema = z.object({
+  message: z.string(),
+  file: z.instanceof(File).optional(),
+});
+export type QaFormType = z.infer<typeof QaFormSchema>;

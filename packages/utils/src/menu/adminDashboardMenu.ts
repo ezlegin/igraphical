@@ -117,9 +117,12 @@ export const sideBarMenuItems = [
       },
       {
         tabName: "Q & A",
-        tabHref: "/qa",
+        tabHref: "/qa/inbox",
         tabIcon: MessageCircleQuestion,
-        subMenuItems: [],
+        subMenuItems: [
+          { label: "Inbox (reply)", href: "/qa/inbox" },
+          { label: "By Course", href: "/qa" },
+        ],
       },
       {
         tabName: "Contact",

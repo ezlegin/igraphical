@@ -34,7 +34,7 @@ jobs:
           BEFORE: ${{ github.event.before }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          ALL='["app","admin","tutor"]'
+          ALL='["app","admin"]'
           if [ "$EVENT" = pull_request ]; then BASE="$PR_BASE"; else BASE="$BEFORE"; fi
           if [ "$EVENT" = workflow_dispatch ] || [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
             echo "apps=$ALL" >> "$GITHUB_OUTPUT"; exit 0
@@ -45,7 +45,7 @@ jobs:
             echo "apps=$ALL" >> "$GITHUB_OUTPUT"; exit 0
           fi
           picked=""
-          for a in app admin tutor; do
+          for a in app admin; do
             if echo "$files" | grep -q "^apps/$a/"; then picked="$picked\"$a\","; fi
           done
           echo "apps=[${picked%,}]" >> "$GITHUB_OUTPUT"

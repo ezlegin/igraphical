@@ -4,7 +4,8 @@ import { globalPageSize, pagination } from "@igraph/utils";
 import { database } from "@igraph/database";
 import { AskTutorStatus, Prisma } from "@igraph/database";
 import QaList from "./QaList";
-import { getSessionTutor } from "@/data/tutor";
+import { requireAdmin } from "@/lib/require-admin";
+import { redirect } from "next/navigation";
 
 interface Props {
   searchParams: Promise<{
@@ -16,10 +17,9 @@ interface Props {
 
 const page = async ({ searchParams }: Props) => {
   const { page, status, search } = await searchParams;
-  const tutorId = (await getSessionTutor())?.id;
+  if (!(await requireAdmin())) redirect("/");
 
   const where: Prisma.AskTutorWhereInput = {
-    tutorId,
     status: status || undefined,
     user: search
       ? {

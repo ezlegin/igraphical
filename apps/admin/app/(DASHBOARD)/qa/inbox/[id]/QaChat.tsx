@@ -70,7 +70,7 @@ const QaChat = ({ qa }: Props) => {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: ControllerRenderProps<QaFormType, "file">
+    field: ControllerRenderProps<QaFormType, "file">,
   ) => {
     const file = e.target.files?.[0];
 

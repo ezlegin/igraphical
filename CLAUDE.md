@@ -4,13 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-iGraphical is a Persian (RTL, `lang="fa"`) online course platform. It is an npm-workspaces + Turborepo monorepo with three Next.js 15 (App Router, React 19) apps sharing one MySQL database through Prisma:
+iGraphical is a Persian (RTL, `lang="fa"`) online course platform. It is an npm-workspaces + Turborepo monorepo with two Next.js 15 (App Router, React 19) apps sharing one MySQL database through Prisma:
 
 | App | Port | Domain | Who uses it |
 |---|---|---|---|
 | `apps/app` | 3000 | igraphical.ir | Students: course catalog, blog, cart/checkout, classroom (video lessons), panel |
 | `apps/admin` | 3001 | admin.igraphical.ir | Admins/authors: content, users, payments, analytics (GA4) |
-| `apps/tutor` | 3002 | tutor.igraphical.ir | Tutors: their courses, students, settlements, ask-tutor |
 
 Shared packages (imported as `@igraph/*`, consumed as raw TS source — no build step):
 
@@ -25,8 +24,8 @@ Shared packages (imported as `@igraph/*`, consumed as raw TS source — no build
 Install with `npm install --legacy-peer-deps` (required due to peer-dep conflicts). Run from the repo root:
 
 ```bash
-npm run dev                      # all three apps (turbo)
-npx turbo run dev --filter=app   # single app (app | admin | tutor)
+npm run dev                      # all both apps (turbo)
+npx turbo run dev --filter=app   # single app (app | admin)
 npm run build                    # build everything
 npm run lint                     # next lint --max-warnings 0 per app
 npm run check-types -w app       # tsc --noEmit for one app (no root script)
@@ -41,9 +40,9 @@ There is no test suite. Verify changes with `check-types` and `lint` for the aff
 
 ## Architecture
 
-### Auth: one package, three configs selected by env
+### Auth: one package, two configs selected by env
 
-`packages/auth/auth.config.ts` picks `app.config.ts`, `admin.config.ts` or `tutor.config.ts` based on `process.env.AUTH_APP` (`"app" | "admin" | "tutor"`). Each app must run with the matching `AUTH_APP` (set in each Dockerfile and app env file); otherwise `@igraph/auth` exports an undefined config. Users, admins and tutors are separate Prisma models (`User`, `Admin`, `Tutor`), and the JWT carries only the id.
+`packages/auth/auth.config.ts` picks `app.config.ts` or `admin.config.ts` based on `process.env.AUTH_APP` (`"app" | "admin"`). Each app must run with the matching `AUTH_APP` (set in each Dockerfile and app env file); otherwise `@igraph/auth` exports an undefined config. Users and admins are separate Prisma models (`User`, `Admin`); the `Tutor` model remains for course authorship and settlements, but tutors no longer log in (the tutor app was merged into admin: Q&A replies at `/qa/inbox`, settlements at `/tutors/settlements`), and the JWT carries only the id.
 
 Login flow (OTP or password+OTP): a verification server action (e.g. `apps/*/actions/login/verify-otp.ts`) checks the code and mints a signed, short-lived **login ticket** (`packages/auth/login-ticket.ts`, HMAC with `AUTH_SECRET`). `authenticator()` then calls `signIn(..., { identifier, loginToken })`, and the Credentials `authorize()` refuses without a valid ticket. Never reintroduce a path where an identifier alone yields a session.
 
@@ -73,4 +72,4 @@ Checkout (`apps/app/app/(CART)`) supports several Iranian gateways: ZarinPal (`a
 
 ## Deployment
 
-`docker-compose.yml` runs the three apps (each via `apps/<name>/Dockerfile`, `output: "standalone"`, `turbo prune`) behind nginx-proxy + Let's Encrypt with a MySQL 8 container. Runtime env comes from `/root/envs/igraphical/<app>.env.local` on the server; the root `.env` only feeds compose build args (`DATABASE_URL`, `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`, `RESEND_API_KEY`). Admin expects a Google Analytics service-account file `apps/admin/ga.json`.
+`docker-compose.yml` runs the both apps (each via `apps/<name>/Dockerfile`, `output: "standalone"`, `turbo prune`) behind nginx-proxy + Let's Encrypt with a MySQL 8 container. Runtime env comes from `/root/envs/igraphical/<app>.env.local` on the server; the root `.env` only feeds compose build args (`DATABASE_URL`, `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`, `RESEND_API_KEY`). Admin expects a Google Analytics service-account file `apps/admin/ga.json`.

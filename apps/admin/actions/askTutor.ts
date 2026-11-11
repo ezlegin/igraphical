@@ -4,11 +4,13 @@ import { database } from "@igraph/database";
 import { newQaResponseSms, uploadCloudFile } from "@igraph/utils";
 import { UploadApiResponse } from "cloudinary";
 import { QaFormType } from "@/lib/validationSchema";
+import { requireAdmin } from "@/lib/require-admin";
 
 export const sendAskTutorMessage = async (
   data: QaFormType,
-  askTutorId: number
+  askTutorId: number,
 ) => {
+  if (!(await requireAdmin())) return { error: "Unauthorized" };
   const { message, file } = data;
 
   try {
@@ -84,6 +86,7 @@ export const sendAskTutorMessage = async (
 };
 
 export const markAsRead = async (askTutorId: number) => {
+  if (!(await requireAdmin())) return { error: "Unauthorized" };
   try {
     const qa = await database.askTutor.findFirst({ where: { id: askTutorId } });
     if (!qa) return { error: "QA did not exist." };
