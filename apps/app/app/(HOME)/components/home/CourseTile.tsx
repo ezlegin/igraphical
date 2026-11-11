@@ -68,18 +68,18 @@ export default async function CourseTile({ course }: Props) {
           </span>
         </div>
 
-        <h3 className="line-clamp-2 text-[15px] font-semibold leading-7">
+        <h3 className="line-clamp-2 text-[13.5px] font-medium leading-7">
           {course.title}
         </h3>
 
-        <div className="mt-auto flex items-end justify-between">
+        <div className="mt-auto flex items-center justify-between">
           <div>
             {!finalPrice ? (
-              <span className="text-lg font-bold text-lime">رایگان</span>
+              <span className="rounded-full bg-lime px-2.5 py-0.5 text-[11px] font-bold text-black">رایگان</span>
             ) : inSubscription ? (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 شروع از{" "}
-                <span className="text-lg font-bold text-foreground">
+                <span className="text-[15px] font-bold text-foreground">
                   {startingPrice
                     ? formatPriceBy3Digits(startingPrice)
                     : "اشتراک"}
@@ -102,8 +102,8 @@ export default async function CourseTile({ course }: Props) {
               </>
             )}
           </div>
-          <span className="flex size-10 items-center justify-center rounded-full bg-foreground/5 transition-all duration-500 group-hover:rotate-[-20deg] group-hover:bg-primary group-hover:text-primary-foreground">
-            <ArrowUpLeft size={18} />
+          <span className="flex size-8 items-center justify-center rounded-full bg-foreground/5 transition-all duration-500 group-hover:rotate-[-20deg] group-hover:bg-primary group-hover:text-primary-foreground">
+            <ArrowUpLeft size={15} />
           </span>
         </div>
       </div>
