@@ -22,21 +22,24 @@ model User {
   phoneVerified Boolean  @default(false)
   emailVerified Boolean  @default(false)
 
-  image          Image?
-  comments       Comment[]
-  review         Review[]
-  LessonProgress LessonProgress[]
-  enrollment     Enrollment[]
-  payment        Payment[]
-  ticket         Ticket[]
-  TicketMessage  TicketMessage[]
-  askTutor       AskTutor[]
-  classroom      ClassRoom[]
-  quickCart      QuickCart[]
-  otp            Otp[]
-  cart           Cart?
-  wallet         Wallet?
-  subscription   Subscription[]
+  image           Image?
+  comments        Comment[]
+  review          Review[]
+  LessonProgress  LessonProgress[]
+  enrollment      Enrollment[]
+  payment         Payment[]
+  ticket          Ticket[]
+  TicketMessage   TicketMessage[]
+  askTutor        AskTutor[]
+  classroom       ClassRoom[]
+  quickCart       QuickCart[]
+  otp             Otp[]
+  cart            Cart?
+  wallet          Wallet?
+  subscription    Subscription[]
+  lessonView      LessonView[]
+  // Id of the only valid login session; a new login replaces it.
+  activeSessionId String?          @db.VarChar(64)
 
   @@map("user")
 }
@@ -376,6 +379,7 @@ model Lesson {
   section        Curriculum       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   sectionId      Int
   lessonProgress LessonProgress[]
+  lessonView     LessonView[]
 
   @@map("lesson")
 }
@@ -1015,4 +1019,20 @@ model SmsLog {
 
 enum SmsType {
   REMIND_PENDING_ENROLLMENT
+}
+
+// One row per user, lesson and day a lesson was opened (fair-use limit).
+model LessonView {
+  id        Int      @id @default(autoincrement())
+  day       DateTime @db.Date
+  createdAt DateTime @default(now())
+
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId Int
+
+  @@unique([userId, lessonId, day])
+  @@index([userId, createdAt])
+  @@map("lesson_view")
 }

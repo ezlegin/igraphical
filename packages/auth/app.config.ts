@@ -2,6 +2,8 @@ import Credentials from "next-auth/providers/credentials";
 import { NextAuthConfig } from "next-auth";
 import { getUserById, getUserByIdentifier } from "./data/user";
 import { verifyLoginTicket } from "./login-ticket";
+import { database } from "@igraph/database";
+import { randomUUID } from "crypto";
 
 export default {
   pages: {
@@ -14,12 +16,21 @@ export default {
         const existingUser = await getUserById(+user.id!);
         if (!existingUser) return token;
         token.id = user.id;
+        // One active login per student: a new sign-in replaces the stored id,
+        // which invalidates every older session (see getSessionUser).
+        const sid = randomUUID();
+        await database.user.update({
+          where: { id: existingUser.id },
+          data: { activeSessionId: sid },
+        });
+        token.sid = sid;
         return token;
       }
       return token;
     },
     session({ session, token }) {
       session.user.id = token.id as string;
+      (session as { sid?: string }).sid = token.sid as string | undefined;
       return session;
     },
   },

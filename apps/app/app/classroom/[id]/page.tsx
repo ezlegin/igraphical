@@ -109,6 +109,21 @@ const page = async ({ params }: Props) => {
 
   const mentorshipActive = await canUseMentorship(user.id, enrollment);
 
+  // Lesson URLs stay on the server; the player asks for one at a time.
+  const safeClassroom = {
+    ...classroom,
+    enrollment: {
+      ...enrollment,
+      course: {
+        ...enrollment.course,
+        curriculum: enrollment.course.curriculum.map((section) => ({
+          ...section,
+          lessons: section.lessons.map(({ url: _url, ...lesson }) => lesson),
+        })),
+      },
+    },
+  };
+
   return (
     <div>
       <div className="space-y-3 max-w-screen-xl mx-auto">
@@ -117,8 +132,9 @@ const page = async ({ params }: Props) => {
           steps={[{ label: "دوره ها", href: "/panel/courses" }]}
         />
         <ClassroomContent
-          classroom={classroom}
+          classroom={safeClassroom}
           mentorshipActive={mentorshipActive}
+          watermark={[user.phone, user.nationalId].filter(Boolean).join(" · ")}
         />
       </div>
 

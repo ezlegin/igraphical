@@ -70,6 +70,18 @@ const page = async ({ searchParams }: Props) => {
 
   type Row = (typeof subs)[number];
 
+  // Distinct lessons opened in the last 24h, to spot bulk downloading.
+  const since = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const views = await database.lessonView.groupBy({
+    by: ["userId", "lessonId"],
+    where: {
+      userId: { in: subs.map((s) => s.userId) },
+      createdAt: { gte: since },
+    },
+  });
+  const opened = new Map<number, number>();
+  for (const v of views) opened.set(v.userId, (opened.get(v.userId) ?? 0) + 1);
+
   const renderRows = (s: Row) => {
     const running =
       s.status === "ACTIVE" && s.startsAt <= now && s.endsAt > now;
@@ -79,6 +91,16 @@ const page = async ({ searchParams }: Props) => {
         <TableCell>
           <div className="font-medium">{s.user.fullName}</div>
           <div className="text-xs text-muted-foreground">{s.user.phone}</div>
+        </TableCell>
+        <TableCell className="text-center">
+          {(() => {
+            const n = opened.get(s.userId) ?? 0;
+            return (
+              <Badge variant={n >= 30 ? "red" : n >= 15 ? "orange" : "gray"}>
+                {n}
+              </Badge>
+            );
+          })()}
         </TableCell>
         <TableCell className="text-center">{s.months} mo</TableCell>
         <TableCell className="text-center">
@@ -173,6 +195,7 @@ const page = async ({ searchParams }: Props) => {
 
 const columns = [
   { label: "Student", className: "" },
+  { label: "Lessons 24h", className: "text-center" },
   { label: "Plan", className: "text-center" },
   { label: "Status", className: "text-center" },
   { label: "Period", className: "text-center hidden lg:table-cell" },

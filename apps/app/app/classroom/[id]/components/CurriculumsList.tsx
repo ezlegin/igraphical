@@ -38,7 +38,7 @@ const CurriculumsList = ({
     }
   }, [currentLesson, curriculums]);
 
-  function formatSectionDuration(lessons: Lesson[]): string {
+  function formatSectionDuration(lessons: Pick<Lesson, "duration">[]): string {
     const duration = lessons.reduce(
       (acc, curr) => acc + (curr.duration || 0),
       0,

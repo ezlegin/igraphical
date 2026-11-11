@@ -25,7 +25,7 @@ import AskTutorChat from "./AskTutorChat";
 import ClassroomVideo from "./ClassroomVideo";
 import CurriculumsList from "./CurriculumsList";
 
-export interface LessonType extends Lesson {
+export interface LessonType extends Omit<Lesson, "url"> {
   lessonProgress: LessonProgress[];
   section: Curriculum;
 }
@@ -62,9 +62,14 @@ interface ClassroomType extends ClassRoom {
 interface Props {
   classroom: ClassroomType;
   mentorshipActive: boolean;
+  watermark: string;
 }
 
-const ClassroomContent = ({ classroom, mentorshipActive }: Props) => {
+const ClassroomContent = ({
+  classroom,
+  mentorshipActive,
+  watermark,
+}: Props) => {
   const lessons = classroom.enrollment.course.curriculum.flatMap((curr) =>
     curr.lessons.map((less) => less),
   );
@@ -136,6 +141,7 @@ const ClassroomContent = ({ classroom, mentorshipActive }: Props) => {
 
       <div className="col-span-12 md:col-span-7 lg:col-span-6 xl:col-span-8 space-y-8 xl:pr-5">
         <ClassroomVideo
+          watermark={watermark}
           isLastLesson={isLastLesson}
           courseTitle={classroom.enrollment.course.title}
           currentLesson={currentLesson}
