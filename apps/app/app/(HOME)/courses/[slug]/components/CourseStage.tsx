@@ -27,10 +27,10 @@ export default function CourseStage({
   return (
     <section
       id="course-stage"
-      className="relative isolate -mx-3 overflow-hidden px-3 pb-16 pt-8 md:pb-24 md:pt-12"
+      className="relative isolate -mx-3 px-3 pb-16 pt-8 md:pb-24 md:pt-12"
     >
       {/* backdrop: the course cover, blurred and faded into the page */}
-      <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_50%_55%_at_50%_32%,#000_35%,transparent_100%)]">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden [mask-image:radial-gradient(ellipse_50%_55%_at_50%_32%,#000_35%,transparent_100%)]">
         <Image
           src={cover}
           alt=""

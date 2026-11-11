@@ -28,10 +28,8 @@ export default function StageScreen({
       transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="relative mx-auto w-full max-w-4xl"
     >
-      {/* glow under the screen */}
-      <div className="absolute inset-x-10 -bottom-10 -z-10 h-24 rounded-full bg-primary/30 blur-3xl" />
 
-      <div className="relative overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-black p-1.5 shadow-[0_40px_120px_-50px_hsl(var(--primary)/0.8)]">
+      <div className="relative overflow-hidden rounded-[1.75rem] border border-foreground/10 bg-black p-1.5 shadow-2xl shadow-black/50">
         <div className="relative aspect-video overflow-hidden rounded-[1.4rem]">
           {playing && teaserUrl ? (
             <ReactPlayer
