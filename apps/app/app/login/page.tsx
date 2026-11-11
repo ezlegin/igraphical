@@ -24,7 +24,9 @@ export interface LoginFormsProps {
   setLoginToken?: Dispatch<React.SetStateAction<string>>;
 }
 
-export const revalidate = 3600;
+// Rendered per request: the stats need the database, which the image build
+// (CI) doesn't have.
+export const dynamic = "force-dynamic";
 
 const perks = [
   { icon: Layers, text: "همه دوره‌ها با یک اشتراک" },
@@ -33,10 +35,11 @@ const perks = [
 ];
 
 const page = async () => {
+  // decorative numbers only; never let them break the login page
   const [courses, students] = await Promise.all([
     database.course.count({ where: { status: { not: "DRAFT" } } }),
     database.user.count(),
-  ]);
+  ]).catch(() => [0, 0]);
 
   return (
     <div className="mx-auto grid min-h-screen max-w-screen-xl grid-cols-1 gap-6 p-4 md:p-6 lg:grid-cols-[minmax(0,420px)_minmax(0,680px)] lg:justify-between lg:gap-10">
