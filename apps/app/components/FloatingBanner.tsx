@@ -104,6 +104,7 @@ const FloatingBanner = () => {
           image
         )}
       </div>
+      {floatingBanner.coupon && (
       <div className="space-y-1">
         <Button
           onClick={handleCopy}
@@ -141,6 +142,7 @@ const FloatingBanner = () => {
           </Button>
         )}
       </div>
+      )}
     </div>
   );
 };

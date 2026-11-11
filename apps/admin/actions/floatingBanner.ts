@@ -18,7 +18,7 @@ export const createFloatingBanner = async (data: FloatingBannerType) => {
       data: {
         active,
         link,
-        couponId,
+        couponId: couponId || null,
       },
     });
 
@@ -72,7 +72,7 @@ export const updateFloatingBanner = async (data: FloatingBannerType) => {
       where: { id: existingFloatingBanner.id },
       data: {
         active,
-        couponId,
+        couponId: couponId || null,
         link,
       },
     });
@@ -95,14 +95,14 @@ export const updateFloatingBanner = async (data: FloatingBannerType) => {
           url: secure_url,
           public_id: public_id,
           format: format,
-          type: "SLIDER",
+          type: "FLOATING_BANNER",
           size: bytes,
         },
         create: {
           url: secure_url,
           public_id: public_id,
           format: format,
-          type: "SLIDER",
+          type: "FLOATING_BANNER",
           size: bytes,
           floatingBanner: { connect: { id: existingFloatingBanner.id } },
         },

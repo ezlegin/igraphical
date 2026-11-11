@@ -214,9 +214,22 @@ const FloatingBannerForm = ({ floatingBanner }: Props) => {
                   <FormItem>
                     <FormLabel>Coupon</FormLabel>
                     <SearchCoupons
+                      key={field.value ? "with-coupon" : "no-coupon"}
                       field={field}
-                      code={floatingBanner?.coupon?.code}
+                      code={
+                        field.value ? floatingBanner?.coupon?.code : undefined
+                      }
                     />
+                    {!!field.value && (
+                      <Button
+                        type="button"
+                        variant={"outline"}
+                        size={"sm"}
+                        onClick={() => field.onChange(0)}
+                      >
+                        Remove coupon
+                      </Button>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
