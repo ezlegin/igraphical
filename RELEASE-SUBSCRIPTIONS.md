@@ -65,8 +65,9 @@ mentorship on their paid courses from that date.
 
 ## Known follow-ups
 
-- Existing admin server actions (coupons, courses, users, payments, wallet)
-  don't check the admin session; add `requireAdmin()` to them.
+- After deploy, log in to admin as an AUTHOR once and check the blog pages
+  still work (posts, comments, images, categories are allowed for AUTHOR;
+  everything else now requires ADMIN).
 - Lesson video URLs are plain Cloudinary links; signed URLs would stop sharing
   after a subscription expires.
 - Campaign / overall-off tables are still in the database (unused); drop them
