@@ -36,6 +36,7 @@ model User {
   otp            Otp[]
   cart           Cart?
   wallet         Wallet?
+  subscription   Subscription[]
 
   @@map("user")
 }
@@ -477,6 +478,11 @@ model Enrollment {
   status              EnrollmentStatus @default(PENDING)
   price               Float
   courseOriginalPrice Float
+  // Set only on enrollments bought before subscriptions launched (legacy access).
+  // Null means access is governed by the user's Subscription.
+  isLegacy            Boolean          @default(false)
+  accessEndsAt        DateTime?
+  mentorshipEndsAt    DateTime?
 
   lessonProgress LessonProgress[]
   payment        Payment?         @relation(fields: [paymentId], references: [id], onDelete: Cascade)
@@ -489,7 +495,61 @@ model Enrollment {
   classroom      ClassRoom?
   smsLog         SmsLog[]
 
+  @@index([userId, isLegacy])
   @@map("enrollment")
+}
+
+//! SUBSCRIPTIONS ---------------------------------------------------------
+model Plan {
+  id              Int      @id @default(autoincrement())
+  title           String
+  months          Int      @unique
+  price           Int // Toman
+  compareAtPrice  Int? // optional crossed-out price shown as a discount
+  mentorshipPrice Int // Toman, added when mentorship is toggled on
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscription Subscription[]
+
+  @@map("plan")
+}
+
+model Subscription {
+  id               Int                @id @default(autoincrement())
+  months           Int // snapshot of plan length at purchase
+  startsAt         DateTime
+  endsAt           DateTime
+  mentorship       Boolean            @default(false)
+  mentorshipEndsAt DateTime?
+  price            Float // plan price paid, snapshot
+  mentorshipPrice  Float              @default(0)
+  status           SubscriptionStatus @default(ACTIVE)
+  source           SubscriptionSource @default(PURCHASE)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  plan      Plan?    @relation(fields: [planId], references: [id], onDelete: SetNull)
+  planId    Int?
+  payment   Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  paymentId Int?     @unique
+
+  @@index([userId, endsAt])
+  @@map("subscription")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+}
+
+enum SubscriptionSource {
+  PURCHASE
+  ADMIN
 }
 
 model Certificate {
@@ -573,6 +633,7 @@ model Payment {
   WalletTransaction WalletTransaction[]
   campaignOnGoing   CampaignOnGoing?    @relation(fields: [campaignOnGoingId], references: [id])
   campaignOnGoingId Int?
+  subscription      Subscription?
 
   @@map("payment")
 }
