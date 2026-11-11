@@ -151,7 +151,7 @@ const PlansCheckout = ({
   ];
 
   return (
-    <div className="studio-card studio-noise mx-auto max-w-4xl overflow-hidden shadow-[0_40px_120px_-60px_hsl(var(--primary)/0.8)]">
+    <div className="studio-card studio-noise mx-auto max-w-4xl overflow-hidden shadow-[0_30px_90px_-60px_hsl(var(--primary)/0.35)]">
       {/* Period toggle */}
       <div className="flex justify-center border-b border-foreground/10 p-4">
         <div
