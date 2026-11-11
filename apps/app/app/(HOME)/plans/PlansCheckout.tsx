@@ -183,7 +183,7 @@ const PlansCheckout = ({
                       active ? "bg-lime text-black" : "bg-lime/20 text-lime"
                     }`}
                   >
-                    <span className="en-digits">{save}%</span> تخفیف
+                    <span>{save}%</span> تخفیف
                   </span>
                 )}
               </button>
@@ -198,21 +198,21 @@ const PlansCheckout = ({
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground">{plan.title}</p>
             <div className="flex flex-wrap items-baseline gap-x-2">
-              <span className="en-digits text-4xl font-black md:text-5xl">
+              <span className="text-4xl font-black md:text-5xl">
                 {formatPriceBy3Digits(plan.price)}
               </span>
               <span className="text-sm text-muted-foreground">تومان</span>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               {plan.compareAtPrice && plan.compareAtPrice > plan.price && (
-                <span className="en-digits line-through">
+                <span className="line-through">
                   {formatPriceBy3Digits(plan.compareAtPrice)}
                 </span>
               )}
               {plan.months > 1 && (
                 <span>
                   معادل ماهی{" "}
-                  <span className="en-digits text-foreground">
+                  <span className="text-foreground">
                     {formatPriceBy3Digits(Math.round(plan.price / plan.months))}
                   </span>{" "}
                   تومان
@@ -235,7 +235,7 @@ const PlansCheckout = ({
           {stats.catalogValue > plan.price && (
             <p className="rounded-2xl border border-dashed border-foreground/15 p-3 text-xs leading-6 text-muted-foreground">
               ارزش خرید جداگانه همه دوره‌ها{" "}
-              <span className="en-digits font-bold text-foreground">
+              <span className="font-bold text-foreground">
                 {formatPriceBy3Digits(stats.catalogValue)}
               </span>{" "}
               تومان است.
@@ -284,7 +284,7 @@ const PlansCheckout = ({
             </div>
             <p className="mt-3 text-xs">
               +{" "}
-              <span className="en-digits font-bold">
+              <span className="font-bold">
                 {formatPriceBy3Digits(plan.mentorshipPrice)}
               </span>{" "}
               تومان
@@ -297,7 +297,7 @@ const PlansCheckout = ({
                 <label className="flex cursor-pointer items-center justify-between gap-3">
                   <span className="text-muted-foreground">
                     استفاده از کیف پول (
-                    <span className="en-digits">
+                    <span>
                       {formatPriceBy3Digits(walletBalance)}
                     </span>{" "}
                     تومان)
@@ -370,7 +370,7 @@ const PlansCheckout = ({
             <div className="flex items-baseline justify-between border-t border-foreground/10 pt-3">
               <span className="font-medium">قابل پرداخت</span>
               <span>
-                <span className="en-digits text-xl font-black">
+                <span className="text-xl font-black">
                   {formatPriceBy3Digits(total)}
                 </span>{" "}
                 <span className="text-xs text-muted-foreground">تومان</span>
@@ -418,7 +418,7 @@ const PlansCheckout = ({
             ) : (
               <>
                 پرداخت{" "}
-                <span className="en-digits">{formatPriceBy3Digits(total)}</span>{" "}
+                <span>{formatPriceBy3Digits(total)}</span>{" "}
                 تومان
               </>
             )}
@@ -446,7 +446,7 @@ const Row = ({
   <div className="flex justify-between">
     <span className="text-muted-foreground">{label}</span>
     <span className={accent ? "text-lime" : undefined}>
-      <span className="en-digits">
+      <span>
         {value < 0 && "−"}
         {formatPriceBy3Digits(Math.abs(value))}
       </span>{" "}
