@@ -4,8 +4,9 @@ Pushing to `main` deploys automatically: GitHub builds the images, and each
 container runs `prisma migrate deploy` on start. The backup step in
 `apps/app/entrypoint.sh` is commented out, so **back up by hand first**.
 
-Everything new is behind `SUBSCRIPTIONS_ENABLED`. Until it is `true`, the site
-behaves exactly as before, even with the new code and tables deployed.
+Access rules are behind `SUBSCRIPTIONS_ENABLED`: until it is `true`, owners
+keep their courses as before. The course cart is gone, though, so **nothing
+can be bought while the flag is off** — do steps 2–5 on the same day.
 
 ## 1. Before pushing
 
@@ -57,8 +58,8 @@ mentorship on their paid courses from that date.
 ## Rollback
 
 - **Fast:** set `SUBSCRIPTIONS_ENABLED=false` and recreate the app container.
-  Old access rules come back immediately; new tables are simply unused.
-- **Full:** redeploy the previous image tag. The migrations only added tables
+  Old access rules come back immediately (no sales until it is on again).
+- **Full:** redeploy the previous image tag (brings the cart back). The migrations only added tables
   and columns, so the old code runs fine against the new schema; no restore
   is needed unless data itself went wrong.
 
