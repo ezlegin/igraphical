@@ -34,7 +34,12 @@ const faqs = [
   },
 ];
 
-const page = async () => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string }>;
+}) => {
+  const { plan: requestedPlan } = await searchParams;
   const [plans, user, courses] = await Promise.all([
     database.plan.findMany({
       where: { isActive: true },
@@ -103,6 +108,7 @@ const page = async () => {
                 mentorshipPrice: p.mentorshipPrice,
               }))}
               stats={stats}
+              initialPlanId={Number(requestedPlan) || undefined}
               isLoggedIn={!!user}
               walletBalance={user?.wallet?.balance ?? 0}
             />

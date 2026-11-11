@@ -7,6 +7,7 @@ import Hero from "./components/home/Hero";
 import Impact from "./components/home/Impact";
 import Journal from "./components/home/Journal";
 import LearningPath from "./components/home/LearningPath";
+import Pricing from "./components/home/Pricing";
 import Promo from "./components/home/Promo";
 import Testimonials from "./components/home/Testimonials";
 import ToolMarquee from "./components/home/ToolMarquee";
@@ -48,6 +49,7 @@ const page = async ({ searchParams }: Props) => {
       </div>
       <Promo />
       <CoursesShowcase />
+      <Pricing />
       <LearningPath />
       <Impact />
       <Testimonials />

@@ -61,17 +61,21 @@ const methods: { value: Method; label: string; logo: string }[] = [
 const PlansCheckout = ({
   plans,
   stats,
+  initialPlanId,
   isLoggedIn,
   walletBalance,
 }: {
   plans: PlanView[];
   stats: Stats;
+  initialPlanId?: number;
   isLoggedIn: boolean;
   walletBalance: number;
 }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [planId, setPlanId] = useState(plans.at(-1)!.id);
+  const [planId, setPlanId] = useState(
+    plans.find((p) => p.id === initialPlanId)?.id ?? plans.at(-1)!.id,
+  );
   const [mentorship, setMentorship] = useState(false);
   const [showCoupon, setShowCoupon] = useState(false);
   const [couponInput, setCouponInput] = useState("");
