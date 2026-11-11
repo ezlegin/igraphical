@@ -47,6 +47,8 @@
   FROM node:20.18-alpine AS runner
   WORKDIR /app
   RUN apk update && apk add --no-cache nano curl mysql mysql-client
+  # Prisma CLI for migrations at startup; pinned to packages/database so nothing is downloaded on boot
+  RUN npm install -g prisma@6.6.0
   ENV DATABASE_URL="mysql://root@database:3306/igraphical"
   ENV AUTH_APP="admin"
   

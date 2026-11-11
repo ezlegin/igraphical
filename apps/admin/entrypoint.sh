@@ -6,10 +6,7 @@ until nc -z database 3306; do
 done
 
 echo "✅ Database is up. Running Prisma migration..."
-npx prisma migrate deploy --schema=packages/database/prisma/schema.prisma
-
-echo "🔧 Generating Prisma client..."
-npx prisma generate --schema=packages/database/prisma/schema.prisma
+prisma migrate deploy --schema=packages/database/prisma/schema.prisma
 
 echo "🚀 Starting app..."
 exec node apps/admin/server.js

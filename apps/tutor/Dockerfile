@@ -48,6 +48,8 @@
     FROM node:20.18-alpine AS runner
     WORKDIR /app
     RUN apk update && apk add --no-cache nano curl mysql mysql-client
+    # Prisma CLI for migrations at startup; pinned to packages/database so nothing is downloaded on boot
+    RUN npm install -g prisma@6.6.0
     
     # Create user and set permissions
     RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs

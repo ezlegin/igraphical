@@ -17,10 +17,7 @@ done
 # fi
 
 echo "✅ Database is up. Running Prisma migration..."
-npx prisma migrate deploy --schema=packages/database/prisma/schema.prisma
-
-echo "🔧 Generating Prisma client..."
-npx prisma generate --schema=packages/database/prisma/schema.prisma
+prisma migrate deploy --schema=packages/database/prisma/schema.prisma
 
 echo "🚀 Starting app..."
 exec node apps/app/server.js
