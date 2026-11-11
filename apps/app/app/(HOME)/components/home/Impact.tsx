@@ -16,8 +16,7 @@ import SectionHeading from "./SectionHeading";
 
 export default function Impact() {
   return (
-    <section className="studio-card studio-noise relative overflow-hidden px-6 py-12 md:px-12 md:py-14 space-y-12 [&>*:not([aria-hidden])]:relative">
-      <div aria-hidden className="pointer-events-none absolute -left-24 top-0 size-96 rounded-full bg-primary/15 blur-3xl" />
+    <section className="space-y-12">
       <SectionHeading
         index="04"
         eyebrow="چرا آی‌گرافیکال؟"
