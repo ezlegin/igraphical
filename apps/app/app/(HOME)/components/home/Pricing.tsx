@@ -75,7 +75,7 @@ export default async function Pricing() {
           const isBest = p.id === best.id;
           const save = saving(p.months, p.price);
           return (
-            <StaggerItem key={p.id}>
+            <StaggerItem key={p.id} className="h-full">
               <div
                 className={`relative flex h-full flex-col rounded-[1.5rem] border p-5 transition-colors md:p-6 ${
                   isBest
@@ -122,7 +122,7 @@ export default async function Pricing() {
 
                 <div className="my-5 h-px bg-foreground/10" />
 
-                <ul className="space-y-2.5 text-[13px]">
+                <ul className="mb-6 space-y-2.5 text-[13px]">
                   {included.map(({ icon: Icon, text }) => (
                     <li key={text} className="flex items-start gap-2">
                       <Icon size={15} className="mt-0.5 shrink-0 text-primary" />
@@ -140,7 +140,7 @@ export default async function Pricing() {
 
                 <Link
                   href={`/plans?plan=${p.id}`}
-                  className={`group mt-6 flex h-11 items-center justify-center gap-1.5 rounded-full text-sm font-medium transition-colors ${
+                  className={`group mt-auto flex h-11 items-center justify-center gap-1.5 rounded-full text-sm font-medium transition-colors ${
                     isBest
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "border border-foreground/15 hover:border-foreground/30 hover:bg-foreground/5"
