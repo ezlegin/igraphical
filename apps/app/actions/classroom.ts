@@ -3,8 +3,8 @@
 import { getSessionUser } from "@/data/user";
 import { database } from "@igraph/database";
 import { sendFinishCourseEmail, sendFinishCourseSms } from "@igraph/utils";
-import { generateCertificateForUser } from "./certificate";
-import { canAccessCourse } from "@/lib/access";
+import { issueCertificate } from "@/lib/certificate";
+import { archivedCourseMessage, canAccessCourse } from "@/lib/access";
 import { signMediaUrl } from "@/lib/media-url";
 
 export const createLessonProgress = async (
@@ -35,10 +35,20 @@ export const createLessonProgress = async (
       ))
     )
       return { error: "اشتراک شما به پایان رسیده است." };
+    if (owned.enrollment.archivedAt) return { error: archivedCourseMessage };
     const lessonInCourse = owned.enrollment.course.curriculum.some((c) =>
       c.lessons.some((l) => l.id === lessonId),
     );
     if (!lessonInCourse) return { error: "درس یافت نشد" };
+
+    // A lesson can only be completed after it was actually opened
+    // (getLessonSource records the view), so courses can't be clicked through.
+    const opened = await database.lessonView.findFirst({
+      where: { userId: sessionUser.id, lessonId },
+      select: { id: true },
+    });
+    if (!opened)
+      return { error: "برای تکمیل این جلسه، ابتدا باید آن را مشاهده کنید." };
 
     const result = await database.$transaction(async (tx) => {
       const existingClassroom = await tx.classRoom.findFirst({
@@ -161,15 +171,7 @@ export const createLessonProgress = async (
       });
 
       if (!existingCertificate) {
-        await generateCertificateForUser({
-          course: {
-            completedAt: result.enrollment.completedAt || new Date(),
-            duration: result.enrollment.course.duration,
-            title: result.enrollment.course.title,
-          },
-          enrollmentId: result.enrollment.id,
-          user,
-        });
+        await issueCertificate(result.enrollment.id);
 
         await sendFinishCourseSms(user.firstName, user.phone);
 
@@ -213,6 +215,7 @@ export const getLessonSource = async (
   });
   if (!classroom || classroom.userId !== user.id)
     return { error: "کلاس درس یافت نشد" };
+  if (classroom.enrollment.archivedAt) return { error: archivedCourseMessage };
 
   const lesson = await database.lesson.findFirst({
     where: {

@@ -1,6 +1,7 @@
 "use server";
 
 import { getSessionUser } from "@/data/user";
+import { clientIp } from "@/lib/client-ip";
 import { database } from "@igraph/database";
 import { isHumanOrNot, rateLimit, resetRateLimit } from "@igraph/utils";
 // server-only: otp.ts is intentionally not re-exported from @igraph/utils
@@ -30,7 +31,18 @@ export const verifyOtp = async (
       };
     }
 
-    if (recaptchaToken) await isHumanOrNot(recaptchaToken, "FA");
+    // Per-IP cap as well, so many identifiers can't be guessed from one client.
+    if (
+      !rateLimit(`otp-verify-ip:${await clientIp()}`, 30, ATTEMPT_WINDOW_MS)
+        .allowed
+    )
+      return {
+        error: "تعداد تلاش‌های ناموفق بیش از حد مجاز است. لطفا بعدا تلاش کنید.",
+      };
+
+    // Required: the form always sends a token (it used to be optional).
+    if (!recaptchaToken) return { error: "لطفا صفحه را دوباره بارگذاری کنید." };
+    await isHumanOrNot(String(recaptchaToken), "FA");
 
     const existingOtp = await database.otp.findFirst({
       where: {

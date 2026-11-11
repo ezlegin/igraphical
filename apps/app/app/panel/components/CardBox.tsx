@@ -16,8 +16,8 @@ const CardBox = ({
   return (
     <section className={`studio-card flex flex-col ${className ?? ""}`}>
       <div className="flex items-center justify-between px-5 pb-3 pt-5">
-        <h2 className="flex items-center gap-2.5 font-bold">
-          <span className="h-5 w-1.5 rounded-full bg-gradient-to-b from-primary to-lime" />
+        <h2 className="flex items-center gap-2.5 text-base font-bold">
+          <span className="h-4 w-1 rounded-full bg-gradient-to-b from-primary to-lime" />
           {title}
         </h2>
 

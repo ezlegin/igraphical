@@ -102,7 +102,9 @@ const page = async ({ searchParams }: Props) => {
             );
           })()}
         </TableCell>
-        <TableCell className="text-center">{s.months} mo</TableCell>
+        <TableCell className="text-center">
+          {s.months === 0 ? "Mentorship only" : `${s.months} mo`}
+        </TableCell>
         <TableCell className="text-center">
           <Badge
             variant={

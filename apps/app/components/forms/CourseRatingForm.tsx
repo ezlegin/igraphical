@@ -24,11 +24,14 @@ import {
   FormMessage,
 } from "@igraph/ui/components/ui/form";
 import { Textarea } from "@igraph/ui/components/ui/textarea";
-import { ArrowDown, ArrowUp, Star, TriangleAlert } from "lucide-react";
+import { Star, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+const MIN_REVIEW = 40; // same as courseReviewFormSchema
+const ratingLabels = ["ضعیف", "قابل قبول", "خوب", "خیلی خوب", "عالی"];
+
 interface Props {
   userId: number;
   courseId: number;
@@ -80,22 +83,26 @@ const CourseRatingForm = ({ userId, courseId }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
-        <div className="text-center">
-          <DialogTitle className="text-lg ">امتیاز شما به این دوره</DialogTitle>
-          <DialogDescription className="flex gap-1 items-center justify-center">
-            <TriangleAlert size={17} className="text-red-400" />
-            مقادیر زیر بعدا قابل تغییر نمی باشند. لطفا با دقت اقدام به ثبت
-            نمایید
+      <DialogContent dir="rtl" className="max-w-md gap-5">
+        <div className="space-y-2 text-center">
+          <DialogTitle className="text-base">
+            امتیاز شما به این دوره
+          </DialogTitle>
+          <DialogDescription className="mx-auto flex w-fit items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 text-[11px] text-amber-500">
+            <TriangleAlert size={13} />
+            امتیاز و نظر پس از ثبت قابل تغییر نیست
           </DialogDescription>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-2">
           <Rating
             size={30}
             rating={rating}
             handleRatingSubmit={handleRatingSubmit}
           />
+          <p className="h-4 text-xs text-muted-foreground">
+            {rating > 0 ? ratingLabels[rating - 1] : "روی ستاره‌ها بزنید"}
+          </p>
         </div>
 
         <Form {...form}>
@@ -109,7 +116,7 @@ const CourseRatingForm = ({ userId, courseId }: Props) => {
                     {rating > 0 && (
                       <Textarea
                         {...field}
-                        className="block w-full min-h-[100px] border rounded-md p-3 focus:border-blue-500 focus:ring-0.5 focus:ring-blue-500 focus:outline-none"
+                        className="block min-h-[110px] w-full resize-none rounded-2xl border border-foreground/10 bg-background/40 p-3 text-sm focus-visible:border-primary/60 focus-visible:ring-0"
                         placeholder="نظر شما درباره این دوره..."
                         value={field.value}
                         onChange={(e) => {
@@ -130,40 +137,33 @@ const CourseRatingForm = ({ userId, courseId }: Props) => {
             />
 
             {rating > 0 && (
-              <div>
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span className="flex flex-col items-start font-semibold text-indigo-500">
-                    عالی
-                    <ArrowDown size={18} className="text-indigo-500 -mr-1" />
-                  </span>
-
-                  <span className="flex flex-col items-center">
-                    خوب
-                    <ArrowDown size={18} className="text-muted-foreground" />
-                  </span>
-
-                  <span className="flex flex-col items-end">
-                    کوتاه
-                    <ArrowDown
-                      size={18}
-                      className="text-muted-foreground -ml-1"
-                    />
-                  </span>
-                </div>
-
-                <div className="relative h-2 w-full bg-secondary rounded-full overflow-hidden">
+              <div className="space-y-1.5">
+                <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
                   <div
-                    style={{
-                      transform: `translateX(-${99 - (reviewLength || 0)}%)`,
-                    }}
-                    className={`${reviewLength >= 100 ? "bg-green-500" : "bg-primary"} flex-1 h-full rounded-full transition-all`}
+                    style={{ width: `${reviewLength || 0}%` }}
+                    className={`h-full rounded-full transition-all ${
+                      reviewLength >= MIN_REVIEW
+                        ? "bg-gradient-to-l from-primary to-lime"
+                        : "bg-primary"
+                    }`}
                   />
+                  {/* the minimum length mark on the bar (bar is 100 chars wide) */}
+                  <span className="absolute inset-y-0 right-[40%] w-px bg-foreground/40" />
                 </div>
-
-                <div className="w-fit mx-auto">
-                  <span className="flex flex-col text-xs items-center text-green-500">
-                    <ArrowUp size={18} className="text-green-500" />
-                    تایید
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span
+                    className={
+                      reviewLength >= MIN_REVIEW ? "text-lime" : undefined
+                    }
+                  >
+                    {reviewLength >= 100
+                      ? "عالی، ممنون از نظر کاملت"
+                      : reviewLength >= MIN_REVIEW
+                        ? "خوبه، قابل ثبت است"
+                        : `حداقل ${MIN_REVIEW - (reviewLength || 0)} حرف دیگر بنویسید`}
+                  </span>
+                  <span className="en-digits">
+                    {form.watch("review")?.length || 0}
                   </span>
                 </div>
               </div>
@@ -171,8 +171,7 @@ const CourseRatingForm = ({ userId, courseId }: Props) => {
 
             <Button
               disabled={!form.formState.isValid || form.formState.isSubmitting}
-              variant={"secondary"}
-              className="w-full"
+              className="h-11 w-full rounded-full"
             >
               <Loader loading={form.formState.isSubmitting} />
               ثبت امتیاز

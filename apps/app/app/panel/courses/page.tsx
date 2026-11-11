@@ -4,6 +4,8 @@ import { getSessionUser } from "@/data/user";
 import RunningCourses from "../components/RunningCourses";
 import { Metadata } from "next";
 import PanelHeader from "../components/PanelHeader";
+import ArchivedCourses from "./components/ArchivedCourses";
+import { subscriptionsEnabled } from "@/lib/access";
 
 const page = async () => {
   const userId = (await getSessionUser())?.id;
@@ -13,6 +15,7 @@ const page = async () => {
     where: {
       userId,
       completedAt: null,
+      archivedAt: null,
     },
     include: {
       course: {
@@ -50,6 +53,8 @@ const page = async () => {
         description="از همون جایی که موندی ادامه بده."
       />
       <RunningCourses runningCourses={runningCourses} />
+
+      {subscriptionsEnabled() && userId && <ArchivedCourses userId={userId} />}
 
       <CompletedCourses />
     </div>

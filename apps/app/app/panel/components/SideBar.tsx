@@ -24,7 +24,6 @@ import {
   PanelRight,
   Pencil,
   TvMinimalPlay,
-  Crown,
   User as UserIcon,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -91,7 +90,7 @@ export function SideBar({ user }: Props) {
                         pathName === item.href
                           ? "bg-primary text-primary-foreground shadow-[0_10px_30px_-12px_hsl(var(--primary))] hover:bg-primary hover:text-primary-foreground"
                           : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
-                        "rounded-xl transition-colors",
+                        "h-[38px] rounded-xl transition-colors",
                       )}
                     >
                       <item.icon />
@@ -148,11 +147,6 @@ const contentMenu = [
     title: "پشتیبانی",
     href: "/panel/tickets",
     icon: Headset,
-  },
-  {
-    title: "اشتراک",
-    href: "/plans",
-    icon: Crown,
   },
   {
     title: "پرداخت‌ها",

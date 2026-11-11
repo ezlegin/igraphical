@@ -70,17 +70,12 @@ const OtpForm = ({
       return;
     }
 
-    let recaptchaToken = undefined;
-
-    if (failedAttempts >= 2) {
-      if (!executeRecaptcha) {
-        toast.error("reCAPTCHA is not ready");
-        setLoading(false);
-        return;
-      }
-
-      recaptchaToken = await executeRecaptcha("verify_otp");
+    if (!executeRecaptcha) {
+      toast.error("لطفا چند لحظه دیگر دوباره تلاش کنید.");
+      setLoading(false);
+      return;
     }
+    const recaptchaToken = await executeRecaptcha("verify_otp");
 
     const res = await verifyOtp(data.otp, identifier, recaptchaToken);
 
@@ -116,7 +111,7 @@ const OtpForm = ({
         if (onSuccess) onSuccess();
 
         redirect(
-          callbackUrl ? callbackUrl : redirectTo ? redirectTo : "/panel"
+          callbackUrl ? callbackUrl : redirectTo ? redirectTo : "/panel",
         );
       }
     }

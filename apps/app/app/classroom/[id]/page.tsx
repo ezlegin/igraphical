@@ -107,6 +107,23 @@ const page = async ({ params }: Props) => {
       </div>
     );
 
+  // Removed from the active list: the course page brings it back (if a slot is free).
+  if (enrollment.archivedAt)
+    return (
+      <div className="max-w-screen-sm mx-auto py-20 text-center space-y-5">
+        <OctagonMinus className="mx-auto text-muted-foreground" size={60} />
+        <h1 className="text-xl font-bold">
+          این دوره را از دوره‌های فعال خود حذف کرده‌اید
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          پیشرفت شما محفوظ است. برای ادامه، دوره را دوباره فعال کنید.
+        </p>
+        <Link href={`/courses/${enrollment.course.url}`}>
+          <Button>بازگشت به صفحه دوره</Button>
+        </Link>
+      </div>
+    );
+
   const mentorshipActive = await canUseMentorship(user.id, enrollment);
 
   // Lesson URLs stay on the server; the player asks for one at a time.

@@ -487,6 +487,9 @@ model Enrollment {
   isLegacy            Boolean          @default(false)
   accessEndsAt        DateTime?
   mentorshipEndsAt    DateTime?
+  // Set when the student removes the course from their active list (it then
+  // stops counting toward the active-course limit). Progress is kept.
+  archivedAt          DateTime?
 
   lessonProgress LessonProgress[]
   payment        Payment?         @relation(fields: [paymentId], references: [id], onDelete: Cascade)

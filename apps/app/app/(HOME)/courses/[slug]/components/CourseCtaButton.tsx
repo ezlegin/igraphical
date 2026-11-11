@@ -53,7 +53,18 @@ export default function CourseCtaButton({
             const res = await enrollInCourse(cta.courseId);
             if ("classroomId" in res && res.classroomId)
               return router.push(`/classroom/${res.classroomId}`);
-            if (res.error) toast.error(res.error);
+            if (res.error)
+              toast.error(
+                res.error,
+                "limitReached" in res && res.limitReached
+                  ? {
+                      action: {
+                        label: "دوره‌های من",
+                        onClick: () => router.push("/panel/courses"),
+                      },
+                    }
+                  : undefined,
+              );
             if ("needsPlan" in res && res.needsPlan) router.push("/plans");
           })
         }

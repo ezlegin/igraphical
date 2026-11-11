@@ -2,6 +2,7 @@ import { placeHolder } from "@/public";
 import { Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ReactNode } from "react";
 
 interface Props {
   progress: number;
@@ -12,6 +13,8 @@ interface Props {
   remainingLessons: number;
   /** e.g. legacy access end date, or "access ended" */
   accessNote?: { text: string; expired: boolean };
+  /** shown beside the card, outside the link (e.g. the remove button) */
+  action?: ReactNode;
 }
 
 const RunningCourseCard = ({
@@ -22,14 +25,14 @@ const RunningCourseCard = ({
   imageUrl,
   classroomUrl,
   accessNote,
+  action,
 }: Props) => {
   const percent = Math.round(progress || 0);
 
   return (
-    <Link
-      href={classroomUrl}
-      className="group flex items-center gap-4 rounded-2xl border border-foreground/10 bg-background/40 p-3 transition-colors hover:border-primary/40"
-    >
+    // The whole card is the link (stretched from the title); the action sits
+    // above it so a button never ends up inside the anchor.
+    <div className="group relative flex items-center gap-4 rounded-2xl border border-foreground/10 bg-background/40 p-3 transition-colors hover:border-primary/40">
       <div className="relative shrink-0 overflow-hidden rounded-xl">
         <Image
           alt={title}
@@ -45,7 +48,14 @@ const RunningCourseCard = ({
 
       <div className="min-w-0 flex-1 space-y-3">
         <div>
-          <p className="line-clamp-1 font-semibold">{title}</p>
+          <p className="line-clamp-1 text-sm font-semibold">
+            <Link
+              href={classroomUrl}
+              className="after:absolute after:inset-0 after:rounded-2xl"
+            >
+              {title}
+            </Link>
+          </p>
           <p className="text-xs text-muted-foreground">{tutor}</p>
           {accessNote && (
             <p
@@ -72,10 +82,13 @@ const RunningCourseCard = ({
         )}
       </div>
 
-      <span className="hidden shrink-0 rounded-full bg-primary/15 px-4 py-2 text-xs font-medium text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground md:block">
-        ادامه یادگیری
-      </span>
-    </Link>
+      <div className="flex shrink-0 flex-col items-center gap-1.5">
+        <span className="hidden rounded-full bg-primary/15 px-4 py-2 text-xs font-medium text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground md:block">
+          ادامه یادگیری
+        </span>
+        {action && <div className="relative z-10">{action}</div>}
+      </div>
+    </div>
   );
 };
 

@@ -20,6 +20,7 @@ const page = async () => {
     where: {
       userId: userId,
       completedAt: null,
+      archivedAt: null,
     },
     include: {
       course: {
@@ -61,6 +62,8 @@ const page = async () => {
     where: { userId },
   });
 
+  const hasWallet = (wallet?.balance ?? 0) > 0;
+
   const sliders = await database.slider.findMany({
     where: { type: "PANEL", active: true },
     include: { image: true },
@@ -71,7 +74,7 @@ const page = async () => {
       <Reveal className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm text-muted-foreground">خوش برگشتی 👋</p>
-          <h1 className="mt-1 text-3xl font-black md:text-4xl">
+          <h1 className="mt-1 text-2xl font-black md:text-3xl">
             سلام <span className="text-gradient">{user?.firstName}</span>، امروز
             چی می‌سازیم؟
           </h1>
@@ -98,26 +101,31 @@ const page = async () => {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div
+        className={`grid grid-cols-2 gap-3 ${hasWallet ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}
+      >
         <StatusCardsGrid />
 
-        <div className="studio-card studio-noise relative col-span-2 flex items-center justify-between gap-3 overflow-hidden p-5 lg:col-span-1">
-          <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-lime/20 blur-2xl" />
-          <div className="relative space-y-1">
-            <span className="text-xs text-muted-foreground">
-              موجودی کیف پول
-            </span>
-            <p className="text-xl font-black">
-              {formatPriceBy3Digits(wallet?.balance || 0)}
-              <span className="mr-1 text-xs font-normal text-muted-foreground">
-                تومان
+        {/* cashback is discontinued; only users with a balance left see it */}
+        {hasWallet && (
+          <div className="studio-card studio-noise relative col-span-2 flex items-center justify-between gap-3 overflow-hidden p-5 lg:col-span-1">
+            <div className="absolute -bottom-10 -left-10 size-32 rounded-full bg-lime/20 blur-2xl" />
+            <div className="relative space-y-1">
+              <span className="text-xs text-muted-foreground">
+                موجودی کیف پول
               </span>
-            </p>
+              <p className="text-lg font-black">
+                {formatPriceBy3Digits(wallet?.balance || 0)}
+                <span className="mr-1 text-xs font-normal text-muted-foreground">
+                  تومان
+                </span>
+              </p>
+            </div>
+            <span className="relative flex size-10 items-center justify-center rounded-xl bg-lime text-black">
+              <Wallet size={18} />
+            </span>
           </div>
-          <span className="relative flex size-12 items-center justify-center rounded-2xl bg-lime text-black">
-            <Wallet size={22} />
-          </span>
-        </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-8">

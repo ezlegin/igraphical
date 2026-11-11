@@ -1,43 +1,32 @@
 "use client";
 
-import { generateCertificateForUser } from "@/actions/certificate";
-import { User } from "@igraph/database";
+import { requestMyCertificate } from "@/actions/certificate";
 import Loader from "@igraph/ui/components/Loader";
 import { Button } from "@igraph/ui/components/ui/button";
 import { useLoading } from "@igraph/utils";
 import { Stamp } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-const SubmitNewCertificate = ({
-  completedAt,
-  duration,
-  title,
-  enrollmentId,
-  user,
-}: {
-  completedAt: Date | null;
-  duration: number;
-  title: string;
-  enrollmentId: number;
-  user: User;
-}) => {
+const SubmitNewCertificate = ({ enrollmentId }: { enrollmentId: number }) => {
   const { loading, setLoading } = useLoading();
   const router = useRouter();
 
   const onSubmitNewCertificate = async () => {
     setLoading(true);
-    await generateCertificateForUser({
-      course: {
-        completedAt: completedAt || new Date(),
-        title,
-        duration,
-      },
-      enrollmentId,
-      user,
-    });
+    const res = await requestMyCertificate(enrollmentId);
 
-    router.refresh();
     setLoading(false);
+
+    if (res?.error) {
+      toast.error(res.error);
+      return;
+    }
+
+    toast.success("مدرک شما با موفقیت صادر شد", {
+      description: "برای دانلود مدرک، ثبت امتیاز و نظر برای دوره الزامی است.",
+    });
+    router.refresh();
   };
 
   return (

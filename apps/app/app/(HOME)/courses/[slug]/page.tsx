@@ -88,7 +88,8 @@ const page = async ({ params, searchParams }: Props) => {
     courseId: course.id,
     isLoggedIn: !!user,
     isFree,
-    classroomId: enrollment?.classroom?.id,
+    // archived: show "start" again so enrollInCourse can re-activate it
+    classroomId: enrollment?.archivedAt ? undefined : enrollment?.classroom?.id,
     canStart: user
       ? subscriptionsEnabled()
         ? await canAccessCourse(user.id, course, enrollment)

@@ -9,7 +9,8 @@ import {
   Tutor,
 } from "@igraph/database";
 import Link from "next/link";
-import { subscriptionsEnabled } from "@/lib/access";
+import { ACTIVE_COURSE_LIMIT, subscriptionsEnabled } from "@/lib/access";
+import RemoveCourseButton from "./RemoveCourseButton";
 import { formatJalaliDate } from "@igraph/utils";
 import CardBox from "./CardBox";
 import RunningCourseCard from "./RunningCourseCard";
@@ -38,6 +39,12 @@ const accessNoteFor = (course: CourseType) => {
 };
 
 const RunningCourses = ({ runningCourses, showBtn }: Props) => {
+  // Slots apply to subscription-era enrollments only; legacy purchases are exempt.
+  const limited = subscriptionsEnabled();
+  const usedSlots = runningCourses.filter(
+    (c) => c.enrollment[0] && !c.enrollment[0].isLegacy,
+  ).length;
+
   return (
     <CardBox
       title="دوره های در جریان"
@@ -88,9 +95,26 @@ const RunningCourses = ({ runningCourses, showBtn }: Props) => {
               imageUrl={course.image?.url}
               classroomUrl={`/classroom/${course.enrollment[0]?.classroom?.id}`}
               accessNote={accessNoteFor(course)}
+              action={
+                limited &&
+                !showBtn &&
+                course.enrollment[0] &&
+                !course.enrollment[0].isLegacy ? (
+                  <RemoveCourseButton
+                    enrollmentId={course.enrollment[0].id}
+                    title={course.title}
+                  />
+                ) : undefined
+              }
             />
           );
         })
+      )}
+      {limited && !showBtn && runningCourses.length > 0 && (
+        <p className="pt-1 text-[11px] text-muted-foreground">
+          {usedSlots} از {ACTIVE_COURSE_LIMIT} جایگاه دوره فعال شما پر است. با
+          اتمام یا حذف یک دوره، جایگاه آن آزاد می‌شود.
+        </p>
       )}
     </CardBox>
   );

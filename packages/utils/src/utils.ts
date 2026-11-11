@@ -25,7 +25,7 @@ export function aggregateByDay<T>(
   items: T[],
   getDate: (item: T) => string,
   getValue: (item: T) => number,
-  days: number = 13
+  days: number = 13,
 ): { date: string; value: number }[] {
   const endDate = new Date();
   const startDate = subDays(endDate, days);
@@ -36,7 +36,7 @@ export function aggregateByDay<T>(
       acc[day] = (acc[day] || 0) + getValue(item);
       return acc;
     },
-    {} as Record<string, number>
+    {} as Record<string, number>,
   );
 
   const result: { date: string; value: number }[] = [];
@@ -66,7 +66,7 @@ type DataItem = {
 export const getSumByTimeRange = (
   data: DataItem[],
   key: keyof DataItem,
-  timeRange: string | number
+  timeRange: string | number,
 ): number => {
   const days = parseInt(timeRange.toString(), 10);
   if (isNaN(days) || days <= 0) return 0;
@@ -77,7 +77,7 @@ export const getSumByTimeRange = (
     .filter((item) => item.date >= cutoffDate) // Filter data within range
     .reduce(
       (sum, item) => sum + (typeof item[key] === "number" ? item[key] : 0),
-      0
+      0,
     );
 };
 
@@ -85,7 +85,7 @@ export const getSumByTimeRange = (
 
 export function calculateSum(
   values: Array<Record<string, number | string>>,
-  key: string
+  key: string,
 ): number {
   return values.reduce((acc, curr) => acc + +(curr[key] || 0), 0);
 }
@@ -94,14 +94,18 @@ export function calculateSum(
 
 export function cashBackCalculator(
   price: number,
-  dontApplyCashback?: boolean
+  dontApplyCashback?: boolean,
 ): number {
-  if (!price || dontApplyCashback) return 0;
+  // Cashback is discontinued: payments no longer charge the wallet. Existing
+  // balances can still be spent at checkout. Set CASHBACK_ENABLED to restore.
+  if (!CASHBACK_ENABLED || !price || dontApplyCashback) return 0;
 
   // For every 100,000 Tomans, returns 5,000 Tomans
   const x = Math.floor(price / 100_000);
   return x < 0 ? 0 : x * 5_000;
 }
+
+const CASHBACK_ENABLED = false;
 
 //! --------------------------------------------------
 
@@ -161,7 +165,7 @@ export function pagination(page: string, pageSize?: number) {
 
 export function extractSummaryFromLexical(
   content: string,
-  charLimit = 300
+  charLimit = 300,
 ): string {
   const parsed = JSON.parse(content);
   let summary = "";
@@ -207,7 +211,7 @@ export function cn(...inputs: ClassValue[]) {
 export function catchErrorMessage(
   error: unknown,
   defaultMessage: string = "An unexpected error occurred.",
-  lang: "EN" | "FA" = "EN"
+  lang: "EN" | "FA" = "EN",
 ): string {
   const messages = {
     EN: defaultMessage,

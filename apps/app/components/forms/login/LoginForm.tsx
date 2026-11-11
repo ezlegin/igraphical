@@ -14,7 +14,7 @@ interface Props {
 const LoginForm = ({ redirectTo, onSuccess }: Props) => {
   // HOOKS
   const [loginStep, setLoginStep] = useState<"INPUT" | "OTP" | "REGISTER">(
-    "INPUT"
+    "INPUT",
   );
   const [inputFormValue, setInputFormValue] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);

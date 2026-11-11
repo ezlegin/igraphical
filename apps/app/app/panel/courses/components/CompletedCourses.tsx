@@ -115,13 +115,7 @@ const CompletedCourses = async () => {
               </Button>
             </a>
           ) : (
-            <SubmitNewCertificate
-              completedAt={enrollment.completedAt}
-              duration={enrollment.course.duration}
-              enrollmentId={enrollment.id}
-              title={enrollment.course.title}
-              user={user}
-            />
+            <SubmitNewCertificate enrollmentId={enrollment.id} />
           )}
         </TableCell>
         <TableCell>

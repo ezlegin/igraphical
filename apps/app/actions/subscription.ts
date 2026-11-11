@@ -6,6 +6,7 @@ import { gatewayOf, pay, siteUrl } from "@/lib/pay";
 import { applyPaidPaymentEffects } from "@/lib/settle-payment";
 import {
   activateSubscriptionForPayment,
+  mentorshipAddonOptions,
   quoteSubscription,
   type QuoteInput,
 } from "@/lib/subscription";
@@ -112,6 +113,135 @@ export const startSubscriptionCheckout = async (input: QuoteInput) => {
     };
   } catch (error) {
     console.error("Subscription payment start failed", payment.id, error);
+    await database.payment.update({
+      where: { id: payment.id },
+      data: { status: "FAILED" },
+    });
+    return {
+      error: "درگاه پرداخت پاسخگو نیست. لطفا دقایقی بعد مجددا تلاش کنید",
+    };
+  }
+};
+
+/** Mentorship lengths and prices the session user can add. Read-only. */
+export const getMentorshipAddonOptions = async () => {
+  if (!subscriptionsEnabled()) return { error: "خرید اشتراک فعال نیست" };
+  const user = await getSessionUser();
+  if (!user) return { error: "لطفا ابتدا وارد شوید" };
+  if (!rateLimit(`sub-quote:${user.id}`, 30, 60_000).allowed)
+    return { error: "تعداد درخواست‌ها بیش از حد مجاز است" };
+
+  const res = await mentorshipAddonOptions(user.id);
+  if ("error" in res) return { error: res.error };
+  const wallet = await database.wallet.findUnique({
+    where: { userId: user.id },
+    select: { balance: true },
+  });
+  return {
+    options: res.options.map(({ planId: _planId, ...o }) => o),
+    accessEndsAt: res.accessEndsAt,
+    walletBalance: Math.max(wallet?.balance ?? 0, 0),
+  };
+};
+
+/**
+ * Buys mentorship on its own for an existing subscriber. Only the option key
+ * comes from the client; length and price are recomputed here.
+ */
+export const startMentorshipCheckout = async (input: {
+  key: string;
+  useWallet?: boolean;
+  paymentMethod?: PaymentMethod;
+}) => {
+  if (!subscriptionsEnabled()) return { error: "خرید اشتراک فعال نیست" };
+
+  const user = await getSessionUser();
+  if (!user) return { error: "لطفا ابتدا وارد شوید" };
+  if (!rateLimit(`sub-checkout:${user.id}`, 5, 60_000).allowed)
+    return { error: "تعداد درخواست‌ها بیش از حد مجاز است" };
+
+  const res = await mentorshipAddonOptions(user.id);
+  if ("error" in res) return { error: res.error };
+  const option = res.options.find((o) => o.key === String(input?.key));
+  if (!option) return { error: "این گزینه در دسترس نیست" };
+
+  let walletAmount = 0;
+  if (input?.useWallet === true) {
+    const wallet = await database.wallet.findUnique({
+      where: { userId: user.id },
+    });
+    walletAmount = Math.min(Math.max(wallet?.balance ?? 0, 0), option.price);
+  }
+  const total = option.price - walletAmount;
+
+  const isFree = total === 0;
+  const paymentMethod: PaymentMethod = isFree
+    ? "NO_METHOD"
+    : input?.paymentMethod === "ZARRIN_PAL"
+      ? "ZARRIN_PAL"
+      : "SADAD";
+  const gateway = gatewayOf[paymentMethod];
+  if (!isFree && !gateway) return { error: "روش پرداخت معتبر نمی باشد" };
+
+  const now = new Date();
+  const payment = await database.payment.create({
+    data: {
+      status: "PENDING",
+      userId: user.id,
+      total,
+      itemsTotal: option.price,
+      paymentMethod,
+      walletUsed: walletAmount > 0,
+      walletUsedAmount: walletAmount || null,
+      subscription: {
+        create: {
+          userId: user.id,
+          planId: option.planId,
+          // months = 0 marks a mentorship-only add-on: no access time is added
+          months: 0,
+          startsAt: now,
+          endsAt: now,
+          mentorship: true,
+          // the length; activation re-anchors it after any paid mentorship
+          mentorshipStartsAt: option.startsAt,
+          mentorshipEndsAt: option.endsAt,
+          price: 0,
+          mentorshipPrice: option.price,
+          status: "PENDING",
+        },
+      },
+    },
+  });
+
+  if (isFree) {
+    const { count } = await database.payment.updateMany({
+      where: { id: payment.id, status: "PENDING" },
+      data: { status: "SUCCESS", paidAt: new Date() },
+    });
+    if (count === 1) {
+      await activateSubscriptionForPayment(payment.id);
+      await applyPaidPaymentEffects(payment.id);
+    }
+    return { success: "منتورشیپ شما فعال شد", redirectUrl: "/panel" };
+  }
+
+  try {
+    const started = await pay.start({
+      orderId: String(payment.id),
+      amount: Math.round(total * 10), // Toman → Rial
+      description: `Mentorship ${option.days}d | User ${user.id} | Payment Id: ${payment.id}`,
+      gateway: gateway!,
+      customerMobile: user.phone,
+      returnUrl: `${siteUrl}/checkout-result`,
+      metadata: { userId: user.id, kind: "mentorship" },
+    });
+    if (started.redirect.method !== "GET") throw new Error("POST redirect");
+    return {
+      success: "به صفحه پرداخت هدایت می شوید...",
+      paymentUrl: started.redirect.url,
+    };
+  } catch (error) {
+    console.error("Mentorship payment start failed", payment.id, error);
     await database.payment.update({
       where: { id: payment.id },
       data: { status: "FAILED" },

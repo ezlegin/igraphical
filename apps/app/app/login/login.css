@@ -1,0 +1,150 @@
+/* Login page: the "artboard" scene. Pure CSS motion, off for reduced motion. */
+
+.login-canvas {
+  background-color: hsl(var(--background));
+  background-image: radial-gradient(
+    hsl(var(--foreground) / 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* rulers along the artboard edges */
+.login-ruler-x,
+.login-ruler-y {
+  position: absolute;
+  pointer-events: none;
+  color: hsl(var(--foreground) / 0.25);
+}
+.login-ruler-x {
+  inset-inline: 0;
+  top: 0;
+  height: 18px;
+  border-bottom: 1px solid hsl(var(--foreground) / 0.08);
+  background-image: repeating-linear-gradient(
+    to right,
+    hsl(var(--foreground) / 0.25) 0 1px,
+    transparent 1px 11px
+  );
+  background-size: 100% 6px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+.login-ruler-y {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 18px;
+  border-right: 1px solid hsl(var(--foreground) / 0.08);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    hsl(var(--foreground) / 0.25) 0 1px,
+    transparent 1px 11px
+  );
+  background-size: 6px 100%;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+/* the pen path draws itself, then holds */
+.login-pen-path {
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: login-draw 3.2s cubic-bezier(0.65, 0, 0.35, 1) 0.3s forwards;
+}
+.login-pen-node {
+  opacity: 0;
+  animation: login-pop 0.4s ease-out forwards;
+}
+@keyframes login-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes login-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* selection box breathing around the headline */
+.login-selection {
+  animation: login-breathe 4s ease-in-out infinite;
+}
+@keyframes login-breathe {
+  0%,
+  100% {
+    outline-offset: 6px;
+  }
+  50% {
+    outline-offset: 10px;
+  }
+}
+
+/* collaborator cursors wander */
+.login-cursor-a {
+  animation: login-wander-a 9s ease-in-out infinite;
+}
+.login-cursor-b {
+  animation: login-wander-b 11s ease-in-out infinite;
+}
+@keyframes login-wander-a {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  30% {
+    transform: translate(-60px, 40px);
+  }
+  60% {
+    transform: translate(30px, 80px);
+  }
+}
+@keyframes login-wander-b {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  40% {
+    transform: translate(70px, -50px);
+  }
+  70% {
+    transform: translate(-20px, -90px);
+  }
+}
+
+/* swatches float a little */
+.login-float {
+  animation: login-float 6s ease-in-out infinite;
+}
+@keyframes login-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--r, 0deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-pen-path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .login-pen-node {
+    animation: none;
+    opacity: 1;
+  }
+  .login-selection,
+  .login-cursor-a,
+  .login-cursor-b,
+  .login-float {
+    animation: none;
+  }
+}

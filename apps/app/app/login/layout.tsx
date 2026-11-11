@@ -1,21 +1,12 @@
-import DecorativeImage from "@igraph/ui/components/DecorativeImage";
 import { Metadata } from "next";
+import "./login.css";
 
-export default function PanelLayout({
+export default function LoginLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div
-      className={`max-w-screen-xl mx-auto p-3 grid grid-cols-1 grid-rows-[auto_1fr_auto] min-h-screen`}
-    >
-      <main className="relative">
-        <DecorativeImage />
-        {children}
-      </main>
-    </div>
-  );
+  return <main className="login-canvas min-h-screen">{children}</main>;
 }
 
 export const metadata: Metadata = {

@@ -130,7 +130,7 @@ export const courseReviewFormSchema = z.object({
   rating: z.number().min(1, { message: "لطفا برای این دوره امتیازی ثبت کنید" }),
   review: z
     .string()
-    .min(50, { message: "لطفا یک نظر مفید و کمک کننده بنویسید!!" })
+    .min(40, { message: "لطفا یک نظر مفید و کمک کننده بنویسید!!" })
     .trim(),
 });
 export type CourseReviewFormType = z.infer<typeof courseReviewFormSchema>;

@@ -5,7 +5,7 @@ export * from "./format";
 // bundles and (before the fix) exposed it as a public server action.
 export * from "./sms";
 export * from "./mail";
-export * from "./certificate";
+// "./certificate" is server-only too: import "@igraph/utils/src/certificate".
 export * from "./hooks";
 export * from "./sms-templates";
 export * from "./menu";

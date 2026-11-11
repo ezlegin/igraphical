@@ -24,6 +24,7 @@ import { LoginFormType, loginFormSchema } from "@/lib/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { toast } from "sonner";
 
 const InputForm = ({
@@ -34,6 +35,7 @@ const InputForm = ({
   // HOOKS
   const router = useRouter();
   const { loading, setLoading } = useLoading();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const form = useForm<LoginFormType>({
     mode: "onSubmit",
@@ -47,7 +49,13 @@ const InputForm = ({
     setLoading(true);
     setIsNewUser?.(false);
 
-    const res = await sendOtp({ ...data });
+    if (!executeRecaptcha) {
+      toast.error("لطفا چند لحظه دیگر دوباره تلاش کنید.");
+      setLoading(false);
+      return;
+    }
+    const recaptchaToken = await executeRecaptcha("send_otp");
+    const res = await sendOtp({ ...data, recaptchaToken });
 
     if (res.error) {
       toast.error(res.error);

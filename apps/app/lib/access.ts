@@ -36,14 +36,21 @@ export const getActiveSubscription = async (userId: number) => {
 /** Latest end date across all current and future-stacked subscriptions. */
 export const getSubscriptionSummary = async (userId: number) => {
   const now = new Date();
-  const subs = await database.subscription.findMany({
-    where: { userId, status: "ACTIVE", endsAt: { gt: now } },
+  // Mentorship-only add-ons carry no access time (endsAt is not in the
+  // future), so mentorship is read from every row, access only from `subs`.
+  const rows = await database.subscription.findMany({
+    where: {
+      userId,
+      status: "ACTIVE",
+      OR: [{ endsAt: { gt: now } }, { mentorshipEndsAt: { gt: now } }],
+    },
     orderBy: { endsAt: "asc" },
   });
+  const subs = rows.filter((s) => s.endsAt > now);
   const active = subs.some((s) => s.startsAt <= now);
   const endsAt = subs.at(-1)?.endsAt ?? null;
   const mentorshipEndsAt =
-    subs
+    rows
       .map((s) => s.mentorshipEndsAt)
       .filter((d): d is Date => !!d && d > now)
       .sort((a, b) => a.getTime() - b.getTime())
@@ -98,3 +105,25 @@ export const canUseMentorship = async (
   if (legacyValid(enrollment, "mentorship")) return true;
   return hasActiveMentorship(userId);
 };
+
+/** Courses a student may study at the same time (subscription era). */
+export const ACTIVE_COURSE_LIMIT = 3;
+
+/**
+ * Enrollments that take up a slot: not finished, not removed by the student,
+ * and not a legacy purchase (old buyers are never blocked by the limit).
+ */
+export const activeCourseWhere = (userId: number) => ({
+  userId,
+  isLegacy: false,
+  completedAt: null,
+  archivedAt: null,
+});
+
+export const countActiveCourses = (userId: number) =>
+  database.enrollment.count({ where: activeCourseWhere(userId) });
+
+export const activeCourseLimitMessage = `شما ${ACTIVE_COURSE_LIMIT} دوره فعال دارید. برای شروع دوره جدید، یکی از دوره‌های فعلی را از «دوره‌های من» حذف کنید یا آن را به پایان برسانید.`;
+
+export const archivedCourseMessage =
+  "این دوره از دوره‌های فعال شما حذف شده است. برای ادامه، آن را دوباره فعال کنید.";

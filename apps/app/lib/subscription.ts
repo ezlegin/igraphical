@@ -139,6 +139,26 @@ export const activateSubscriptionForPayment = async (paymentId: number) =>
       }),
     ]);
 
+    // Mentorship-only add-on (months = 0): adds no access time. Its length
+    // was fixed at checkout as mentorshipStartsAt → mentorshipEndsAt.
+    if (sub.months === 0) {
+      if (!sub.mentorshipStartsAt || !sub.mentorshipEndsAt) return false;
+      const length =
+        sub.mentorshipEndsAt.getTime() - sub.mentorshipStartsAt.getTime();
+      const from = lastMentorship?.mentorshipEndsAt ?? now;
+      const { count } = await tx.subscription.updateMany({
+        where: { id: sub.id, status: "PENDING" },
+        data: {
+          status: "ACTIVE",
+          startsAt: now,
+          endsAt: now,
+          mentorshipStartsAt: from,
+          mentorshipEndsAt: new Date(from.getTime() + length),
+        },
+      });
+      return count === 1;
+    }
+
     const startsAt = lastAccess?.endsAt ?? now;
     const mentorshipStartsAt = sub.mentorship
       ? (lastMentorship?.mentorshipEndsAt ?? now)
@@ -158,6 +178,109 @@ export const activateSubscriptionForPayment = async (paymentId: number) =>
     });
     return count === 1;
   });
+
+const DAY = 24 * 60 * 60 * 1000;
+
+export type MentorshipOption = {
+  /** "rest" = until the subscription ends, otherwise "plan:<id>" */
+  key: string;
+  months: number | null;
+  days: number;
+  startsAt: Date;
+  endsAt: Date;
+  price: number; // Toman
+  planId: number;
+  /** runs past the current subscription (useful only after a renewal) */
+  beyondAccess: boolean;
+};
+
+/**
+ * What mentorship a subscriber can add right now, with server-side prices:
+ * one option per active plan length, plus "until my subscription ends",
+ * priced by the day. New mentorship starts after any mentorship already paid.
+ */
+export const mentorshipAddonOptions = async (
+  userId: number,
+): Promise<
+  | { error: string }
+  | { options: MentorshipOption[]; accessEndsAt: Date; startsAt: Date }
+> => {
+  const now = new Date();
+  const [rows, plans] = await Promise.all([
+    database.subscription.findMany({
+      where: {
+        userId,
+        status: "ACTIVE",
+        OR: [{ endsAt: { gt: now } }, { mentorshipEndsAt: { gt: now } }],
+      },
+    }),
+    database.plan.findMany({
+      where: { isActive: true, mentorshipPrice: { gt: 0 } },
+      orderBy: { months: "asc" },
+    }),
+  ]);
+
+  const access = rows.filter((s) => s.endsAt > now);
+  if (!access.some((s) => s.startsAt <= now))
+    return { error: "برای افزودن منتورشیپ، ابتدا اشتراک تهیه کنید" };
+  if (plans.length === 0)
+    return { error: "منتورشیپ در حال حاضر ارائه نمی‌شود" };
+
+  const latest = (dates: (Date | null)[]) =>
+    dates
+      .filter((d): d is Date => !!d && d > now)
+      .sort((a, b) => b.getTime() - a.getTime())[0];
+  const accessEndsAt = latest(access.map((s) => s.endsAt))!;
+  const startsAt = latest(rows.map((s) => s.mentorshipEndsAt)) ?? now;
+
+  const options: MentorshipOption[] = [];
+
+  // Until the subscription ends: daily rate of the longest plan that fits in
+  // the remaining time, never more than a plan that covers the whole of it.
+  const restDays = Math.ceil(
+    (accessEndsAt.getTime() - startsAt.getTime()) / DAY,
+  );
+  if (accessEndsAt.getTime() - startsAt.getTime() >= DAY) {
+    const ratePlan =
+      plans.filter((p) => p.months * 30 <= restDays).at(-1) ?? plans[0]!;
+    const prorated =
+      Math.ceil(
+        ((ratePlan.mentorshipPrice / (ratePlan.months * 30)) * restDays) / 1000,
+      ) * 1000;
+    const cap = Math.min(
+      ...plans
+        .filter((p) => p.months * 30 >= restDays)
+        .map((p) => p.mentorshipPrice),
+      Infinity,
+    );
+    options.push({
+      key: "rest",
+      months: null,
+      days: restDays,
+      startsAt,
+      endsAt: accessEndsAt,
+      price: Math.min(prorated, cap),
+      planId: ratePlan.id,
+      beyondAccess: false,
+    });
+  }
+
+  for (const p of plans) {
+    const endsAt = addMonths(startsAt, p.months);
+    options.push({
+      key: `plan:${p.id}`,
+      months: p.months,
+      days: Math.round((endsAt.getTime() - startsAt.getTime()) / DAY),
+      startsAt,
+      endsAt,
+      price: p.mentorshipPrice,
+      planId: p.id,
+      beyondAccess: endsAt.getTime() > accessEndsAt.getTime() + DAY,
+    });
+  }
+
+  return { options, accessEndsAt, startsAt };
+};
 
 /** Cheapest visible plan price, for "starting from …" labels. Cached per request. */
 export const getStartingPlanPrice = cache(async () => {
