@@ -5,7 +5,25 @@ import { assertAdmin } from "@/lib/require-admin";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import { subDays, format } from "date-fns";
 
-const analyticsDataClient = new BetaAnalyticsDataClient();
+// Service-account key: GA_CREDENTIALS_BASE64 (base64 of ga.json, set in the
+// server env file) wins; otherwise GOOGLE_APPLICATION_CREDENTIALS (a file path).
+const gaCredentials = process.env.GA_CREDENTIALS_BASE64
+  ? JSON.parse(
+      Buffer.from(process.env.GA_CREDENTIALS_BASE64, "base64").toString("utf8"),
+    )
+  : undefined;
+
+const analyticsDataClient = new BetaAnalyticsDataClient(
+  gaCredentials
+    ? {
+        credentials: {
+          client_email: gaCredentials.client_email,
+          private_key: gaCredentials.private_key,
+        },
+        projectId: gaCredentials.project_id,
+      }
+    : undefined,
+);
 const propertyId = process.env.GA_PROPERTY_ID;
 
 //* GET VIEWS / SESSIONS --------------------------------------------

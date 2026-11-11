@@ -72,4 +72,4 @@ Checkout (`apps/app/app/(CART)`) supports several Iranian gateways: ZarinPal (`a
 
 ## Deployment
 
-`docker-compose.yml` runs the both apps (each via `apps/<name>/Dockerfile`, `output: "standalone"`, `turbo prune`) behind nginx-proxy + Let's Encrypt with a MySQL 8 container. Runtime env comes from `/root/envs/igraphical/<app>.env.local` on the server; the root `.env` only feeds compose build args (`DATABASE_URL`, `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`, `RESEND_API_KEY`). Admin expects a Google Analytics service-account file `apps/admin/ga.json`.
+`docker-compose.yml` runs the both apps (each via `apps/<name>/Dockerfile`, `output: "standalone"`, `turbo prune`) behind nginx-proxy + Let's Encrypt with a MySQL 8 container. Runtime env comes from `/root/envs/igraphical/<app>.env.local` on the server; the root `.env` only feeds compose build args (`DATABASE_URL`, `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`, `RESEND_API_KEY`). Admin's Google Analytics service-account key comes from `GA_CREDENTIALS_BASE64` (base64 of `ga.json`) in the server env file; locally `GOOGLE_APPLICATION_CREDENTIALS` can point at `apps/admin/ga.json`.

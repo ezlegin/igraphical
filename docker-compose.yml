@@ -79,8 +79,6 @@ services:
         condition: service_healthy
     networks:
       - app_network
-    volumes:
-      - /root/projects/igraphical/apps/admin/ga.json:/app/ga.json:ro # THIS IS FOR GOOGLE ANALYTICS
 
   app:
     image: ghcr.io/ezlegin/igraphical-app:${IMAGE_TAG:-latest}
