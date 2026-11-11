@@ -1,9 +1,12 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { WalletFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
 
 export const updateWallet = async (data: WalletFormType) => {
+  await assertAdmin();
   const { amount, description, type, userId } = data;
 
   const decrementType = type === "DECREMENT";

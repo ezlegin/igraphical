@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { getAssetById, getAssetByUrl } from "@/data/asset";
 import { AssetFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
@@ -9,6 +11,7 @@ import { UploadApiResponse } from "cloudinary";
 //* CREATE ------------------------------------------------------------
 
 export const createAsset = async (data: AssetFormType) => {
+  await assertAdmin();
   const { image, status, title, url, fileUrl, format, fileSize } = data;
 
   try {
@@ -39,7 +42,7 @@ export const createAsset = async (data: AssetFormType) => {
           folder: "asset",
           resource_type: "image",
           width: 900,
-        }
+        },
       )) as UploadApiResponse;
 
       // CREATE IMAGE
@@ -68,6 +71,7 @@ export const createAsset = async (data: AssetFormType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updateAsset = async (data: AssetFormType, assetId: number) => {
+  await assertAdmin();
   const { fileUrl, format, image, status, title, url, fileSize } = data;
 
   try {
@@ -106,7 +110,7 @@ export const updateAsset = async (data: AssetFormType, assetId: number) => {
           folder: "asset",
           resource_type: "image",
           width: 800,
-        }
+        },
       )) as UploadApiResponse;
 
       if (updatedAsset.image) {
@@ -143,6 +147,7 @@ export const updateAsset = async (data: AssetFormType, assetId: number) => {
 //! DELETE ------------------------------------------------------------
 
 export const deleteAsset = async (id: number) => {
+  await assertAdmin();
   try {
     const existingAsset = await getAssetById(id);
     if (!existingAsset) return { error: "No Asset Found" };

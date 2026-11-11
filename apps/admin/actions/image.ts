@@ -1,5 +1,7 @@
 "use server";
 
+import { assertStaff } from "@/lib/require-admin";
+
 import { database } from "@igraph/database";
 
 import { UploadApiResponse } from "cloudinary";
@@ -13,14 +15,15 @@ import {
 
 export const createPostAssetImage = async (
   file: File,
-  options?: FileUploadOptions
+  options?: FileUploadOptions,
 ) => {
+  await assertStaff();
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     const { secure_url, public_id, format, bytes } = (await uploadCloudFile(
       buffer,
-      options
+      options,
     )) as UploadApiResponse;
 
     await database.image.create({
@@ -42,6 +45,7 @@ export const createPostAssetImage = async (
 //! DELETE ------------------------------------------------------------
 
 export const deleteImage = async (public_id: string) => {
+  await assertStaff();
   try {
     const deletedImage = await database.image.delete({
       where: { public_id },

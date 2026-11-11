@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { EnrollmentStatusFormType } from "@/components/forms/payment/EnrollmentStatusForm";
 import { getCouponByCode } from "@/data/coupon";
 import { getAllCoursesByIds } from "@/data/course";
@@ -12,6 +14,7 @@ import { cashBackCalculator } from "@igraph/utils";
 //* CREATE -----------------------------------------------------------
 
 export const createPayment = async (data: PaymentFormType) => {
+  await assertAdmin();
   const { courses, enrolledAt, userId, payment } = data;
 
   try {
@@ -157,6 +160,7 @@ export const updateEnrollmentStatus = async (
   data: EnrollmentStatusFormType,
   id: number,
 ) => {
+  await assertAdmin();
   try {
     const existingEnrollment = await database.enrollment.findUnique({
       where: { id },
@@ -185,6 +189,7 @@ export const updatePayment = async (
   data: PaymentFormType,
   paymentId: number,
 ) => {
+  await assertAdmin();
   const { courses, enrolledAt, userId, payment } = data;
 
   try {
@@ -330,6 +335,7 @@ export const updatePayment = async (
 //! DELETE -----------------------------------------------------------
 
 export const deleteEnrollment = async (id: number) => {
+  await assertAdmin();
   try {
     const existingEnrollment = await database.enrollment.findUnique({
       where: { id },
@@ -361,6 +367,7 @@ export const deleteEnrollment = async (id: number) => {
 };
 
 export const deletePayment = async (id: number) => {
+  await assertAdmin();
   try {
     const existingPayment = await getPaymentById(id);
 

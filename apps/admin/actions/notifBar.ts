@@ -1,11 +1,14 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 //* CREATE ------------------------------------------------------------
 
 import { NotifbarFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
 
 export const createNotifBar = async (data: NotifbarFormType) => {
+  await assertAdmin();
   const { active, bgColor, content, link, textColor } = data;
 
   try {
@@ -28,6 +31,7 @@ export const createNotifBar = async (data: NotifbarFormType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updateNotifBar = async (data: NotifbarFormType, id: number) => {
+  await assertAdmin();
   const { active, bgColor, content, link, textColor } = data;
 
   try {

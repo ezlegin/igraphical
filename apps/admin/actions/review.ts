@@ -1,11 +1,14 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { ReviewFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
 
 //* CREATE ---------------------------------------------------------
 
 export const createReview = async (data: ReviewFormType) => {
+  await assertAdmin();
   const { content, courseId, date, rate, userId } = data;
   try {
     await database.review.create({
@@ -27,6 +30,7 @@ export const createReview = async (data: ReviewFormType) => {
 //? UPDATE ---------------------------------------------------------
 
 export const updateReview = async (data: ReviewFormType, id: number) => {
+  await assertAdmin();
   const { content, courseId, date, rate, userId } = data;
 
   try {
@@ -56,6 +60,7 @@ export const updateReview = async (data: ReviewFormType, id: number) => {
 //! DELETE ---------------------------------------------------------
 
 export const deleteReview = async (id: number) => {
+  await assertAdmin();
   try {
     const existingReview = await database.review.findUnique({
       where: { id },

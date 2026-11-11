@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import { subDays, format } from "date-fns";
 
@@ -9,6 +11,7 @@ const propertyId = process.env.GA_PROPERTY_ID;
 //* GET VIEWS / SESSIONS --------------------------------------------
 
 export const getGAViewsAndSessions = async () => {
+  await assertAdmin();
   try {
     const [viewsResponse, sessionsResponse] = await Promise.all([
       analyticsDataClient.runReport({
@@ -68,6 +71,7 @@ export const getGAViewsAndSessions = async () => {
 //* GET ONLINE USERS --------------------------------------------
 
 export const getOnlineUsers = async () => {
+  await assertAdmin();
   try {
     const [response] = await analyticsDataClient.runRealtimeReport({
       property: `properties/${propertyId}`,
@@ -87,6 +91,7 @@ export const getOnlineUsers = async () => {
 //* GET TOP PAGES --------------------------------------------
 
 export const getTopPages = async () => {
+  await assertAdmin();
   try {
     const [response] = await analyticsDataClient.runReport({
       property: `properties/${propertyId}`,
@@ -114,6 +119,7 @@ export const getTopPages = async () => {
 //* GET PAGE VIEWS --------------------------------------------
 
 export async function getPageViews(path: string, startDate: Date) {
+  await assertAdmin();
   // "today" is the GA property's day, which can lag ours: a fixed start date of
   // a page made today would come after it. Count back from it with a day spare.
   const daysAgo = Math.max(

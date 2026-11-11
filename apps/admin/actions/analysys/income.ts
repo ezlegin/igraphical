@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { database } from "@igraph/database";
 
 export const getIncomeData = async ({
@@ -7,6 +9,7 @@ export const getIncomeData = async ({
 }: {
   date: { from: Date; to: Date };
 }) => {
+  await assertAdmin();
   try {
     const payments = await database.payment.findMany({
       where: {

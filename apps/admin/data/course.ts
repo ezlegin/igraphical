@@ -1,8 +1,11 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { database } from "@igraph/database";
 
 export const getCourseByUrl = async (url: string) => {
+  await assertAdmin();
   return await database.course.findUnique({
     where: { url },
     include: { image: true },
@@ -10,6 +13,7 @@ export const getCourseByUrl = async (url: string) => {
 };
 
 export const getCourseById = async (id: string | number) => {
+  await assertAdmin();
   return await database.course.findUnique({
     where: { id: +id },
     include: {
@@ -34,6 +38,7 @@ export const getCourseById = async (id: string | number) => {
 };
 
 export const getAllCoursesByIds = async (ids: number[]) => {
+  await assertAdmin();
   const validIds = ids.filter((id) => id !== 0 && id !== undefined);
 
   if (validIds.length === 0) return [];
@@ -54,6 +59,7 @@ export const getAllCoursesByIds = async (ids: number[]) => {
 };
 
 export const getFirstCourseByIds = async (ids: number[]) => {
+  await assertAdmin();
   return await database.course.findFirst({
     where: {
       OR: ids.map((id) => ({ id })),

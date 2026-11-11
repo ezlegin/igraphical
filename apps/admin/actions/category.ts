@@ -1,5 +1,7 @@
 "use server";
 
+import { assertStaff } from "@/lib/require-admin";
+
 import {
   getCourseCategoryById,
   getCourseCategoryByUrl,
@@ -16,8 +18,9 @@ export type CategoryFor = "POST" | "COURSE";
 
 export const createCategory = async (
   data: CategoryFormType,
-  categoryFor: CategoryFor
+  categoryFor: CategoryFor,
 ) => {
+  await assertStaff();
   const { name, url } = data;
 
   try {
@@ -52,8 +55,9 @@ export const createCategory = async (
 export const updateCategory = async (
   data: CategoryFormType,
   id: number,
-  categoryFor: CategoryFor
+  categoryFor: CategoryFor,
 ) => {
+  await assertStaff();
   const { name: title, url } = data;
   const encodedUrl = encodeSlug(url || title);
 
@@ -97,6 +101,7 @@ export const updateCategory = async (
 //! DELETE ------------------------------------------------------------
 
 export const deleteCategory = async (id: number, categoryFor: CategoryFor) => {
+  await assertStaff();
   try {
     const existingCategory =
       categoryFor === "POST"

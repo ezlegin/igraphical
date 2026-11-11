@@ -1,11 +1,14 @@
 "use server";
 
+import { assertStaff } from "@/lib/require-admin";
+
 import { CommentFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
 
 //* CREATE ------------------------------------------------------------
 
 export const createComment = async (data: CommentFormType) => {
+  await assertStaff();
   const { content, date, postId, userId } = data;
 
   try {
@@ -29,6 +32,7 @@ export const createComment = async (data: CommentFormType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updateComment = async (data: CommentFormType, id: number) => {
+  await assertStaff();
   const { content, date, userId } = data;
 
   try {
@@ -56,6 +60,7 @@ export const updateComment = async (data: CommentFormType, id: number) => {
 //! DELETE ------------------------------------------------------------
 
 export const deleteComment = async (id: number) => {
+  await assertStaff();
   try {
     await database.comment.delete({
       where: { id },

@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { getUserById } from "@/data/user";
 import { studentFormSchema, StudentFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
@@ -9,6 +11,7 @@ import { UploadApiResponse } from "cloudinary";
 //* CREATE ------------------------------------------------------------
 
 export async function createUser(data: StudentFormType) {
+  await assertAdmin();
   const { email, firstName, lastName, nationalId, phone, image } = data;
 
   try {
@@ -52,7 +55,7 @@ export async function createUser(data: StudentFormType) {
         {
           folder: "user",
           resource_type: "image",
-        }
+        },
       )) as UploadApiResponse;
 
       // CREATE IMAGE
@@ -81,6 +84,7 @@ export async function createUser(data: StudentFormType) {
 //? UPDATE ------------------------------------------------------------
 
 export const updateUser = async (data: StudentFormType, id: number) => {
+  await assertAdmin();
   const { email, firstName, lastName, phone, nationalId, image } = data;
 
   try {
@@ -119,7 +123,7 @@ export const updateUser = async (data: StudentFormType, id: number) => {
           folder: "user",
           resource_type: "image",
           width: 300,
-        }
+        },
       )) as UploadApiResponse;
 
       if (updatedUser.image) await deleteCloudFile(updatedUser.image.public_id);
@@ -157,6 +161,7 @@ export const updateUser = async (data: StudentFormType, id: number) => {
 //! DELETE ------------------------------------------------------------
 
 export const deleteUser = async (id: number) => {
+  await assertAdmin();
   try {
     const existingAdmin = await getUserById(id);
     if (!existingAdmin) return { error: "No Admin Found" };

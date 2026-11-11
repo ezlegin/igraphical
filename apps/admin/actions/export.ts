@@ -1,9 +1,12 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { database } from "@igraph/database";
 import ExcelJS from "exceljs";
 
 export async function fullUserExport(): Promise<string> {
+  await assertAdmin();
   const users = await database.user.findMany({
     select: {
       fullName: true,
@@ -37,6 +40,7 @@ export async function customUserExport({
   excludedCourses,
   includedCourses,
 }: ExportOptions): Promise<string> {
+  await assertAdmin();
   let enrollments: { userId: number }[] = [];
 
   if (excludedCourses.length && includedCourses.length) {

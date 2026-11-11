@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { TicketFormType } from "@/lib/validationSchema";
 import { database, File as FileType } from "@igraph/database";
 import {
@@ -12,6 +14,7 @@ import { UploadApiResponse } from "cloudinary";
 //* CREATE ---------------------------------------------------------
 
 export const createTicket = async (data: TicketFormType) => {
+  await assertAdmin();
   const { department, status, subject, userId, file, message } = data;
 
   try {
@@ -78,8 +81,9 @@ export const createTicket = async (data: TicketFormType) => {
 
 export const sendTicketMessage = async (
   data: { message?: string; file?: File },
-  id: number
+  id: number,
 ) => {
+  await assertAdmin();
   const { file, message } = data;
 
   try {
@@ -148,6 +152,7 @@ export const sendTicketMessage = async (
 //? UPDATE ---------------------------------------------------------
 
 export const updateTicket = async (data: TicketFormType, id: number) => {
+  await assertAdmin();
   const { department, status, subject } = data;
 
   try {
@@ -173,6 +178,7 @@ export const updateTicket = async (data: TicketFormType, id: number) => {
 //! DELETE ---------------------------------------------------------
 
 export const deleteTicket = async (id: number) => {
+  await assertAdmin();
   try {
     const existingTicket = await database.ticket.findFirst({ where: { id } });
 
@@ -198,6 +204,7 @@ export const deleteTicket = async (id: number) => {
 };
 
 export const deleteTicketMessage = async (id: number) => {
+  await assertAdmin();
   try {
     const existingTicketMessage = await database.ticketMessage.findFirst({
       where: { id },
@@ -223,15 +230,16 @@ export const deleteTicketMessage = async (id: number) => {
 //* UTILS -----------------
 
 export async function deleteAttachmentsFromMessages(
-  messages: { attachment?: FileType | null }[]
+  messages: { attachment?: FileType | null }[],
 ) {
+  await assertAdmin();
   const images_public_ids = messages
     .map((message) => message.attachment)
     .filter(
       (attachment): attachment is FileType =>
         Boolean(attachment) &&
         attachment?.resource_type === "image" &&
-        Boolean(attachment.public_id)
+        Boolean(attachment.public_id),
     )
     .map((file) => file.public_id);
 
@@ -241,7 +249,7 @@ export async function deleteAttachmentsFromMessages(
       (attachment): attachment is FileType =>
         Boolean(attachment) &&
         attachment?.resource_type === "raw" &&
-        Boolean(attachment.public_id)
+        Boolean(attachment.public_id),
     )
     .map((file) => file.public_id);
 

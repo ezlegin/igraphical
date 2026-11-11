@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { getCourseByUrl } from "@/data/course";
 import { CourseFormType } from "@/lib/validationSchema";
 import { Curriculum, database, DiscountType } from "@igraph/database";
@@ -15,7 +17,7 @@ import { UploadApiResponse } from "cloudinary";
 function discountedPrice(
   basePrice: number,
   discountType: DiscountType,
-  discountAmount: number
+  discountAmount: number,
 ): number {
   let discountedPrice: number;
 
@@ -31,6 +33,7 @@ function discountedPrice(
 //* CREATE ------------------------------------------------------------
 
 export const createCourse = async (data: CourseFormType) => {
+  await assertAdmin();
   const {
     categoryId,
     description,
@@ -148,7 +151,7 @@ export const createCourse = async (data: CourseFormType) => {
             folder: "course",
             width: 800,
             resource_type: "image",
-          }
+          },
         )) as UploadApiResponse;
 
         await tx.image.create({
@@ -170,7 +173,7 @@ export const createCourse = async (data: CourseFormType) => {
       // Upload gallery images
       if (gallery) {
         const buffers = await Promise.all(
-          gallery.map(async (item) => Buffer.from(await item.arrayBuffer()))
+          gallery.map(async (item) => Buffer.from(await item.arrayBuffer())),
         );
 
         const uploadedGallery = (await uploadManyCloudFiles(buffers, {
@@ -198,7 +201,7 @@ export const createCourse = async (data: CourseFormType) => {
               type: "COURSE",
               size: bytes,
               galleryId: newGallery.id,
-            })
+            }),
           ),
         });
       }
@@ -215,6 +218,7 @@ export const createCourse = async (data: CourseFormType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updateCourse = async (data: CourseFormType, courseId: number) => {
+  await assertAdmin();
   const {
     categoryId,
     description,
@@ -329,7 +333,7 @@ export const updateCourse = async (data: CourseFormType, courseId: number) => {
         const existingSectionIds = existingCurriculums.map((c) => c.id);
         const inputSectionIds = curriculums.map((c) => c.id);
         const toBeDeletedSectionIds = existingSectionIds.filter(
-          (id) => !inputSectionIds.includes(id)
+          (id) => !inputSectionIds.includes(id),
         );
         await tx.curriculum.deleteMany({
           where: { id: { in: toBeDeletedSectionIds } },
@@ -337,13 +341,13 @@ export const updateCourse = async (data: CourseFormType, courseId: number) => {
 
         // Delete lessons that are not coming from form again.
         const existingLessonIds = existingCurriculums.flatMap((c) =>
-          c.lessons.map((l) => l.id)
+          c.lessons.map((l) => l.id),
         );
         const inputLessonIds = curriculums.flatMap((c) =>
-          c.lessons.map((l) => l.id)
+          c.lessons.map((l) => l.id),
         );
         const toBeDeletedLessonIds = existingLessonIds.filter(
-          (id) => !inputLessonIds.includes(id)
+          (id) => !inputLessonIds.includes(id),
         );
         await tx.lesson.deleteMany({
           where: { id: { in: toBeDeletedLessonIds } },
@@ -407,7 +411,7 @@ export const updateCourse = async (data: CourseFormType, courseId: number) => {
 
         const { secure_url, public_id, format, bytes } = (await uploadCloudFile(
           buffer,
-          { folder: "course", width: 800, resource_type: "image" }
+          { folder: "course", width: 800, resource_type: "image" },
         )) as UploadApiResponse;
 
         if (course.image) {
@@ -436,7 +440,7 @@ export const updateCourse = async (data: CourseFormType, courseId: number) => {
       // Update Gallery.
       if (gallery) {
         const buffers = await Promise.all(
-          gallery.map(async (item) => Buffer.from(await item.arrayBuffer()))
+          gallery.map(async (item) => Buffer.from(await item.arrayBuffer())),
         );
         const uploadedGallery = (await uploadManyCloudFiles(buffers, {
           folder: "course",
@@ -463,7 +467,7 @@ export const updateCourse = async (data: CourseFormType, courseId: number) => {
               type: "COURSE",
               size: bytes,
               galleryId: courseGallery!.id,
-            })
+            }),
           ),
         });
       }
@@ -480,6 +484,7 @@ export const updateCourse = async (data: CourseFormType, courseId: number) => {
 //! DELETE ------------------------------------------------------------
 
 export const deleteCourse = async (id: number) => {
+  await assertAdmin();
   try {
     const deletedCourse = await database.course.delete({
       where: { id },

@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 //* CREATE ------------------------------------------------------------
 
 import { FloatingBannerType } from "@/lib/validationSchema";
@@ -8,6 +10,7 @@ import { uploadCloudFile } from "@igraph/utils";
 import { UploadApiResponse } from "cloudinary";
 
 export const createFloatingBanner = async (data: FloatingBannerType) => {
+  await assertAdmin();
   const { active, couponId, image, link } = data;
 
   try {
@@ -27,7 +30,7 @@ export const createFloatingBanner = async (data: FloatingBannerType) => {
         {
           folder: "floatingBanners",
           resource_type: "image",
-        }
+        },
       )) as UploadApiResponse;
 
       // CREATE IMAGE
@@ -56,6 +59,7 @@ export const createFloatingBanner = async (data: FloatingBannerType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updateFloatingBanner = async (data: FloatingBannerType) => {
+  await assertAdmin();
   const { active, couponId, image, link } = data;
 
   try {
@@ -81,7 +85,7 @@ export const updateFloatingBanner = async (data: FloatingBannerType) => {
         {
           folder: "floatingBanners",
           resource_type: "image",
-        }
+        },
       )) as UploadApiResponse;
 
       // CREATE IMAGE

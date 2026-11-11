@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { getAdminById, getAdminByIdentifier } from "@/data/admin";
 import { AdminFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
@@ -10,6 +12,7 @@ import { deleteCloudFile, uploadCloudFile } from "@igraph/utils";
 //* CREATE ------------------------------------------------------------
 
 export const createAdmin = async (data: AdminFormType) => {
+  await assertAdmin();
   const { displayName, email, name, phone, role, password, image } = data;
   if (!password) return { error: "Password Required." };
 
@@ -43,7 +46,7 @@ export const createAdmin = async (data: AdminFormType) => {
         {
           folder: "admin",
           resource_type: "image",
-        }
+        },
       )) as UploadApiResponse;
 
       // CREATE IMAGE
@@ -72,6 +75,7 @@ export const createAdmin = async (data: AdminFormType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updateAdmin = async (data: AdminFormType, id: number) => {
+  await assertAdmin();
   const { displayName, email, name, phone, role, password, image } = data;
 
   try {
@@ -115,7 +119,7 @@ export const updateAdmin = async (data: AdminFormType, id: number) => {
           folder: "admin",
           resource_type: "image",
           width: 300,
-        }
+        },
       )) as UploadApiResponse;
 
       if (updatedAdmin.image) {
@@ -162,6 +166,7 @@ export const updateAdmin = async (data: AdminFormType, id: number) => {
 //! DELETE ------------------------------------------------------------
 
 export const deleteAdmin = async (id: number) => {
+  await assertAdmin();
   try {
     const existingAdmin = await getAdminById(id);
     if (!existingAdmin) return { error: "No Admin Found" };

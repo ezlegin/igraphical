@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { SlidersFormType } from "@/lib/validationSchema";
 import { database, SliderType } from "@igraph/database";
 import { UploadApiResponse } from "cloudinary";
@@ -8,13 +10,14 @@ import { deleteCloudFile, uploadManyCloudFiles } from "@igraph/utils";
 //* CREATE ------------------------------------------------------------
 
 export const createSlider = async (data: SlidersFormType, type: SliderType) => {
+  await assertAdmin();
   const { images } = data;
 
   try {
     const buffers = await Promise.all(
       images
         .filter((item) => item.image)
-        .map(async (item) => Buffer.from(await item.image!.arrayBuffer()))
+        .map(async (item) => Buffer.from(await item.image!.arrayBuffer())),
     );
 
     const uploadedSliders = (await uploadManyCloudFiles(buffers, {
@@ -32,8 +35,8 @@ export const createSlider = async (data: SlidersFormType, type: SliderType) => {
               active,
               type: type,
             },
-          })
-        )
+          }),
+        ),
       );
 
       await Promise.all(
@@ -49,8 +52,8 @@ export const createSlider = async (data: SlidersFormType, type: SliderType) => {
                 connect: { id: newSliders[index].id },
               },
             },
-          })
-        )
+          }),
+        ),
       );
 
       return newSliders;
@@ -67,8 +70,9 @@ export const createSlider = async (data: SlidersFormType, type: SliderType) => {
 export const updateSlider = async (
   data: SlidersFormType,
   type: SliderType,
-  existingIds: number[]
+  existingIds: number[],
 ) => {
+  await assertAdmin();
   const { images } = data;
 
   try {
@@ -161,6 +165,7 @@ export const updateSlider = async (
 //! DELETE ------------------------------------------------------------
 
 export const deleteSlider = async (id: number, public_id?: string) => {
+  await assertAdmin();
   try {
     const existingSlider = await database.slider.findUnique({
       where: { id },

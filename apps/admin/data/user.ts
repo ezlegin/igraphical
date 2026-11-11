@@ -1,9 +1,12 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { auth } from "@igraph/auth";
 import { database } from "@igraph/database";
 
 export const getUserByIdentifier = async (phoneOrEmail: string) => {
+  await assertAdmin();
   return await database.user.findFirst({
     where: {
       OR: [{ phone: phoneOrEmail }, { email: phoneOrEmail }],
@@ -12,6 +15,7 @@ export const getUserByIdentifier = async (phoneOrEmail: string) => {
 };
 
 export const getUserById = async (id: number) => {
+  await assertAdmin();
   if (!id) return;
   return await database.user.findUnique({
     where: {
@@ -25,6 +29,7 @@ export const getUserById = async (id: number) => {
 };
 
 export const getSessionUser = async () => {
+  await assertAdmin();
   const session = await auth();
   const userId = session?.user?.id;
 
@@ -32,5 +37,6 @@ export const getSessionUser = async () => {
 };
 
 export const getUsersCount = async () => {
+  await assertAdmin();
   return await database.user.count();
 };

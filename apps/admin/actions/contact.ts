@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { getSessionAdmin } from "@/data/admin";
 import { sendEmail } from "@igraph/utils";
 import { database, ContactStatus } from "@igraph/database";
@@ -10,6 +12,7 @@ export const sendContactResponse = async (options: {
   email: string;
   contactId: number;
 }) => {
+  await assertAdmin();
   const { contactId, email, message } = options;
   const respondentId = (await getSessionAdmin())?.id;
   if (!respondentId) return { error: "Admin Id is missing." };
@@ -51,6 +54,7 @@ export const updateContact = async (options: {
   status: ContactStatus;
   contactId: number;
 }) => {
+  await assertAdmin();
   const { contactId, status } = options;
 
   try {
@@ -70,6 +74,7 @@ export const updateContact = async (options: {
 //! DELETE ------------------------------------------------
 
 export const deleteContact = async (contactId: number) => {
+  await assertAdmin();
   try {
     await database.contact.delete({
       where: { id: contactId },

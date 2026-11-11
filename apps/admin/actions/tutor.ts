@@ -1,5 +1,7 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { getTutorById, getTutorByIdentifier } from "@/data/tutor";
 import { TutorFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
@@ -10,6 +12,7 @@ import { UploadApiResponse } from "cloudinary";
 //* CREATE ------------------------------------------------------------
 
 export const createTutor = async (data: TutorFormType) => {
+  await assertAdmin();
   const {
     displayName,
     email,
@@ -58,7 +61,7 @@ export const createTutor = async (data: TutorFormType) => {
           folder: "tutor",
           width: 300,
           resource_type: "image",
-        }
+        },
       )) as UploadApiResponse;
 
       // CREATE IMAGE
@@ -87,6 +90,7 @@ export const createTutor = async (data: TutorFormType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updateTutor = async (data: TutorFormType & { id: number }) => {
+  await assertAdmin();
   const {
     displayName,
     email,
@@ -143,7 +147,7 @@ export const updateTutor = async (data: TutorFormType & { id: number }) => {
           folder: "tutor",
           width: 800,
           resource_type: "image",
-        }
+        },
       )) as UploadApiResponse;
 
       if (updatedTutor.image) {
@@ -190,6 +194,7 @@ export const updateTutor = async (data: TutorFormType & { id: number }) => {
 //! DELETE ------------------------------------------------------------
 
 export const deleteTutor = async (id: number) => {
+  await assertAdmin();
   try {
     const existingAdmin = await getTutorById(id);
     if (!existingAdmin) return { error: "No Tutor Found" };

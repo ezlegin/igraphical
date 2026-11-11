@@ -1,8 +1,11 @@
 "use server";
 
+import { assertStaff } from "@/lib/require-admin";
+
 import { database, Prisma } from "@igraph/database";
 
 export const searchUsers = async (query: string) => {
+  await assertStaff();
   const where: Prisma.UserWhereInput = query
     ? {
         OR: [
@@ -23,6 +26,7 @@ export const searchUsers = async (query: string) => {
 };
 
 export const searchCoupons = async (query: string) => {
+  await assertStaff();
   const where: Prisma.CouponWhereInput = query
     ? {
         OR: [{ code: { contains: query } }],
@@ -36,6 +40,7 @@ export const searchCoupons = async (query: string) => {
 };
 
 export const searchPosts = async (query: string) => {
+  await assertStaff();
   const where: Prisma.PostWhereInput = query
     ? {
         OR: [{ title: { contains: query } }, { url: { contains: query } }],
@@ -49,6 +54,7 @@ export const searchPosts = async (query: string) => {
 };
 
 export const searchCourses = async (query: string) => {
+  await assertStaff();
   const where: Prisma.CourseWhereInput = query
     ? {
         OR: [{ title: { contains: query } }],
@@ -62,6 +68,7 @@ export const searchCourses = async (query: string) => {
 };
 
 export const searchTutors = async (query: string) => {
+  await assertStaff();
   const where: Prisma.TutorWhereInput = query
     ? {
         OR: [

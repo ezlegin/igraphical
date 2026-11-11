@@ -1,9 +1,12 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { auth } from "@igraph/auth";
 import { database } from "@igraph/database";
 
 export const getTutorByIdentifier = async (identifier: string) => {
+  await assertAdmin();
   return await database.tutor.findFirst({
     where: {
       OR: [{ phone: identifier }, { email: identifier }],
@@ -12,6 +15,7 @@ export const getTutorByIdentifier = async (identifier: string) => {
 };
 
 export const getTutorById = async (id: string | number) => {
+  await assertAdmin();
   return await database.tutor.findUnique({
     where: {
       id: +id,
@@ -21,12 +25,14 @@ export const getTutorById = async (id: string | number) => {
 };
 
 export const getAllTutors = async () => {
+  await assertAdmin();
   return await database.tutor.findMany({
     include: { image: true },
   });
 };
 
 export const getSessionTutor = async () => {
+  await assertAdmin();
   const session = await auth();
   const userId = session?.user?.id;
 

@@ -1,4 +1,4 @@
-"use server";
+// Server-only (not "use server"): only the login action uses it.
 
 import { database } from "@igraph/database";
 

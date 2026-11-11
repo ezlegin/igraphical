@@ -1,11 +1,14 @@
 "use server";
 
+import { assertAdmin } from "@/lib/require-admin";
+
 import { CouponFormType } from "@/lib/validationSchema";
 import { database, Prisma } from "@igraph/database";
 
 //* CREATE ------------------------------------------------------
 
 export const createCoupon = async (data: CouponFormType) => {
+  await assertAdmin();
   const {
     amount,
     code,
@@ -70,6 +73,7 @@ export const createCoupon = async (data: CouponFormType) => {
 //? UPDATE ------------------------------------------------------
 
 export const updateCoupon = async (data: CouponFormType, id: number) => {
+  await assertAdmin();
   const {
     amount,
     code,
@@ -106,17 +110,17 @@ export const updateCoupon = async (data: CouponFormType, id: number) => {
     const newExcludeIds = courseExclude?.map((c) => c.id) || [];
 
     const includeToConnect = newIncludeIds.filter(
-      (id) => !currentIncludeIds.includes(id)
+      (id) => !currentIncludeIds.includes(id),
     );
     const includeToDisconnect = currentIncludeIds.filter(
-      (id) => !newIncludeIds.includes(id)
+      (id) => !newIncludeIds.includes(id),
     );
 
     const excludeToConnect = newExcludeIds.filter(
-      (id) => !currentExcludeIds.includes(id)
+      (id) => !currentExcludeIds.includes(id),
     );
     const excludeToDisconnect = currentExcludeIds.filter(
-      (id) => !newExcludeIds.includes(id)
+      (id) => !newExcludeIds.includes(id),
     );
 
     const updateData: Prisma.CouponUpdateInput = {
@@ -165,6 +169,7 @@ export const updateCoupon = async (data: CouponFormType, id: number) => {
 //! DELETE ------------------------------------------------------
 
 export const deleteCoupon = async (id: number) => {
+  await assertAdmin();
   try {
     const existingCoupon = await database.coupon.findUnique({
       where: { id },

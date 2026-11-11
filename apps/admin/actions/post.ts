@@ -1,5 +1,7 @@
 "use server";
 
+import { assertStaff } from "@/lib/require-admin";
+
 import { getPostById, getPostByUrl } from "@/data/post";
 import { PostFormType } from "@/lib/validationSchema";
 import { database } from "@igraph/database";
@@ -9,6 +11,7 @@ import { UploadApiResponse } from "cloudinary";
 //* CREATE ------------------------------------------------------------
 
 export const createPost = async (data: PostFormType) => {
+  await assertStaff();
   const { author, categories, content, image, status, title, url } = data;
 
   try {
@@ -48,7 +51,7 @@ export const createPost = async (data: PostFormType) => {
           folder: "post",
           resource_type: "image",
           width: 800,
-        }
+        },
       )) as UploadApiResponse;
 
       // CREATE IMAGE
@@ -77,6 +80,7 @@ export const createPost = async (data: PostFormType) => {
 //? UPDATE ------------------------------------------------------------
 
 export const updatePost = async (data: PostFormType, id: number) => {
+  await assertStaff();
   const { author, categories, content, image, status, title, url } = data;
 
   try {
@@ -126,7 +130,7 @@ export const updatePost = async (data: PostFormType, id: number) => {
           folder: "post",
           resource_type: "image",
           width: 800,
-        }
+        },
       )) as UploadApiResponse;
 
       if (updatedPost.image) {
@@ -163,6 +167,7 @@ export const updatePost = async (data: PostFormType, id: number) => {
 //! DELETE ------------------------------------------------------------
 
 export const deletePost = async (id: number) => {
+  await assertStaff();
   try {
     const existingPost = await getPostById(id);
     if (!existingPost) return { error: "No Post Found" };
