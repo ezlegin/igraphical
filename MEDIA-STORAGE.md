@@ -94,6 +94,10 @@ becomes cheaper above ~1.9 TB of traffic per month.
 
 ## Uploading new courses
 
-Upload new files into the bucket under `Courses/<course>/...` (Arvan panel or
-`rclone copy`) and keep using `https://dl.igraphical.ir/Courses/<course>/<file>`
-as the lesson URL in admin. The app maps it to the bucket automatically.
+1. Upload the file into the bucket under `Courses/<course>/...` (Arvan panel
+   or `rclone copy`).
+2. In admin, enter just that path as the session (or teaser) URL, for example
+   `Courses/ui-design/S1-E1.mp4`. Folder and file names are case-sensitive.
+
+Old full URLs (`https://dl.igraphical.ir/Courses/...`) keep working; external
+full URLs (another website) are used as they are.

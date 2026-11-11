@@ -42,8 +42,16 @@ const storage = () => {
   return { client, bucket: S3_BUCKET };
 };
 
-/** "https://dl.igraphical.ir//Courses/a/b.mp4" → "Courses/a/b.mp4" */
+/**
+ * Bucket key for a stored lesson/teaser address:
+ *   "Courses/a/b.mp4" or "/Courses/a/b.mp4"         → "Courses/a/b.mp4"
+ *   "https://dl.igraphical.ir//Courses/a/b.mp4"     → "Courses/a/b.mp4"
+ *   any other full URL (e.g. an external site)      → null (used as is)
+ */
 export const bucketKeyFor = (rawUrl: string) => {
+  const value = rawUrl.trim();
+  if (value && !/^[a-z]+:\/\//i.test(value) && !value.startsWith("//"))
+    return value.replace(/\/+/g, "/").replace(/^\//, "");
   try {
     const url = new URL(rawUrl);
     if (url.hostname !== OLD_MEDIA_HOST) return null;
@@ -57,7 +65,9 @@ export const bucketKeyFor = (rawUrl: string) => {
 export const signMediaUrl = async (rawUrl: string) => {
   const s3 = storage();
   const key = bucketKeyFor(rawUrl);
-  if (!s3 || !key) return rawUrl;
+  if (!key) return rawUrl;
+  // not configured yet: fall back to the old public host for plain paths
+  if (!s3) return /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${OLD_MEDIA_HOST}/${key}`;
 
   try {
     return await getSignedUrl(

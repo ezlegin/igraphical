@@ -102,6 +102,27 @@ export const assetFormSchema = z.object({
 });
 export type AssetFormType = z.infer<typeof assetFormSchema>;
 
+// Lesson files and teasers: a bucket path like "Courses/ui-design/S1-E1.mp4"
+// (preferred) or a full URL.
+const mediaPath = z
+  .string()
+  .trim()
+  .min(1, requiredMessage)
+  .refine(
+    (v) => {
+      if (/^https?:\/\//i.test(v)) {
+        try {
+          new URL(v);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      return !v.includes("://") && !v.startsWith("//");
+    },
+    { message: "Enter a path like Courses/<course>/<file> or a full URL" },
+  );
+
 //! COURSES
 export const courseFormSchema = z.object({
   title: z.string().min(1, requiredMessage),
@@ -114,7 +135,7 @@ export const courseFormSchema = z.object({
   status: z.enum(courseStatus, { required_error: requiredMessage }),
   releaseDate: z.date().optional(),
   tutorId: z.string().min(1, requiredMessage),
-  tizerUrl: z.string().url(),
+  tizerUrl: mediaPath,
   duration: z.number().min(1, requiredMessage),
   image: z.instanceof(File, { message: requiredMessage }).optional(),
   categoryId: z.string().min(1, requiredMessage),
@@ -170,7 +191,7 @@ export const courseFormSchema = z.object({
               .number()
               .min(0, "Lesson duration must be a non-negative number")
               .optional(),
-            url: z.string().url(),
+            url: mediaPath,
             isFree: z.boolean(),
             type: z.enum(lessonsType, { message: "Invalid" }),
           }),
