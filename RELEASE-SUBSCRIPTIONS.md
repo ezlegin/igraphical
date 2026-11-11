@@ -67,8 +67,6 @@ mentorship on their paid courses from that date.
 
 - Existing admin server actions (coupons, courses, users, payments, wallet)
   don't check the admin session; add `requireAdmin()` to them.
-- The old per-course checkout trusts client-sent prices (blocked for paid
-  courses once the flag is on).
 - Lesson video URLs are plain Cloudinary links; signed URLs would stop sharing
   after a subscription expires.
 - Campaign / overall-off tables are still in the database (unused); drop them
