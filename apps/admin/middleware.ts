@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { ADMIN_SESSION_COOKIE } from "@igraph/auth/admin-cookie";
 
 // Reached without a session: the login page, Auth.js itself, and the cron jobs
 // (those check their own x-cron-key).
@@ -19,7 +20,8 @@ export async function middleware(req: NextRequest) {
     req,
     secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
     secureCookie: secure,
-    salt: secure ? "__Secure-authjs.session-token" : "authjs.session-token",
+    cookieName: ADMIN_SESSION_COOKIE,
+    salt: ADMIN_SESSION_COOKIE,
   });
 
   if (!token?.id) {

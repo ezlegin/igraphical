@@ -2,12 +2,14 @@ import { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getAdminById, getAdminByIdentifier } from "./data/admin";
 import { verifyLoginTicket } from "./login-ticket";
+import { adminCookies } from "./admin-cookie";
 
 export default {
   pages: {
     signIn: "/login",
   },
   trustHost: true,
+  cookies: adminCookies,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

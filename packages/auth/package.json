@@ -4,7 +4,8 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./auth.ts"
+    ".": "./auth.ts",
+    "./admin-cookie": "./admin-cookie.ts"
   },
   "dependencies": {
     "@igraph/database": "^0.0.0",
