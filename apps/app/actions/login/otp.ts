@@ -108,6 +108,6 @@ export async function sendOtp(data: {
 
     return { isNewUser: !!!existingUser };
   } catch (error) {
-    return { error: String(error) };
+    return { error: error instanceof Error ? error.message : String(error) };
   }
 }

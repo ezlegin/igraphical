@@ -20,25 +20,36 @@ import { convertPersianDigitsToEnglish, detectInputType } from "./utils";
 const sender = process.env.KAVENEGAR_SENDER!;
 
 export const sendOtpSms = async (phone: string, userId?: number) => {
-  try {
-    const { plainOtp } = await generateSmsOtp(phone, userId);
+  const { plainOtp } = await generateSmsOtp(phone, userId);
 
-    const receptor = convertPersianDigitsToEnglish(phone);
+  const receptor = convertPersianDigitsToEnglish(phone);
 
-    kavenegar.VerifyLookup(
-      {
-        receptor,
-        token: plainOtp,
-        template: "igraphical",
-      },
-      function (response, status) {
-        // console.log(response);
-        // console.log(status);
-      },
+  // Wait for Kavenegar's answer so a failed send reaches the login form
+  // instead of it claiming a code was sent.
+  const status = await new Promise<number>((resolve) => {
+    try {
+      kavenegar.VerifyLookup(
+        {
+          receptor,
+          token: plainOtp,
+          template: "igraphical",
+        },
+        (_response, status, message) => {
+          if (status !== 200)
+            console.error(`Error Sending SMS: ${status} ${message ?? ""}`);
+          resolve(status);
+        },
+      );
+    } catch (error) {
+      console.error("Error Sending SMS: " + error);
+      resolve(0);
+    }
+  });
+
+  if (status !== 200)
+    throw new Error(
+      "ارسال پیامک با خطا مواجه شد. لطفا بعدا تلاش کنید یا با ایمیل وارد شوید.",
     );
-  } catch (error) {
-    console.error("Error Sending SMS: " + error);
-  }
 };
 
 /**

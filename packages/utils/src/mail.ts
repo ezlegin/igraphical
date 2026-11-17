@@ -44,20 +44,23 @@ export const sendEmail = async ({
 //! -------------------------------------------------------------------
 
 export const sendOtpEmail = async (email: string, userId?: number) => {
-  try {
-    const { plainOtp } = await generateEmailOtp(email, userId);
-    const emailHtml = await renderOtpEmail(plainOtp);
+  const { plainOtp } = await generateEmailOtp(email, userId);
+  const emailHtml = await renderOtpEmail(plainOtp);
 
-    await sendEmail({
-      subject: `🔒 کد تایید: ${plainOtp}`,
-      to: email,
-      html: emailHtml,
-    });
+  const result = await sendEmail({
+    subject: `🔒 کد تایید: ${plainOtp}`,
+    to: email,
+    html: emailHtml,
+  });
 
-    return { success: true };
-  } catch (error) {
-    throw new Error(String(error));
-  }
+  // sendEmail swallows provider errors; surface them so the login form
+  // doesn't claim a code was sent when it wasn't.
+  if (!result.success)
+    throw new Error(
+      "ارسال ایمیل با خطا مواجه شد. لطفا بعدا تلاش کنید یا با شماره موبایل وارد شوید.",
+    );
+
+  return { success: true };
 };
 
 //! -------------------------------------------------------------------
