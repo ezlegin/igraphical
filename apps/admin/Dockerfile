@@ -68,8 +68,9 @@
   COPY --from=installer --chown=nextjs:nodejs /repo/apps/admin/public ./apps/admin/public
   
   # ✅ Copy Prisma runtime files
-  COPY --from=installer --chown=nextjs:nodejs /repo/packages/database/generated/client/libquery_engine-linux-musl-openssl-3.0.x.so.node \
-    /app/apps/admin/.next/server/libquery_engine-linux-musl-openssl-3.0.x.so.node
+  # The engine generated for the build machine (linux-musl-arm64-openssl-3.0.x on ARM).
+  COPY --from=installer --chown=nextjs:nodejs /repo/packages/database/generated/client/libquery_engine-*.so.node \
+    /app/apps/admin/.next/server/
   
   # ✅ Copy Prisma client & schema
   COPY --from=installer /repo/packages/database/prisma /app/packages/database/prisma
