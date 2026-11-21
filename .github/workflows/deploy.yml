@@ -113,31 +113,21 @@ jobs:
     environment: production
     permissions:
       contents: read
+    # The `igraphical-deploy` key (DEPLOY_USER) can only run
+    # /opt/igraphical/deploy.sh-wrapper with a commit sha and the apps to
+    # restart. scripts/deploy.sh, scripts/deploy.sh-wrapper and
+    # docker-compose.yml are copied to the server by hand when they change.
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Configure ssh
+      - name: Deploy over SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER_NAME: ${{ secrets.DEPLOY_USER }}
+          SERVICES: ${{ join(fromJSON(needs.changes.outputs.apps), ' ') }}
         run: |
           install -m 700 -d ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_deploy
-          chmod 600 ~/.ssh/id_deploy
-          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-          cat >> ~/.ssh/config <<EOF
-          Host prod
-            HostName ${{ secrets.DEPLOY_HOST }}
-            User ${{ secrets.DEPLOY_USER }}
-            IdentityFile ~/.ssh/id_deploy
-            StrictHostKeyChecking yes
-          EOF
-
-      - name: Upload compose file
-        run: |
-          ssh prod 'mkdir -p /root/deploy/igraphical'
-          scp docker-compose.yml prod:/root/deploy/igraphical/docker-compose.yml
-
-      - name: Deploy
-        env:
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          SERVICES="${{ join(fromJSON(needs.changes.outputs.apps), ' ') }}"
-          ssh prod "SERVICES='$SERVICES' IMAGE_TAG=${{ github.sha }} GHCR_USER=${{ github.actor }} GHCR_TOKEN=$GHCR_TOKEN sh -s" < scripts/deploy.sh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_deploy -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$USER_NAME@$HOST" "${{ github.sha }} $SERVICES"

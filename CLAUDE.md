@@ -72,4 +72,6 @@ Checkout (`apps/app/app/(CART)`) supports several Iranian gateways: ZarinPal (`a
 
 ## Deployment
 
+Pushes to `main` build ARM images (`linux/arm64`) and deploy them over SSH as `igraphical-deploy`, whose key can only run `/opt/igraphical/deploy.sh-wrapper <sha> [app] [admin]`. `scripts/deploy.sh` → `/opt/igraphical/deploy.sh` (root, 750), `scripts/deploy.sh-wrapper` → `/opt/igraphical/deploy.sh-wrapper` (755) and `docker-compose.yml` → `/root/deploy/igraphical/` are copied to the server by hand when they change; each deploy is appended to `/root/deploy/igraphical/deploys.log`.
+
 `docker-compose.yml` runs the both apps (each via `apps/<name>/Dockerfile`, `output: "standalone"`, `turbo prune`) behind nginx-proxy + Let's Encrypt with a MySQL 8 container. Runtime env comes from `/root/envs/igraphical/<app>.env.local` on the server; the root `.env` only feeds compose build args (`DATABASE_URL`, `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`, `RESEND_API_KEY`). Admin's Google Analytics service-account key comes from `GA_CREDENTIALS_BASE64` (base64 of `ga.json`) in the server env file; locally `GOOGLE_APPLICATION_CREDENTIALS` can point at `apps/admin/ga.json`.

@@ -1,13 +1,16 @@
 #!/bin/sh
-# Runs ON THE SERVER (piped over ssh by .github/workflows/deploy.yml).
-# Pulls prebuilt images from ghcr and recreates only the apps in $SERVICES
-# (space-separated subset of "app admin tutor"; may be empty).
-# Never touches the database, nginx-proxy or letsencrypt containers.
-# Usage: SERVICES="app admin" IMAGE_TAG=<sha> GHCR_USER=.. GHCR_TOKEN=.. sh deploy.sh
+# Deploys prebuilt images ON THE SERVER. Installed by hand as
+# /opt/igraphical/deploy.sh (root, 750) and started only through
+# deploy.sh-wrapper, the one command the `igraphical-deploy` SSH key may run
+# (.github/workflows/deploy.yml). Pulls the images with the server's own ghcr
+# login and recreates only the apps asked for.
+# Never touches the database or the shared proxy.
+# Usage: deploy.sh <full commit sha> [app] [admin]
 set -eu
 
-SERVICES="${SERVICES-app admin tutor}"
-: "${IMAGE_TAG:?}" "${GHCR_USER:?}" "${GHCR_TOKEN:?}"
+IMAGE_TAG="${1:?usage: deploy.sh <sha> [app] [admin]}"
+shift
+SERVICES="$*"
 DEPLOY_DIR=/root/deploy/igraphical
 BACKUP_DIR=/root/backups/igraphical
 REGISTRY=ghcr.io/ezlegin
@@ -16,26 +19,20 @@ export IMAGE_TAG
 # -p igraphical keeps the existing compose project (and its `database` volume).
 dc() { docker compose -p igraphical -f "$DEPLOY_DIR/docker-compose.yml" "$@"; }
 
-# Use a throwaway docker config so the server's own ghcr logins stay untouched.
-DOCKER_CONFIG=$(mktemp -d)
-export DOCKER_CONFIG
-trap 'rm -rf "$DOCKER_CONFIG"' EXIT
-printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-
 # Safety net: logical dump of the live DB (read-only), keep the newest 7.
 mkdir -p "$BACKUP_DIR"
 docker exec database mysqldump -uroot --single-transaction --routines igraphical \
   | gzip > "$BACKUP_DIR/igraphical_$(date +%F_%H%M%S).sql.gz"
 ls -1t "$BACKUP_DIR"/*.sql.gz | tail -n +8 | xargs -r rm -f
 
-for svc in $SERVICES; do docker pull "$REGISTRY/igraphical-$svc:$IMAGE_TAG"; done
+for svc in $SERVICES; do docker pull -q "$REGISTRY/igraphical-$svc:$IMAGE_TAG"; done
 
 healthy() { # container returns an HTTP status < 500 on its own hostname:3000
   code=$(docker exec "$1" sh -c 'curl -s -o /dev/null -w "%{http_code}" http://$(hostname):3000/' 2>/dev/null || echo 000)
   [ "$code" != 000 ] && [ "$code" -lt 500 ]
 }
 
-for svc in admin tutor app; do
+for svc in admin app; do
   case " $SERVICES " in *" $svc "*) ;; *) continue ;; esac
   prev=$(docker inspect --format '{{.Image}}' "$svc" 2>/dev/null || true)
   echo "==> deploying $svc ($IMAGE_TAG)"
@@ -61,5 +58,6 @@ done
 # @obhco/pay reconcile loop (stock curl image, nothing to pull from ghcr)
 dc up -d --no-deps pay-reconcile
 
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $IMAGE_TAG ${SERVICES:-none}" >> "$DEPLOY_DIR/deploys.log"
 docker image prune -f >/dev/null
 echo "deploy ok: $IMAGE_TAG"

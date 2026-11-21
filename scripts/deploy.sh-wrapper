@@ -1,0 +1,18 @@
+#!/bin/sh
+# The only command the `igraphical-deploy` SSH key may run (forced by its
+# authorized_keys entry: restrict,command="/opt/igraphical/deploy.sh-wrapper").
+# Installed by hand as /opt/igraphical/deploy.sh-wrapper (root, 755).
+# The arguments arrive in SSH_ORIGINAL_COMMAND: a full commit sha, then the
+# apps to restart (app, admin; none is fine). They are validated here, and
+# deploy.sh runs as root through a sudoers rule for exactly that script.
+set -euf  # -f: no filename expansion of the SSH arguments
+# shellcheck disable=SC2086
+set -- ${SSH_ORIGINAL_COMMAND:-}
+[ "$#" -ge 1 ] && [ "$#" -le 3 ] || { echo "refused: expected <sha> [app] [admin]" >&2; exit 2; }
+sha="$1"
+shift
+printf '%s' "$sha" | grep -Eqx '[0-9a-f]{40}' || { echo "refused: expected a full 40-character commit sha" >&2; exit 2; }
+for svc in "$@"; do
+  case "$svc" in app | admin) ;; *) echo "refused: unknown app \"$svc\"" >&2; exit 2 ;; esac
+done
+exec sudo -n /opt/igraphical/deploy.sh "$sha" "$@"
