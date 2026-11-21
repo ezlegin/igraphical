@@ -1,43 +1,13 @@
 # version: "3.8"
+#
+# The shared nginx-proxy + Let's Encrypt companion run on their own on the
+# server (/opt/proxy, since 2026-11-21); the apps join its `app_network` with
+# VIRTUAL_HOST / LETSENCRYPT_HOST.
 
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    container_name: nginx-proxy
-    restart: always
-    environment:
-      CLIENT_MAX_BODY_SIZE: 10m
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - certs:/etc/nginx/certs:rw
-      - vhost.d:/etc/nginx/vhost.d:rw
-      - html:/usr/share/nginx/html:rw
-    networks:
-      - app_network
-
-  nginx-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: nginx-letsencrypt
-    restart: always
-    environment:
-      NGINX_PROXY_CONTAINER: nginx-proxy
-    depends_on:
-      - nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - certs:/etc/nginx/certs:rw
-      - vhost.d:/etc/nginx/vhost.d:rw
-      - html:/usr/share/nginx/html:rw
-    networks:
-      - app_network
-
   database:
     image: mysql:8.0.32
     container_name: database
-    platform: linux/amd64
     restart: always
     environment:
       DATABASE_URL: mysql://root@database:3306/igraphical
@@ -131,9 +101,6 @@ services:
 
 volumes:
   database:
-  certs:
-  vhost.d:
-  html:
 
 networks:
   app_network:

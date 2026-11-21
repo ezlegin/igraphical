@@ -53,7 +53,9 @@ jobs:
   build:
     needs: changes
     if: needs.changes.outputs.apps != '[]'
-    runs-on: ubuntu-latest
+    # ARM only (linux/arm64), on the native ARM runner: the server is ARM
+    # since 2026-11-21.
+    runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
       packages: write
@@ -81,10 +83,12 @@ jobs:
         with:
           context: .
           file: apps/${{ matrix.app }}/Dockerfile
+          platforms: linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
+          # :latest only from main; a manual run on another branch pushes :<sha>.
           tags: |
             ${{ env.REGISTRY }}/${{ env.OWNER }}/igraphical-${{ matrix.app }}:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ env.OWNER }}/igraphical-${{ matrix.app }}:latest
+            ${{ github.ref == 'refs/heads/main' && format('{0}/{1}/igraphical-{2}:latest', env.REGISTRY, env.OWNER, matrix.app) || '' }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           # Placeholders: the real runtime secrets come from /root/envs/igraphical/*.env.local
@@ -99,8 +103,10 @@ jobs:
   deploy:
     needs: [changes, build]
     # also runs when nothing needed building (e.g. only docker-compose.yml changed)
+    # Only main deploys; a manual run on another branch only builds.
     if: >-
       always() && github.event_name != 'pull_request'
+      && github.ref == 'refs/heads/main'
       && needs.changes.result == 'success'
       && (needs.build.result == 'success' || needs.build.result == 'skipped')
     runs-on: ubuntu-latest
